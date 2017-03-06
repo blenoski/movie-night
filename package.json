@@ -7,8 +7,11 @@
     "start": "electron ."
   },
   "author": "Brian Lenoski",
-  "license": "private",
   "devDependencies": {
     "electron": "^1.6.1"
+  },
+  "dependencies": {
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2"
   }
 }
