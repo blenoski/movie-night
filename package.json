@@ -5,7 +5,8 @@
   "main": "./app/main.js",
   "scripts": {
     "start": "npm run build && electron .",
-    "build": "webpack --config webpack.config.js  --progress --profile --colors"
+    "build": "webpack --config webpack.config.js  --progress --profile --colors",
+    "test": "standard"
   },
   "author": "Brian Lenoski",
   "devDependencies": {
@@ -14,6 +15,7 @@
     "babel-preset-es2015": "^6.22.0",
     "babel-preset-react": "^6.23.0",
     "electron": "^1.6.1",
+    "standard": "^9.0.0",
     "webpack": "^2.2.1"
   },
   "dependencies": {

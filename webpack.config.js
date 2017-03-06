@@ -1,4 +1,4 @@
-const path = require('path');
+const path = require('path')
 
 module.exports = {
   entry: {
@@ -13,20 +13,20 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         include: [
-          path.resolve(__dirname, "app")
+          path.resolve(__dirname, 'app')
         ],
         loader: 'babel-loader',
         options: {
-          presets: ["es2015", "react"]
+          presets: ['es2015', 'react']
         }
       }
     ]
   },
   resolve: {
     modules: [
-      "node_modules",
-      path.resolve(__dirname, "app")
+      'node_modules',
+      path.resolve(__dirname, 'app')
     ],
-    extensions: [".js", ".jsx"]
+    extensions: ['.js', '.jsx']
   }
-};
+}
