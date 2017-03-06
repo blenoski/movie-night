@@ -1,0 +1,14 @@
+{
+  "name": "movie-night",
+  "productName": "Movie Night",
+  "version": "1.0.0",
+  "main": "./app/main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Brian Lenoski",
+  "license": "private",
+  "devDependencies": {
+    "electron": "^1.6.1"
+  }
+}
