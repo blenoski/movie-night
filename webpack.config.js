@@ -10,7 +10,7 @@ console.log('Using bundled javascript source: ', bundleName)
 
 module.exports = {
   entry: {
-    main: './app/app.js'
+    main: './app/index.js'
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -23,10 +23,7 @@ module.exports = {
         include: [
           path.resolve(__dirname, 'app')
         ],
-        loader: 'babel-loader',
-        options: {
-          presets: [['env', {'modules': false}], 'react']
-        }
+        loader: 'babel-loader'
       }
     ]
   },
