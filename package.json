@@ -1,9 +1,9 @@
 {
-  "name": "electronreactstarter",
-  "description": "Boilerplate Electron + React Application",
+  "name": "movienight",
+  "description": "Search your digital movie collection while offline",
   "version": "1.0.0",
   "author": "Brian Lenoski <brian.lenoski@gmail.com>",
-  "productName": "Electron React Starter",
+  "productName": "Movie Night",
   "main": "./app/main.js",
   "scripts": {
     "start": "npm run build && electron .",
@@ -48,7 +48,7 @@
     }
   },
   "build": {
-    "appId": "org.confidentcruiser.ers",
+    "appId": "org.confidentcruiser.movienight",
     "files": [
       "app/main.js",
       "bundle/"
