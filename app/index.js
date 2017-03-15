@@ -4,7 +4,8 @@ import App from './App'
 
 // Import the Bootstrap styles.
 // This will make the bootstrap styling default.
-import '../vendor/bootstrap/css/bootstrap.min.css'
+// Importing uniminified version so we can let Webpack handle minimization.
+import '../../bootstrap/bootstrap-4.0.0-alpha.6-dist/css/bootstrap.css'
 
 // Render the App.
 ReactDOM.render(

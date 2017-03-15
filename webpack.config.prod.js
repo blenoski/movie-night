@@ -48,6 +48,18 @@ module.exports = {
       }
     ]
   },
+  resolve: {
+    // Tell webpack where to search for JS modules.
+    // This config is required if we want to include
+    // 3rd party modules with source files located outside
+    // of this project that rely on other modules inside of this project.
+    // E.g., bootstrap.js required jquery.
+    modules: [
+      path.resolve(__dirname, 'app'),
+      path.resolve(__dirname, 'node_modules')
+    ],
+    extensions: ['.js', '.jsx']
+  },
   plugins: [
     // This plugin takes the HTML template file and turns it
     // into the index.html file which serves as the entry point

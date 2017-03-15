@@ -10,7 +10,7 @@
     "build": "cross-env NODE_ENV=production webpack --config webpack.config.prod.js -p --progress --profile --colors",
     "start-dev": "npm run build-dev && electron .",
     "build-dev": "cross-env NODE_ENV=development webpack --config webpack.config.dev.js --progress --profile --colors",
-    "start-dev-server": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.dev.js --output-public-path dist --port 3000",
+    "start-dev-server": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.dev.js --output-public-path bundle --port 3000",
     "test": "standard && cross-env NODE_ENV=test jest --coverage --verbose",
     "pack": "build --dir",
     "dist": "build",
