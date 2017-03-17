@@ -13,11 +13,13 @@ const BrowserWindow = electron.BrowserWindow
 let mainWindow = null
 
 function createWindow () {
-  // Create the browser window.
-  mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600
-  })
+  // Get the usable screen size.
+  let {width, height} = electron.screen.getPrimaryDisplay().workAreaSize
+  height = Math.round(height * 0.95)
+  width = Math.round(width * 0.95)
+
+  // Create the browser window
+  mainWindow = new BrowserWindow({width, height})
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
