@@ -4,12 +4,14 @@ const path = require('path')
 console.log('NODE_ENV=' + process.env.NODE_ENV)
 
 module.exports = {
+  // Tells webpack to set-up some Electron specific variables.
+  target: 'electron-renderer',
   // Generate source maps with original line numbers.
   devtool: 'cheap-module-eval-source-map',
   // This is the entry point for the React application.
   // In Electron, this is known as the renderer process.
   entry: {
-    main: './app/index.js'
+    main: './app/renderer/index.js'
   },
   // This is where the bundled javascript file live.
   output: {
@@ -56,7 +58,7 @@ module.exports = {
     // and CSS file.
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: path.resolve(__dirname, 'app', 'index-template.html'),
+      template: path.resolve(__dirname, 'app', 'renderer', 'index-template.html'),
       bundle: 'http://localhost:3000/bundle/bundle.js',
       css: '',
       inject: false

@@ -7,13 +7,15 @@ console.log('NODE_ENV=' + process.env.NODE_ENV)
 module.exports = {
   // Don't attempt to continue if there are any errors.
   bail: true,
+  // Tells webpack to set-up some Electron specific variables.
+  target: 'electron-renderer',
   // We generate source maps in production. This is slow but gives good results.
   // You can exclude the *.map files from the build during deployment.
   devtool: 'cheap-module-source-map',
   // This is the entry point for the React application.
   // In Electron, this is known as the renderer process.
   entry: {
-    main: './app/index.js'
+    main: './app/renderer/index.js'
   },
   // This is where the bundled javascript and CSS files live.
   output: {
@@ -68,7 +70,7 @@ module.exports = {
     // and CSS file.
     new HtmlWebpackPlugin({
       filename: 'index.html',
-      template: path.resolve(__dirname, 'app', 'index-template.html'),
+      template: path.resolve(__dirname, 'app', 'renderer', 'index-template.html'),
       bundle: 'bundle.js',
       css: '<link rel="stylesheet" href="bundle.css">',
       inject: false
