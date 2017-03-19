@@ -10,13 +10,12 @@ import App from './App'
 import reducers from './reducers'
 import { updateSearchDirectory } from './actions'
 import logger from './mainWindowLogger'
+logEnv(logger)
 
 // Import the Bootstrap styles.
 // This will make the bootstrap styling default.
 // Importing unminified version so we can let Webpack handle minimization.
 import 'bootstrap/dist/css/bootstrap.css'
-
-logEnv(logger)
 
 // Create the redux store
 const createStoreWithMiddleware = applyMiddleware()(createStore)

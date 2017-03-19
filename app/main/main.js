@@ -10,8 +10,8 @@ const {
   MOVIE_FILES
 } = require('../shared/Events')
 const { isDevEnv, logEnv } = require('../shared/Utils')
-const logger = require('./mainLogger')
 
+const logger = require('./mainLogger')
 logEnv(logger)
 
 // Module to control application life.
@@ -47,7 +47,7 @@ function createWindows () {
     slashes: true
   }))
 
-  // Uncomment to open the DevTools.
+  // Open the DevTools if we are in dev.
   if (isDevEnv()) {
     mainWindow.webContents.openDevTools()
   }
@@ -63,7 +63,6 @@ function createWindows () {
     // For non OSX platforms, we should go ahead and
     // close the app when the mainWindow has been closed.
     if (process.platform !== 'darwin') {
-      logger.info('Quitting app')
       app.quit()
     }
   })
