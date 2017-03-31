@@ -1,5 +1,5 @@
 const winston = require('winston')
-const { initLogger } = require('../shared/Logger.js')
+const { initLogger } = require('../shared/logger.js')
 
 const loggerName = 'backgroundWorker'
 initLogger(loggerName)

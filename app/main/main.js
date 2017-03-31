@@ -8,8 +8,8 @@ const {
   IMPORT_DIRECTORY,
   SEARCHING_DIRECTORY,
   MOVIE_FILES
-} = require('../shared/Events')
-const { isDevEnv, logEnv } = require('../shared/Utils')
+} = require('../shared/events')
+const { isDevEnv, logEnv } = require('../shared/utils')
 
 const logger = require('./mainLogger')
 logEnv(logger)
@@ -121,8 +121,14 @@ ipcMain.on(SELECT_IMPORT_DIRECTORY, function (event) {
   electron.dialog.showOpenDialog(window, {
     properties: ['openDirectory']
   }, function (selection) {
-    if (selection && selection[0] && backgroundWorker) {
-      backgroundWorker.webContents.send(IMPORT_DIRECTORY, selection[0])
+    if (!backgroundWorker) {
+      logger.info('backgroundWorker is null, cannot crawl for movies')
+    } else if (selection && selection[0]) {
+      const directory = selection[0]
+      backgroundWorker.webContents.send(IMPORT_DIRECTORY, directory)
+      logger.info('Sent IMPORT_DIRECTORY event', { directory })
+    } else {
+      logger.info('User canceled directory file dialog')
     }
   })
 })
@@ -139,10 +145,10 @@ ipcMain.on(SEARCHING_DIRECTORY, function (event, directory) {
 
 // Handle MOVIE_FILES events.
 // Pass event through to mainWindow process.
-ipcMain.on(MOVIE_FILES, function (event, movies) {
-  logger.info('Received MOVIE_FILES event', { n: movies.length })
+ipcMain.on(MOVIE_FILES, function (event, movies, directory) {
+  logger.info('Received MOVIE_FILES event', { n: movies.length, directory })
   if (mainWindow) {
-    mainWindow.webContents.send(MOVIE_FILES, movies)
-    logger.info('Sent MOVIE_FILES event', { n: movies.length })
+    mainWindow.webContents.send(MOVIE_FILES, movies, directory)
+    logger.info('Sent MOVIE_FILES event', { n: movies.length, directory })
   }
 })

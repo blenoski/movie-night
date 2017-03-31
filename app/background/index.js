@@ -3,8 +3,8 @@ const {
   IMPORT_DIRECTORY,
   SEARCHING_DIRECTORY,
   MOVIE_FILES
-} = require('../shared/Events')
-const { logEnv } = require('../shared/Utils')
+} = require('../shared/events')
+const { logEnv } = require('../shared/utils')
 const logger = require('./backgroundWorkerLogger')
 const { crawlForMovies } = require('./crawlForMovies')
 
@@ -12,7 +12,7 @@ logEnv(logger)
 
 // Handle IMPORT_DIRECTORY events.
 const handleImportDirectoryEvent = (event, rootDirectory) => {
-  logger.info('Received IMPORT_DIRECTORY event')
+  logger.info('Received IMPORT_DIRECTORY event', { rootDirectory })
 
   const searchDirCb = (directory) => {
     ipcRenderer.send(SEARCHING_DIRECTORY, directory)
@@ -20,8 +20,8 @@ const handleImportDirectoryEvent = (event, rootDirectory) => {
   }
 
   const movies = crawlForMovies(rootDirectory, searchDirCb)
-  ipcRenderer.send(MOVIE_FILES, movies)
-  logger.info('Sent MOVIE_FILES event', { n: movies.length })
+  ipcRenderer.send(MOVIE_FILES, movies, rootDirectory)
+  logger.info('Sent MOVIE_FILES event', { n: movies.length, rootDirectory })
 }
 
 // Link IMPORT_DIRECTORY event to its event handler.

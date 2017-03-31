@@ -1,5 +1,5 @@
 import winston from 'winston'
-import { initLogger } from '../shared/Logger.js'
+import { initLogger } from '../shared/logger.js'
 
 const loggerName = 'mainWindow'
 initLogger(loggerName)

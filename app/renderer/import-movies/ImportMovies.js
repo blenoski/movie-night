@@ -1,14 +1,8 @@
 import React, { Component } from 'react'
 import { ipcRenderer } from 'electron'
-import { SELECT_IMPORT_DIRECTORY } from '../../shared/Events'
+import { SELECT_IMPORT_DIRECTORY } from '../../shared/events'
 import logger from '../mainWindowLogger'
 
-// Find all movies recursively in the selected directory
-//  Report which directory is being searched
-// For each movie:
-//  update progress
-//  query TMDB for movie metadata
-//  print metadata to console
 class ImportMovies extends Component {
   constructor (props) {
     super(props)
@@ -23,14 +17,20 @@ class ImportMovies extends Component {
 
   render () {
     return (
-      <div>
+      <div style={{display: 'flex'}}>
         <button
           type='button'
           className='btn btn-outline-primary btn-lg'
           onClick={this.onClick}
+          disabled={this.props.isCrawling}
         >
           Import Movies
         </button>
+        <input
+          type='text'
+          className='form-control input-lg'
+          value={this.props.searchDir}
+        />
       </div>
     )
   }
