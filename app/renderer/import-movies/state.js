@@ -29,7 +29,7 @@ export function updateCrawling (isCrawling) {
 export function reducer (state = initialState, action) {
   switch (action.type) {
     case SEARCH_DIRECTORY:
-      return { ...state, searchDir: action.payload }
+      return { ...state, searchDir: action.payload, isCrawling: true }
     case MOVIE_FILES:
       return { ...state, movies: action.payload }
     case IS_CRAWLING:

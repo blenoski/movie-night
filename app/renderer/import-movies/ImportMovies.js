@@ -1,7 +1,4 @@
 import React, { Component } from 'react'
-import { ipcRenderer } from 'electron'
-import { SELECT_IMPORT_DIRECTORY } from '../../shared/events'
-import logger from '../mainWindowLogger'
 
 class ImportMovies extends Component {
   constructor (props) {
@@ -11,8 +8,9 @@ class ImportMovies extends Component {
 
   onClick (e) {
     e.preventDefault()
-    ipcRenderer.send(SELECT_IMPORT_DIRECTORY)
-    logger.info('Sent SELECT_IMPORT_DIRECTORY event')
+    if (this.props.onClick) {
+      this.props.onClick()
+    }
   }
 
   render () {
