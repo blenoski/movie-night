@@ -6,7 +6,8 @@ export const stateKey = 'importMovies'
 function mapStateToProps (state) {
   return {
     searchDir: state[stateKey].searchDir,
-    isCrawling: state[stateKey].isCrawling
+    isCrawling: state[stateKey].isCrawling,
+    movies: state[stateKey].movies
   }
 }
 

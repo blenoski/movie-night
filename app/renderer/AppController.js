@@ -11,7 +11,7 @@ import {
 import store from './AppState'
 import {
   updateSearchDirectory,
-  updateCrawling
+  updateMovies
 } from './import-movies'
 import logger from './mainWindowLogger'
 
@@ -25,9 +25,9 @@ ipcRenderer.on(SEARCHING_DIRECTORY, function (event, directory) {
 // Handle MOVIE_FILES events
 ipcRenderer.on(MOVIE_FILES, (event, movies, directory) => {
   logger.info('Recieved MOVIE_FILES event', { n: movies.length, directory })
-  console.log(movies)
-  store.dispatch(updateCrawling(false))
-  logger.info('Dispatched updateCrawling(false) action')
+  store.dispatch(updateSearchDirectory(directory))
+  store.dispatch(updateMovies(movies))
+  logger.info('Dispatched updateMovies action', { n: movies.length, directory })
 })
 
 // Invoking this function will kick off the import movies workflow.
