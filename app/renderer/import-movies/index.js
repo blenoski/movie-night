@@ -1,7 +1,7 @@
 import {
   updateSearchDirectory,
   updateCrawling,
-  updateMovies,
+  addMovie,
   reducer
 } from './state'
 import ImportMovies, { stateKey } from './controller'
@@ -29,8 +29,8 @@ export {
   // the clickable button when crawling has completed.
   updateCrawling,
 
-  // Dispatch this action with the list of movies to be imported.
-  updateMovies,
+  // Dispatch this action to add a new movie to the list of movies to be imported.
+  addMovie,
 
   // This is the key users of this module should use in combineReducers
   // to namespace this module's state.

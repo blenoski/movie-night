@@ -4,10 +4,11 @@ const url = require('url')
 const electron = require('electron')
 
 const {
-  SELECT_IMPORT_DIRECTORY,
+  CRAWL_COMPLETE,
   IMPORT_DIRECTORY,
+  MOVIE_METADATA,
   SEARCHING_DIRECTORY,
-  MOVIE_FILES
+  SELECT_IMPORT_DIRECTORY
 } = require('../shared/events')
 const { isDevEnv, logEnv } = require('../shared/utils')
 
@@ -122,7 +123,7 @@ ipcMain.on(SELECT_IMPORT_DIRECTORY, function (event) {
     properties: ['openDirectory']
   }, function (selection) {
     if (!backgroundWorker) {
-      logger.info('backgroundWorker is null, cannot crawl for movies')
+      logger.error('backgroundWorker object does not exist')
     } else if (selection && selection[0]) {
       const directory = selection[0]
       backgroundWorker.webContents.send(IMPORT_DIRECTORY, directory)
@@ -140,15 +141,31 @@ ipcMain.on(SEARCHING_DIRECTORY, function (event, directory) {
   if (mainWindow) {
     mainWindow.webContents.send(SEARCHING_DIRECTORY, directory)
     logger.debug('Sent SEARCHING_DIRECTORY event', { directory })
+  } else {
+    logger.error('mainWindow object does not exist')
   }
 })
 
-// Handle MOVIE_FILES events.
+// Handle CRAWL_COMPLETE events.
 // Pass event through to mainWindow process.
-ipcMain.on(MOVIE_FILES, function (event, movies, directory) {
-  logger.info('Received MOVIE_FILES event', { n: movies.length, directory })
+ipcMain.on(CRAWL_COMPLETE, function (event, directory) {
+  logger.info('Received CRAWL_COMPLETE event', { directory })
   if (mainWindow) {
-    mainWindow.webContents.send(MOVIE_FILES, movies, directory)
-    logger.info('Sent MOVIE_FILES event', { n: movies.length, directory })
+    mainWindow.webContents.send(CRAWL_COMPLETE, directory)
+    logger.info('Sent CRAWL_COMPLETE event', { directory })
+  } else {
+    logger.error('mainWindow object does not exist')
+  }
+})
+
+// Handle MOVIE_METADATA events.
+// Pass event through to mainWindow process.
+ipcMain.on(MOVIE_METADATA, function (event, movie) {
+  logger.info('Received MOVIE_METADATA event', { title: movie.title })
+  if (mainWindow) {
+    mainWindow.webContents.send(MOVIE_METADATA, movie)
+    logger.info('Sent MOVIE_METADATA event', { title: movie.title })
+  } else {
+    logger.error('mainWindow object does not exist')
   }
 })

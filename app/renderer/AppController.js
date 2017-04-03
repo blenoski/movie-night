@@ -4,14 +4,16 @@
 // callbacks, etc...
 import { ipcRenderer } from 'electron'
 import {
-  SELECT_IMPORT_DIRECTORY,
+  CRAWL_COMPLETE,
+  MOVIE_METADATA,
   SEARCHING_DIRECTORY,
-  MOVIE_FILES
+  SELECT_IMPORT_DIRECTORY
  } from '../shared/events'
 import store from './AppState'
 import {
-  updateSearchDirectory,
-  updateMovies
+  addMovie,
+  updateCrawling,
+  updateSearchDirectory
 } from './import-movies'
 import logger from './mainWindowLogger'
 
@@ -22,12 +24,20 @@ ipcRenderer.on(SEARCHING_DIRECTORY, function (event, directory) {
   logger.debug('Dispatched updateSearchDirectory action', { directory })
 })
 
-// Handle MOVIE_FILES events
-ipcRenderer.on(MOVIE_FILES, (event, movies, directory) => {
-  logger.info('Recieved MOVIE_FILES event', { n: movies.length, directory })
+// Handle CRAWL_COMPLETE events
+ipcRenderer.on(CRAWL_COMPLETE, function (event, directory) {
+  logger.info('Received CRAWL_COMPLETE event', { directory })
   store.dispatch(updateSearchDirectory(directory))
-  store.dispatch(updateMovies(movies))
-  logger.info('Dispatched updateMovies action', { n: movies.length, directory })
+  logger.info('Dispatched updateSearchDirectory action', { directory })
+  store.dispatch(updateCrawling(false))
+  logger.info('Dispatched updateCrawling(false) action')
+})
+
+// Handle MOVIE_METADATA events
+ipcRenderer.on(MOVIE_METADATA, (event, movie) => {
+  logger.info('Recieved MOVIE_METADATA event', { title: movie.title })
+  store.dispatch(addMovie(movie))
+  logger.info('Dispatched addMovie action', { title: movie.title })
 })
 
 // Invoking this function will kick off the import movies workflow.

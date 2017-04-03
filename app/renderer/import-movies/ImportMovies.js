@@ -1,4 +1,3 @@
-import path from 'path'
 import React, { Component } from 'react'
 
 class ImportMovies extends Component {
@@ -6,7 +5,6 @@ class ImportMovies extends Component {
     super(props)
     this.onClick = this.onClick.bind(this)
     this.renderMovies = this.renderMovies.bind(this)
-    this.fetchMovieDataFor = this.fetchMovieDataFor.bind(this)
   }
 
   onClick (e) {
@@ -45,32 +43,16 @@ class ImportMovies extends Component {
     }
 
     const movieItems = this.props.movies.map((movie) => {
-      const { name } = path.parse(movie)
-
-      // Delete anything that looks like metadata encoded in the title.
-      // E.g. [1998], (2009), (D), [Meta]
-      let searchTitle = name.replace(/\(.*?\)/g, '') // remove all text in parens
-        .replace(/\[.*?\]/g, '') // remove all text in brackets
-        .trim()
-
-      const metadata = this.fetchMovieDataFor(searchTitle)
-      const title = metadata.Title || `No result for ${searchTitle}`
-      const year = metadata.Year || '<<RELEASE YEAR>>'
-      const plot = metadata.Plot || '<<PLOT>>'
-      const genre = metadata.Genre || '<<GENRE>>'
-      const rating = metadata.Ratings[0].Value || '<<RATING>>'
-      const imgSrc = metadata.Poster || '...'
-
       return (
-        <div style={{display: 'flex'}} key={title}>
-          <img src={imgSrc} alt='movie poster' />
+        <div style={{display: 'flex'}} key={movie.title}>
+          <img src={movie.imgSrc} alt='movie poster' />
           <div className='card'>
             <div className='card-block'>
-              <h4 className='card-title'>{title}</h4>
-              <h6 className='card-subtitle mb-2 text-muted'>{year}</h6>
-              <h6 className='card-subtitle mb-2 text-muted'>Genre: {genre}</h6>
-              <h6 className='card-subtitle mb-2 text-muted'>Rating: {rating}</h6>
-              <p className='card-text'>{plot}</p>
+              <h4 className='card-title'>{movie.title}</h4>
+              <h6 className='card-subtitle mb-2 text-muted'>{movie.year}</h6>
+              <h6 className='card-subtitle mb-2 text-muted'>Genre: {movie.genre}</h6>
+              <h6 className='card-subtitle mb-2 text-muted'>Rating: {movie.rating}</h6>
+              <p className='card-text'>{movie.plot}</p>
             </div>
           </div>
         </div>
@@ -83,17 +65,6 @@ class ImportMovies extends Component {
         {movieItems}
       </div>
     )
-  }
-
-  /* global XMLHttpRequest */
-  fetchMovieDataFor (movie) {
-    const baseURL = 'http://www.omdbapi.com/?plot=full&t='
-    var req = new XMLHttpRequest()
-    req.open('GET', `${baseURL}${movie}`, false)
-    req.send(null)
-    const response = JSON.parse(req.responseText)
-    console.log(response)
-    return response
   }
 }
 
