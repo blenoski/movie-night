@@ -33,6 +33,8 @@ const handleImportDirectoryEvent = (event, rootDirectory) => {
   }
 
   crawlForMovies(rootDirectory, searchDirCb, movieFileCb)
+
+  // TODO: do not send this message until crawl is complete
   ipcRenderer.send(CRAWL_COMPLETE, rootDirectory)
   logger.info('Sent CRAWL_COMPLETE event', { rootDirectory })
 }
