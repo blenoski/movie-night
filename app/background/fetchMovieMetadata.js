@@ -8,8 +8,8 @@ const OMDB_API = 'http://www.omdbapi.com/?plot=full&t='
 const YEAR_PARAM = '&y='
 
 // We will limit our requests to a maximum of 40 per 10 seconds.
-const milliseconds = 10 * 1000
-let limiter = new RateLimiter(40, milliseconds)
+const tenMilliseconds = 10 * 1000
+let limiter = new RateLimiter(40, tenMilliseconds)
 
 // Fetch metadata for the movie from the web.
 // These requests are rate limited to prevent slamming the server and are
@@ -96,18 +96,19 @@ function getSearchQueriesFor (movieFile) {
 
   // Chop words off end of cleanName one by one to create alt title strings
   let choppedName = cleanName
-  if (choppedName.lastIndexOf(' ') < 0) {
-    // Split single word camelcase into separate words
-    choppedName = choppedName.replace(/([a-z][A-Z])/g, '$1 $2')
-    titles.push(choppedName) // push the split title onto potential titles
-  }
   while (choppedName.lastIndexOf(' ') > -1) {
     choppedName = choppedName.substring(0, choppedName.lastIndexOf(' '))
     titles.push(choppedName)
   }
 
+  // If last remaining word is camel cased, split it.
+  let splitName = choppedName.replace(/([a-z])([A-Z])/g, '$1 $2')
+  if (splitName !== choppedName) {
+    titles.push(splitName)
+  }
+
   // Conflate release year and title into query objects
-  // Titles can also be considered standalone.
+  // Titles can also be considered standalone but titles with year are preferred.
   let queries = []
 
   releaseYears.forEach((releaseYear) => {
@@ -119,8 +120,6 @@ function getSearchQueriesFor (movieFile) {
   titles.forEach((title) => {
     queries.push({ title })
   })
-
-  // TODO: Look up movie title standards? E.g. are dashes allowed?
 
   // Consider parent directory name?
   // I.e. if movie file's directory has no subdirs AND has only 1 movie file,
@@ -140,31 +139,33 @@ function fetchMovieMetadata (movieFile, callback) {
 function fetchMovieMetadataInternal (movieFile, callback, queries, queryId) {
   // Look up metadata for this movie.
   fetchDataFor(queries[queryId], function () {
-    const metadata = JSON.parse(this.responseText)
+    const response = JSON.parse(this.responseText)
 
     let rating = '<<RATING>>'
-    if (metadata.Ratings && metadata.Ratings.length > 0) {
-      rating = metadata.Ratings[0].Value || rating
+    if (response.Ratings && response.Ratings.length > 0) {
+      rating = response.Ratings[0].Value || rating
     }
 
     const { name } = path.parse(movieFile)
 
-    const meta = {
-      genre: metadata.Genre || '<<GENRE>>',
-      imgSrc: metadata.Poster || '...',
+    let meta = {
+      genre: response.Genre || '<<GENRE>>',
+      imgSrc: response.Poster || '...',
       location: movieFile,
-      plot: metadata.Plot || 'Could not find online data for this movie. Try editing filename.',
+      plot: response.Plot || '',
       rating: rating,
-      title: metadata.Title || name,
-      year: metadata.Year || '<<RELEASE YEAR>>'
+      title: response.Title || name,
+      year: response.Year || '<<RELEASE YEAR>>'
     }
 
     // On error, try next query
-    if (metadata.Error) {
+    if (response.Error) {
       if ((queryId + 1) < queries.length) {
         fetchMovieMetadataInternal(movieFile, callback, queries, queryId + 1)
       } else {
         // Failure.
+        logger.warn(`No data found for: ${movieFile}`, { queries })
+        meta.error = 'Could not find online data for this movie. Try editing filename.'
         callback(null, meta)
       }
     } else {
