@@ -102,7 +102,7 @@ function getSearchQueriesFor (movieFile) {
   }
 
   // If last remaining word is camel cased, split it.
-  let splitName = choppedName.replace(/([a-z])([A-Z])/g, '$1 $2')
+  let splitName = choppedName.replace(/([a-z|0-9])([A-Z])/g, '$1 $2')
   if (splitName !== choppedName) {
     titles.push(splitName)
   }
@@ -170,6 +170,7 @@ function fetchMovieMetadataInternal (movieFile, callback, queries, queryId) {
       }
     } else {
       // Success.
+      // logger.info(`success: ${movieFile}`)
       callback(null, meta)
     }
   })
