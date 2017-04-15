@@ -1,3 +1,4 @@
+const path = require('path')
 const { ipcRenderer } = require('electron')
 const {
   CRAWL_COMPLETE,
@@ -12,27 +13,34 @@ const { fetchMovieMetadata } = require('./fetchMovieMetadata')
 
 logEnv(logger)
 
-// Handle IMPORT_DIRECTORY events.
+// Called upon first ENTERING a new crawl directory
+const searchDirCb = (directory) => {
+  ipcRenderer.send(SEARCHING_DIRECTORY, directory)
+  logger.debug('Sent SEARCHING_DIRECTORY event', { directory })
+}
+
+// Called whenever a movie file is encountered during crawl.
+const movieFileCb = (movieFile) => {
+  fetchMovieMetadata(movieFile, (err, meta) => {
+    if (err) {
+      const { name } = path.parse(movieFile)
+      meta = {
+        location: movieFile,
+        plot: err.message,
+        title: name
+      }
+    }
+
+    ipcRenderer.send(MOVIE_METADATA, meta)
+    logger.info('Sent MOVIE_METADATA event', { title: meta.title })
+  })
+}
+
+// Handler for IMPORT_DIRECTORY events.
 const handleImportDirectoryEvent = (event, rootDirectory) => {
   logger.info('Received IMPORT_DIRECTORY event', { rootDirectory })
 
-  const searchDirCb = (directory) => {
-    ipcRenderer.send(SEARCHING_DIRECTORY, directory)
-    logger.debug('Sent SEARCHING_DIRECTORY event', { directory })
-  }
-
-  const movieFileCb = (movieFile) => {
-    fetchMovieMetadata(movieFile, (err, meta) => {
-      if (err) {
-        logger.error(err, { movieFile })
-      }
-
-      ipcRenderer.send(MOVIE_METADATA, meta)
-      logger.info('Sent MOVIE_METADATA event', { title: meta.title })
-    })
-  }
-
-  crawlForMovies(rootDirectory, searchDirCb, movieFileCb)
+  crawlForMovies({rootDirectory, searchDirCb, movieFileCb})
 
   // TODO: do not send this message until crawl is complete
   ipcRenderer.send(CRAWL_COMPLETE, rootDirectory)

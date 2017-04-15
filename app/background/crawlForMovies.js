@@ -7,11 +7,11 @@ const movieFileExtensions = ['.avi', '.mp4', '.m4v']
 
 module.exports = {
   // Recursively searches the root directory for all movie files.
-  // @param1 - the root directory to start crawl from
-  // @param2 - search directory callback. Called with current directory when a new search directory is first entered.
-  // @param3 - movie file callback. Called with full path to movie file whenever a movie file is found.
-  crawlForMovies: function crawlForMovies (rootDirectory, searchDirCb, movieFileCb) {
-    crawl(rootDirectory, searchDirCb, movieFileCb)
+  // params.rootDirectory - the root directory to start crawl from
+  // params.searchDirCb - search directory callback. Called with current directory when a new search directory is first entered.
+  // params.movieFileCb - movie file callback. Called with full path to movie file whenever a movie file is found.
+  crawlForMovies: function crawlForMovies (params) {
+    crawl(params.rootDirectory, params.searchDirCb, params.movieFileCb)
   }
 }
 
