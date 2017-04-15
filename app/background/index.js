@@ -21,19 +21,21 @@ const searchDirCb = (directory) => {
 
 // Called whenever a movie file is encountered during crawl.
 const movieFileCb = (movieFile) => {
-  fetchMovieMetadata(movieFile, (err, meta) => {
-    if (err) {
+  fetchMovieMetadata(movieFile)
+    .then((meta) => {
+      ipcRenderer.send(MOVIE_METADATA, meta)
+      logger.info('Sent MOVIE_METADATA event', { title: meta.title })
+    })
+    .catch((err) => {
       const { name } = path.parse(movieFile)
-      meta = {
+      const meta = {
         location: movieFile,
         plot: err.message,
         title: name
       }
-    }
-
-    ipcRenderer.send(MOVIE_METADATA, meta)
-    logger.info('Sent MOVIE_METADATA event', { title: meta.title })
-  })
+      ipcRenderer.send(MOVIE_METADATA, meta)
+      logger.info('Sent MOVIE_METADATA event', { title: meta.title })
+    })
 }
 
 // Handler for IMPORT_DIRECTORY events.

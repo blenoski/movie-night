@@ -15,51 +15,68 @@ let limiter = new RateLimiter(40, period)
 module.exports = {
   // External API.
   // Pass in the title of the movie and a completion callback.
-  // Callback is executed with (err, metadata) upon completion.
-  fetchMovieMetadata: function fetchMovieMetadata (movieFile, callback) {
-    const queries = generateSearchQueriesFor(movieFile)
-    fetchMovieDataRecursive(movieFile, callback, queries, 0)
+  // Returns a promise with metadata on success.
+  fetchMovieMetadata: function fetchMovieMetadata (movieFile) {
+    return fetchMovieDataInternal(movieFile)
   }
+}
+
+function fetchMovieDataInternal (movieFile) {
+  return new Promise(function (resolve, reject) {
+    const queries = generateSearchQueriesFor(movieFile)
+
+    // Loop over search queries in order.
+    // Stop on first successful search.
+    // resolve(...) and reject(...) will both break out of loop
+    for (let queryIndex = 0; queryIndex < queries.length; queryIndex += 1) {
+      fetchMovieDataForQuery(movieFile, queries[queryIndex])
+        .then(function (data) {
+          resolve(data) // SUCCESS!
+        })
+        .catch(function (err) {
+          // On network or status error, reject immediately.
+          if (err instanceof request.NetworkError || err instanceof request.StatusError) {
+            logger.error('Request failed.', {movieFile, messsage: err.message, url: err.url})
+            reject(err)
+          // If we are out of search queries, then reject.
+          } else if ((queryIndex + 1) === queries.length) {
+            logger.warn(`No data found for: ${movieFile}`, { queries })
+            reject(err)
+          }
+        })
+    }
+  })
 }
 
 // Look up metadata for this movie.
 // This is a recursive function. We will try the queries
 // in order until we have a success or exhaust all queries.
-function fetchMovieDataRecursive (movieFile, callback, queries, queryId) {
-  fetchDataFor(queries[queryId])
-    .then((response) => {
-      let rating = '<<RATING>>'
-      if (response.Ratings && response.Ratings.length > 0) {
-        rating = response.Ratings[0].Value || rating
-      }
+function fetchMovieDataForQuery (movieFile, query) {
+  return new Promise((resolve, reject) => {
+    fetchDataFor(query)
+      .then((response) => {
+        let rating = '<<RATING>>'
+        if (response.Ratings && response.Ratings.length > 0) {
+          rating = response.Ratings[0].Value || rating
+        }
 
-      const { name } = path.parse(movieFile)
-      let meta = {
-        genre: response.Genre || '<<GENRE>>',
-        imgSrc: response.Poster || '...',
-        location: movieFile,
-        plot: response.Plot || '',
-        rating: rating,
-        title: response.Title || name,
-        year: response.Year || '<<RELEASE YEAR>>'
-      }
+        const { name } = path.parse(movieFile)
+        let meta = {
+          genre: response.Genre || '<<GENRE>>',
+          imgSrc: response.Poster || '...',
+          location: movieFile,
+          plot: response.Plot || '',
+          rating: rating,
+          title: response.Title || name,
+          year: response.Year || '<<RELEASE YEAR>>'
+        }
 
-      callback(null, meta)
-    })
-    .catch((err) => {
-      // STOP CONDITION: On network or status error, fail search immediately.
-      if (err instanceof request.NetworkError || err instanceof request.StatusError) {
-        logger.error('Request failed.', {movieFile, messsage: err.message, url: err.url})
-        callback(err, null)
-      // STOP CONDITION: If we are out of search queries, then end recursion.
-      } else if ((queryId + 1) === queries.length) {
-        logger.warn(`No data found for: ${movieFile}`, { queries })
-        callback(err, null)
-      } else {
-        // RECURSION: try the next search query.
-        fetchMovieDataRecursive(movieFile, callback, queries, queryId + 1)
-      }
-    })
+        resolve(meta)
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  })
 }
 
 // Fetch metadata for the movie from the web.
