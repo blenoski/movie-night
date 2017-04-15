@@ -26,8 +26,27 @@ module.exports = {
 // This is a recursive function. We will try the queries
 // in order until we have a success or exhaust all queries.
 function fetchMovieDataRecursive (movieFile, callback, queries, queryId) {
-  fetchDataFor(queries[queryId], function (err, response) {
-    if (err) {
+  fetchDataFor(queries[queryId])
+    .then((response) => {
+      let rating = '<<RATING>>'
+      if (response.Ratings && response.Ratings.length > 0) {
+        rating = response.Ratings[0].Value || rating
+      }
+
+      const { name } = path.parse(movieFile)
+      let meta = {
+        genre: response.Genre || '<<GENRE>>',
+        imgSrc: response.Poster || '...',
+        location: movieFile,
+        plot: response.Plot || '',
+        rating: rating,
+        title: response.Title || name,
+        year: response.Year || '<<RELEASE YEAR>>'
+      }
+
+      callback(null, meta)
+    })
+    .catch((err) => {
       // STOP CONDITION: On network or status error, fail search immediately.
       if (err instanceof request.NetworkError || err instanceof request.StatusError) {
         logger.error('Request failed.', {movieFile, messsage: err.message, url: err.url})
@@ -40,50 +59,32 @@ function fetchMovieDataRecursive (movieFile, callback, queries, queryId) {
         // RECURSION: try the next search query.
         fetchMovieDataRecursive(movieFile, callback, queries, queryId + 1)
       }
-      return
-    }
-
-    // Handle Success!
-    let rating = '<<RATING>>'
-    if (response.Ratings && response.Ratings.length > 0) {
-      rating = response.Ratings[0].Value || rating
-    }
-
-    const { name } = path.parse(movieFile)
-    let meta = {
-      genre: response.Genre || '<<GENRE>>',
-      imgSrc: response.Poster || '...',
-      location: movieFile,
-      plot: response.Plot || '',
-      rating: rating,
-      title: response.Title || name,
-      year: response.Year || '<<RELEASE YEAR>>'
-    }
-
-    callback(null, meta)
-  })
+    })
 }
 
 // Fetch metadata for the movie from the web.
 // These requests are rate limited to prevent slamming the server and are
 // asynchronous so we can process a movie as soon as we receive its metadata.
-function fetchDataFor (query, callback) {
-  limiter.removeTokens(1, function (err, remainingRequests) {
-    if (err) {
-      logger.error(err)
-    }
+function fetchDataFor (query) {
+  return new Promise((resolve, reject) => {
+    limiter.removeTokens(1, function (err, remainingRequests) {
+      if (err) {
+        logger.error(err)
+        reject(err)
+      }
 
-    const year = (query.releaseYear) ? `${YEAR_PARAM}${query.releaseYear}` : ''
-    const url = `${OMDB_API}${query.title}${year}`
-    const encodedUrl = encodeURI(url)
+      const year = (query.releaseYear) ? `${YEAR_PARAM}${query.releaseYear}` : ''
+      const uri = `${OMDB_API}${query.title}${year}`
+      const encodedUri = encodeURI(uri)
 
-    request.getJSON(encodedUrl)
-      .then((data) => {
-        if (data.Error) {
-          throw new Error(data.Error)
-        }
-        callback(null, data)
-      })
-      .catch((error) => callback(error, null))
+      request.getJSON(encodedUri)
+        .then((data) => {
+          if (data.Error) {
+            throw new Error(data.Error)
+          }
+          resolve(data) // SUCCESS!
+        })
+        .catch((error) => reject(error))
+    })
   })
 }
