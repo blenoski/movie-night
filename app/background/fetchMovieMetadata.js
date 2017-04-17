@@ -1,10 +1,7 @@
 const path = require('path')
 const { generateSearchQueriesFor } = require('./generateSearchQueries')
+const omdb = require('./omdb')
 const request = require('./request')
-
-// Movie metadata source API.
-const OMDB_API = 'http://www.omdbapi.com/?plot=full&t='
-const YEAR_PARAM = '&y='
 
 module.exports = {
   // External API.
@@ -18,7 +15,12 @@ module.exports = {
 function fetchMovieDataInternal (movieFile) {
   return new Promise(function (resolve, reject) {
     const queries = generateSearchQueriesFor(movieFile)
-    const urls = convertQueriesToUrls(queries)
+    const urls = omdb.convertQueriesToOMDBUrls(queries)
+    let validator = (data) => {
+      if (data.Error) {
+        throw new Error(data.Error)
+      }
+    }
 
     return request.getFirstSuccess(urls, validator)
       .then((response) => {
@@ -41,21 +43,5 @@ function fetchMovieDataInternal (movieFile) {
         resolve(metadata)
       })
       .catch((err) => reject(err))
-  })
-}
-
-//
-function validator (data) {
-  if (data.Error) {
-    throw new Error(data.Error)
-  }
-}
-
-//
-function convertQueriesToUrls (queries) {
-  return queries.map((query) => {
-    const year = (query.releaseYear) ? `${YEAR_PARAM}${query.releaseYear}` : ''
-    const url = `${OMDB_API}${query.title}${year}`
-    return encodeURI(url)
   })
 }
