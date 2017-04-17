@@ -34,6 +34,7 @@ const movieFileCb = (movieFile) => {
         title: name
       }
       ipcRenderer.send(MOVIE_METADATA, meta)
+      logger.warn('Data not found', { movieFile, type: err.name, message: err.message })
       logger.info('Sent MOVIE_METADATA event', { title: meta.title })
     })
 }
