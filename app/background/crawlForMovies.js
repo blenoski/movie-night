@@ -11,40 +11,55 @@ module.exports = {
   // params.searchDirCb - search directory callback. Called with current directory when a new search directory is first entered.
   // params.movieFileCb - movie file callback. Called with full path to movie file whenever a movie file is found.
   crawlForMovies: function crawlForMovies (params) {
-    crawl(params.rootDirectory, params.searchDirCb, params.movieFileCb)
+    return crawl(params.rootDirectory, params.searchDirCb, params.movieFileCb)
   }
 }
 
 function crawl (directory, searchDirCb, movieFileCb) {
   searchDirCb(directory)
-
-  fs.readdir(directory, (err, items) => {
-    if (err) {
-      logger.error(err)
-      return
-    }
-
-    items.forEach((item) => {
+  return readdir(directory).then((items) => {
+    return items.reduce((seq, item) => {
       const absPath = path.join(directory, item)
-      processPath(absPath, searchDirCb, movieFileCb)
+      return seq.then(() => {
+        return processPath(absPath, searchDirCb, movieFileCb)
+      })
+    }, Promise.resolve())
+  }, (err) => logger.warn(err))
+}
+
+function processPath (absPath, searchDirCb, movieFileCb) {
+  return lstat(absPath).then((stats) => {
+    if (stats.isFile()) {
+      const ext = path.extname(absPath)
+      if (movieFileExtensions.indexOf(ext) > -1) {
+        return movieFileCb(absPath)
+      }
+    } else if (stats.isDirectory()) {
+      return crawl(absPath, searchDirCb, movieFileCb)
+    } else {
+      return Promise.resolve()
+    }
+  }, (err) => logger.warn(err))
+}
+
+function readdir (directory) {
+  return new Promise((resolve, reject) => {
+    fs.readdir(directory, (err, items) => {
+      if (err) {
+        reject(err)
+      }
+      resolve(items)
     })
   })
 }
 
-function processPath (absPath, searchDirCb, movieFileCb) {
-  fs.lstat(absPath, (err, stats) => {
-    if (err) {
-      logger.error(err)
-      return
-    }
-
-    if (stats.isFile()) {
-      const ext = path.extname(absPath)
-      if (movieFileExtensions.indexOf(ext) > -1) {
-        movieFileCb(absPath)
+function lstat (absPath) {
+  return new Promise((resolve, reject) => {
+    fs.lstat(absPath, (err, stats) => {
+      if (err) {
+        reject(err)
       }
-    } else if (stats.isDirectory()) {
-      crawl(absPath, searchDirCb, movieFileCb)
-    }
+      resolve(stats)
+    })
   })
 }

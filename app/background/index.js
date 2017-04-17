@@ -21,7 +21,7 @@ const searchDirCb = (directory) => {
 
 // Called whenever a movie file is encountered during crawl.
 const movieFileCb = (movieFile) => {
-  fetchMovieMetadata(movieFile)
+  return fetchMovieMetadata(movieFile)
     .then((meta) => {
       ipcRenderer.send(MOVIE_METADATA, meta)
       logger.info('Sent MOVIE_METADATA event', { title: meta.title })
@@ -44,10 +44,10 @@ const handleImportDirectoryEvent = (event, rootDirectory) => {
   logger.info('Received IMPORT_DIRECTORY event', { rootDirectory })
 
   crawlForMovies({rootDirectory, searchDirCb, movieFileCb})
-
-  // TODO: do not send this message until crawl is complete
-  ipcRenderer.send(CRAWL_COMPLETE, rootDirectory)
-  logger.info('Sent CRAWL_COMPLETE event', { rootDirectory })
+    .then(() => {
+      ipcRenderer.send(CRAWL_COMPLETE, rootDirectory)
+      logger.info('Sent CRAWL_COMPLETE event', { rootDirectory })
+    })
 }
 
 // Link IMPORT_DIRECTORY event to its event handler.
