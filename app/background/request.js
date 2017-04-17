@@ -36,8 +36,8 @@ class StatusError extends ExtendableError {
 // Core function for fetching API data
 function get (url) {
   // Return a new promise.
-  return new Promise(function (resolve, reject) {
-    limiter.removeTokens(1, function (err, remainingRequests) {
+  return new Promise((resolve, reject) => {
+    limiter.removeTokens(1, (err, remainingRequests) => {
       if (err) {
         reject(err)
       }
@@ -46,7 +46,7 @@ function get (url) {
       var req = new XMLHttpRequest() /* global XMLHttpRequest */
       req.open('GET', url)
 
-      req.onload = function () {
+      req.onload = () => {
         // This is called even on 404 etc
         // so check the status
         if (req.status === 200) {
@@ -60,7 +60,7 @@ function get (url) {
       }
 
       // Handle network errors
-      req.onerror = function () {
+      req.onerror = () => {
         reject(new NetworkError('Network error', url))
       }
 
@@ -89,22 +89,22 @@ function getJSON (url, validate = null) {
 // @validate - function that is called with response data,
 //             should throw Error iff data is invalid
 function getFirstSuccess (urls, validate = null) {
-  return new Promise(function (resolve, reject) {
+  return new Promise((resolve, reject) => {
     let settled = false // flag that is set when Promise has been settled
 
-    return urls.reduce(function (previous, url, index) {
-      return previous.then(function () {
+    return urls.reduce((previous, url, index) => {
+      return previous.then(() => {
         if (settled) {
           return // this no-ops rest of promise chain
         }
 
         // No good data yet, so lets try the current url.
         return getJSON(url, validate) // must return async function so it gets added to chain
-          .then(function (data) {
+          .then((data) => {
             resolve(data) // SUCCESS!
             settled = true
           })
-          .catch(function (err) {
+          .catch((err) => {
             // On network or status error, reject immediately.
             if (err instanceof NetworkError || err instanceof StatusError) {
               reject(err)

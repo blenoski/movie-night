@@ -13,7 +13,7 @@ module.exports = {
 }
 
 function fetchMovieDataInternal (movieFile) {
-  return new Promise(function (resolve, reject) {
+  return new Promise((resolve, reject) => {
     const queries = generateSearchQueriesFor(movieFile)
     const urls = omdb.convertQueriesToOMDBUrls(queries)
     let validator = (data) => {
