@@ -37,7 +37,7 @@ function get (url) {
       // This is called even on 404 etc
       // so check the status
       if (req.status === 200) {
-        // Resolve the promise with the response text
+        // Resolve the promise with the response data
         resolve(req.response)
       } else {
         // Otherwise reject with the status and status text
