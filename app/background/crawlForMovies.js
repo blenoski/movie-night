@@ -35,7 +35,12 @@ function processPath (absPath, searchDirCb, movieFileCb) {
     if (stats.isFile()) {
       const ext = path.extname(absPath)
       if (movieFileExtensions.indexOf(ext) > -1) {
-        return movieFileCb(absPath) // FOUND MOVIE FILE
+        movieFileCb(absPath) // FOUND MOVIE FILE
+        // Do not block crawl on movie callback.
+        // This allows network requests to proceed in parallel
+        // at the expense that we may send CRAWL_COMPLETE before
+        // all of the network requests have been processed.
+        return Promise.resolve()
       }
     } else if (stats.isDirectory()) {
       return crawl(absPath, searchDirCb, movieFileCb) // RECURSIVE!
