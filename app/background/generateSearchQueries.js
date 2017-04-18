@@ -33,13 +33,10 @@ function generateQueriesFor (name) {
   // Titles can also be considered standalone but titles with year are preferred.
   let queries = []
 
-  releaseYears.forEach((releaseYear) => {
-    titles.forEach((title) => {
+  titles.forEach((title) => {
+    releaseYears.forEach((releaseYear) => {
       queries.push({ title, releaseYear })
     })
-  })
-
-  titles.forEach((title) => {
     queries.push({ title })
   })
 

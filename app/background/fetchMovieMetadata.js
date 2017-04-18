@@ -16,13 +16,8 @@ function fetchMovieDataInternal (movieFile) {
   return new Promise((resolve, reject) => {
     const queries = generateSearchQueriesFor(movieFile)
     const urls = omdb.convertQueriesToOMDBUrls(queries)
-    let validator = (data) => {
-      if (data.Error) {
-        throw new Error(data.Error)
-      }
-    }
 
-    return request.getFirstSuccess(urls, validator)
+    return request.getFirstSuccess(urls, omdb.dataValidator)
       .then((response) => {
         let rating = '<<RATING>>'
         if (response.Ratings && response.Ratings.length > 0) {

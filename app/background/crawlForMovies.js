@@ -15,6 +15,9 @@ module.exports = {
   }
 }
 
+// The crawl is asynchronous to prevent blocking the process and also to
+// allow for parallelization. The use of promises here is needed in order to
+// signal when the crawl has actually completed.
 function crawl (directory, searchDirCb, movieFileCb) {
   searchDirCb(directory)
   return readdir(directory).then((items) => {
@@ -24,7 +27,7 @@ function crawl (directory, searchDirCb, movieFileCb) {
         return processPath(absPath, searchDirCb, movieFileCb)
       })
     }, Promise.resolve())
-  }, (err) => logger.warn(err))
+  }, (err) => logger.warn(err)) // ignore directory and continue crawl
 }
 
 function processPath (absPath, searchDirCb, movieFileCb) {
@@ -32,16 +35,17 @@ function processPath (absPath, searchDirCb, movieFileCb) {
     if (stats.isFile()) {
       const ext = path.extname(absPath)
       if (movieFileExtensions.indexOf(ext) > -1) {
-        return movieFileCb(absPath)
+        return movieFileCb(absPath) // FOUND MOVIE FILE
       }
     } else if (stats.isDirectory()) {
-      return crawl(absPath, searchDirCb, movieFileCb)
+      return crawl(absPath, searchDirCb, movieFileCb) // RECURSIVE!
     } else {
-      return Promise.resolve()
+      return Promise.resolve() // ignore file
     }
-  }, (err) => logger.warn(err))
+  }, (err) => logger.warn(err)) // ignore error and continue crawl
 }
 
+// Promise wrapper for fs.readdir
 function readdir (directory) {
   return new Promise((resolve, reject) => {
     fs.readdir(directory, (err, items) => {
@@ -53,6 +57,7 @@ function readdir (directory) {
   })
 }
 
+// Promise wrapper for fs.lstat
 function lstat (absPath) {
   return new Promise((resolve, reject) => {
     fs.lstat(absPath, (err, stats) => {
