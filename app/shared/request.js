@@ -1,4 +1,5 @@
 const { RateLimiter } = require('limiter')
+const { writeFile } = require('../shared/utils')
 
 // We will limit all network requests to a maximum of 40 per 10 seconds.
 const period = 10 * 1000 // 10 seconds in millisecosnds
@@ -34,7 +35,7 @@ class StatusError extends ExtendableError {
 }
 
 // Core function for fetching API data
-function get (url) {
+function get (url, responseType = null) {
   // Return a new promise.
   return new Promise((resolve, reject) => {
     limiter.removeTokens(1, (err, remainingRequests) => {
@@ -45,6 +46,9 @@ function get (url) {
       // Do the usual XHR stuff
       var req = new XMLHttpRequest() /* global XMLHttpRequest */
       req.open('GET', url)
+      if (responseType) {
+        req.responseType = 'arraybuffer' // XHR2 attribute
+      }
 
       req.onload = () => {
         // This is called even on 404 etc
@@ -120,10 +124,18 @@ function getFirstSuccess (urls, validate = null) {
   })
 }
 
+function downloadFile (url, fname) {
+  return get(url, 'arraybuffer') // required XHR2 responseType for binary data
+    .then((arraybuffer) => {
+      return writeFile(fname, Buffer.from(arraybuffer))
+    })
+}
+
 module.exports = {
   get,
   getJSON,
   getFirstSuccess,
+  downloadFile,
   StatusError,
   NetworkError
 }

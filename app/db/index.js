@@ -9,16 +9,17 @@ const db = require('./database')
 const logger = require('./dbLogger')
 const { downloadPosterFor } = require('./image')
 
-logEnv(logger)
-
 // Handler for ADD_MOVIE events.
-const handleAddMovieEvent = (event, movie) => {
+ipcRenderer.on(ADD_MOVIE, (event, movie) => {
   logger.info('Received ADD_MOVIE event', { title: movie.title })
 
   if (!movie.imdbID) {
     logger.error(`Missing required imdbID for`, { movie })
     return
   }
+
+  // TODO: only download image if it is missing or the URL has changed
+  // TODO: batch database updates
 
   downloadPosterFor(movie)
     .then((imgFile) => {
@@ -30,21 +31,21 @@ const handleAddMovieEvent = (event, movie) => {
     .then((imgFile) => {
       movie.imgFile = imgFile
       let movieDB = db.addOrUpdateMovie(movie)
-      ipcRenderer.send(MOVIE_DATABASE, movieDB) // SUCCESS!
-      logger.info('Sent MOVIE_DATABASE event with new movie', { title: movie.title, count: movieDB.length })
+      if (movieDB.length > 0) {
+        ipcRenderer.send(MOVIE_DATABASE, movieDB) // SUCCESS!
+        logger.info('Sent MOVIE_DATABASE event with new movie', { title: movie.title, count: movieDB.length })
+      }
     })
     .catch(err => logger.error(`${movie.title} not added to database: ${err}`))
-}
-
-// Link ADD_MOVIE event to its event handler.
-ipcRenderer.on(ADD_MOVIE, handleAddMovieEvent)
+})
 
 // LOAD_MOVIE_DATABASE
 ipcRenderer.on(LOAD_MOVIE_DATABASE, (event) => {
   logger.info('Received LOAD_MOVIE_DATABASE event')
   let movieDB = db.loadDatabase()
   ipcRenderer.send(MOVIE_DATABASE, movieDB) // SUCCESS!
-  logger.info('Sent MOVIE_DATABASE event with new movie', { count: movieDB.length })
+  logger.info('Sent MOVIE_DATABASE event', { count: movieDB.length })
 })
 
-logger.info('Loading complete')
+// Records environment AND indicates that initialization is complete.
+logEnv(logger)

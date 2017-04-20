@@ -6,17 +6,25 @@ const dbFile = `${DB_PATH}/movieDB.json`
 
 module.exports = {
   addOrUpdateMovie: function addOrUpdateMovie (movie) {
+    let changed = false
     let movieDB = loadDatabase()
-    const existing = find(movie.imbdb, movieDB)
-    if (existing) {
-      // Prefer new metadata but keep all locations
-      existing.location = movie.location.concat(existing.location)
+
+    const document = find(movie.imdbID, movieDB)
+    if (document) {
+      if (update(document, movie)) {
+        changed = true
+      }
     } else {
-      movieDB.push(movie) // new movie
+      movieDB.push(movie) // add movie to database
+      changed = true
     }
 
-    persistToFile(movieDB)
-    return movieDB
+    if (changed) {
+      persistToFile(movieDB)
+      return movieDB
+    } else {
+      return [] // database was not changed
+    }
   },
 
   loadDatabase: loadDatabase
@@ -36,6 +44,17 @@ function find (imdbID, movieDB) {
   })
 }
 
+function update (document, movie) {
+  // TODO: delegate this to a proper meta class, e.g., conflate method
+  const dupLoc = document.location.find((loc) => loc === movie.location[0])
+  if (!dupLoc) {
+    document.location.push(movie.location[0])
+    return true
+  } else {
+    return false // document not changed
+  }
+}
+
 function persistToFile (movies) {
   const tmpFile = `${dbFile}.tmp`
   const json = JSON.stringify(movies)
@@ -43,6 +62,7 @@ function persistToFile (movies) {
     fs.mkdirSync(DB_PATH)
   } catch (err) {
     if (err && err.code !== 'EEXIST') { // OK if directory already exists
+      console.log(err)
       throw err
     }
   }
