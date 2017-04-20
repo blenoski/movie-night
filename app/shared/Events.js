@@ -19,9 +19,20 @@ const MOVIE_METADATA = 'movie-files'
 // This event is fired when the crawl for movies is complete.
 const CRAWL_COMPLETE = 'crawl-complete'
 
+// This event is fired when movie metadata is ready to be added to the db.
+const ADD_MOVIE = 'add-movie'
+
+// This event is fired whenver the movie database is updated.
+const MOVIE_DATABASE = 'movie-database'
+
+const LOAD_MOVIE_DATABASE = 'load-movie-database'
+
 module.exports = {
+  ADD_MOVIE,
   CRAWL_COMPLETE,
   IMPORT_DIRECTORY,
+  LOAD_MOVIE_DATABASE,
+  MOVIE_DATABASE,
   MOVIE_METADATA,
   SEARCHING_DIRECTORY,
   SELECT_IMPORT_DIRECTORY

@@ -1,4 +1,4 @@
-const request = require('./request')
+const request = require('../shared/request')
 
 const BASE_URL = 'http://www.omdbapi.com/?plot=full&t='
 const YEAR_PARAM = '&y='

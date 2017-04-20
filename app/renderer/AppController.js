@@ -5,13 +5,13 @@
 import { ipcRenderer } from 'electron'
 import {
   CRAWL_COMPLETE,
-  MOVIE_METADATA,
+  MOVIE_DATABASE,
   SEARCHING_DIRECTORY,
   SELECT_IMPORT_DIRECTORY
  } from '../shared/events'
 import store from './AppState'
 import {
-  addMovie,
+  updateMovieDB,
   updateCrawling,
   updateSearchDirectory
 } from './import-movies'
@@ -33,11 +33,11 @@ ipcRenderer.on(CRAWL_COMPLETE, function (event, directory) {
   logger.info('Dispatched updateCrawling(false) action')
 })
 
-// Handle MOVIE_METADATA events
-ipcRenderer.on(MOVIE_METADATA, (event, movie) => {
-  logger.info('Recieved MOVIE_METADATA event', { title: movie.title })
-  store.dispatch(addMovie(movie))
-  logger.info('Dispatched addMovie action', { title: movie.title })
+// Handle MOVIE_DATABASE events
+ipcRenderer.on(MOVIE_DATABASE, (event, movieDB) => {
+  logger.info('Recieved MOVIE_DATABASE event', { count: movieDB.length })
+  store.dispatch(updateMovieDB(movieDB))
+  logger.info('Dispatched updateMovieDB action', { count: movieDB.length })
 })
 
 // Invoking this function will kick off the import movies workflow.

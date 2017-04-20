@@ -1,7 +1,7 @@
 import winston from 'winston'
 import { initLogger } from '../shared/logger.js'
 
-const loggerName = 'mainWindow'
+const loggerName = 'appWindow'
 initLogger(loggerName)
 
 const logger = winston.loggers.get(loggerName)

@@ -1,7 +1,7 @@
 const path = require('path')
 const { generateSearchQueriesFor } = require('./generateSearchQueries')
 const omdb = require('./omdb')
-const request = require('./request')
+const request = require('../shared/request')
 
 module.exports = {
   // External API.
@@ -27,8 +27,9 @@ function fetchMovieDataInternal (movieFile) {
         const { name } = path.parse(movieFile)
         let metadata = {
           genre: response.Genre || '<<GENRE>>',
-          imgSrc: response.Poster || '...',
-          location: movieFile,
+          imdbID: response.imdbID || '',
+          imgUrl: response.Poster || '',
+          location: [ movieFile ],
           plot: response.Plot || '',
           rating: rating,
           title: response.Title || name,

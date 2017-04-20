@@ -1,4 +1,4 @@
-const request = require('./request')
+const request = require('../shared/request')
 
 const API_KEY = process.env.GOOGLE_KGSEARCH_API_KEY
 const BASE_URL = 'https://kgsearch.googleapis.com/v1/entities:search'
