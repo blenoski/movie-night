@@ -143,32 +143,22 @@ app.on('quit', function () {
 // Open a native select directory file dialog. When user
 // makes selection, delegate to backgroundWorker process
 // to crawl for movies.
-// ipcMain.on(SELECT_IMPORT_DIRECTORY, function (event) {
-//   logger.info('Received SELECT_IMPORT_DIRECTORY event')
-//   const window = BrowserWindow.fromWebContents(event.sender)
-//   electron.dialog.showOpenDialog(window, {
-//     properties: ['openDirectory']
-//   }, function (selection) {
-//     if (!backgroundWorker) {
-//       logger.error('backgroundWorker object does not exist')
-//     } else if (selection && selection[0]) {
-//       const directory = selection[0]
-//       backgroundWorker.webContents.send(IMPORT_DIRECTORY, directory)
-//       logger.info('Sent IMPORT_DIRECTORY event', { directory })
-//     } else {
-//       logger.info('User canceled directory file dialog')
-//     }
-//   })
-// })
-
 ipcMain.on(SELECT_IMPORT_DIRECTORY, function (event) {
   logger.info('Received SELECT_IMPORT_DIRECTORY event')
-  if (dbWorker) {
-    dbWorker.webContents.send(LOAD_MOVIE_DATABASE)
-    logger.info('Sent LOAD_MOVIE_DATABASE event')
-  } else {
-    logger.error('dbWorker object does not exist')
-  }
+  const window = BrowserWindow.fromWebContents(event.sender)
+  electron.dialog.showOpenDialog(window, {
+    properties: ['openDirectory']
+  }, function (selection) {
+    if (!backgroundWorker) {
+      logger.error('backgroundWorker object does not exist')
+    } else if (selection && selection[0]) {
+      const directory = selection[0]
+      backgroundWorker.webContents.send(IMPORT_DIRECTORY, directory)
+      logger.info('Sent IMPORT_DIRECTORY event', { directory })
+    } else {
+      logger.info('User canceled directory file dialog')
+    }
+  })
 })
 
 // Handle SEARCHING_DIRECTORY events.
