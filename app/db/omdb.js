@@ -16,6 +16,25 @@ module.exports = {
     return request.getJSON(url, dataValidator)
   },
 
+  // Transform the OMDB HTTP response into our internal
+  // movie descriptor.
+  transform: function tranform (response) {
+    let rating = '<<RATING>>'
+    if (response.Ratings && response.Ratings.length > 0) {
+      rating = response.Ratings[0].Value || rating
+    }
+
+    return {
+      genre: response.Genre || '<<GENRE>>',
+      imdbID: response.imdbID || '',
+      imgUrl: response.Poster || '',
+      plot: response.Plot || '',
+      rating: rating,
+      title: response.Title || '<<TITLE>>',
+      year: response.Year || '<<RELEASE YEAR>>'
+    }
+  },
+
   dataValidator
 }
 

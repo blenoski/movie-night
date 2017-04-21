@@ -1,4 +1,3 @@
-const path = require('path')
 const { generateSearchQueriesFor } = require('./generateSearchQueries')
 const omdb = require('./omdb')
 const request = require('../shared/request')
@@ -19,23 +18,8 @@ function fetchMovieDataInternal (movieFile) {
 
     return request.getFirstSuccess(urls, omdb.dataValidator)
       .then((response) => {
-        let rating = '<<RATING>>'
-        if (response.Ratings && response.Ratings.length > 0) {
-          rating = response.Ratings[0].Value || rating
-        }
-
-        const { name } = path.parse(movieFile)
-        let metadata = {
-          genre: response.Genre || '<<GENRE>>',
-          imdbID: response.imdbID || '',
-          imgUrl: response.Poster || '',
-          location: [ movieFile ],
-          plot: response.Plot || '',
-          rating: rating,
-          title: response.Title || name,
-          year: response.Year || '<<RELEASE YEAR>>'
-        }
-
+        const metadata = omdb.transform(response)
+        metadata.location = [ movieFile ]
         resolve(metadata)
       })
       .catch((err) => reject(err))
