@@ -7,13 +7,11 @@ const dbFile = `${DB_PATH}/movieDB.json`
 module.exports = {
   addOrUpdateMovie: function addOrUpdateMovie (movie) {
     let changed = false
-    let movieDB = loadDatabase()
 
+    let movieDB = loadDatabase()
     const document = find(movie.imdbID, movieDB)
     if (document) {
-      if (update(document, movie)) {
-        changed = true
-      }
+      changed = update(document, movie)
     } else {
       movieDB.push(movie) // add movie to database
       changed = true
@@ -47,9 +45,11 @@ function find (imdbID, movieDB) {
 
 function update (document, movie) {
   // TODO: delegate this to a proper meta class, e.g., conflate method
-  const dupLoc = document.location.find((loc) => loc === movie.location[0])
+  const dupLoc = document.fileInfo.find((info) => {
+    return info.location === movie.fileInfo[0].location
+  })
   if (!dupLoc) {
-    document.location.push(movie.location[0])
+    document.fileInfo.push(movie.fileInfo[0])
     return true
   } else {
     return false // document not changed

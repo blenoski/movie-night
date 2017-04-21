@@ -43,8 +43,8 @@ class ImportMovies extends Component {
     }
 
     const movieItems = this.props.movies.map((movie) => {
-      const locations = movie.location.reduce((prev, loc) => {
-        return prev + ` ${loc}`
+      const locations = movie.fileInfo.reduce((prev, info) => {
+        return prev + ` ${info.location}`
       }, 'Location:')
 
       return (

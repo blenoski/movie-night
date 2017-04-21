@@ -78,7 +78,7 @@ function getJSON (url, validate = null) {
 
 // Loop over urls in order.
 // Stop on first successful response OR first network/status error.
-// Successful response returns JSON data.
+// Successful response returns {data, url} => JSON data and successful url.
 // @urls[required] - array of urls to try in order
 // @validate[optional] - function that is called with response data,
 //                       should throw Error iff data is invalid
@@ -96,7 +96,7 @@ function getFirstSuccess (urls, validate = null) {
         return getJSON(url, validate) // MUST return the promise here so it gets added to chain
           .then((data) => {
             settled = true
-            resolve(data) // SUCCESS!
+            resolve({data, url}) // SUCCESS!
           })
           .catch((err) => {
             // On network or status error, reject immediately.

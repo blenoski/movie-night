@@ -17,9 +17,12 @@ function fetchMovieDataInternal (movieFile) {
     const urls = omdb.convertQueriesToOMDBUrls(queries)
 
     return request.getFirstSuccess(urls, omdb.dataValidator)
-      .then((response) => {
-        const metadata = omdb.transform(response)
-        metadata.location = [ movieFile ]
+      .then(({data, url}) => {
+        const metadata = omdb.transform(data)
+        metadata.fileInfo = [{
+          location: movieFile,
+          query: url
+        }]
         resolve(metadata)
       })
       .catch((err) => reject(err))
