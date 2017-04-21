@@ -6,7 +6,7 @@ const electron = require('electron')
 const {
   ADD_MOVIE,
   CRAWL_COMPLETE,
-  IMPORT_DIRECTORY,
+  CRAWL_DIRECTORY,
   LOAD_MOVIE_DATABASE,
   MOVIE_DATABASE,
   MOVIE_METADATA,
@@ -153,8 +153,8 @@ ipcMain.on(SELECT_IMPORT_DIRECTORY, function (event) {
       logger.error('backgroundWorker object does not exist')
     } else if (selection && selection[0]) {
       const directory = selection[0]
-      backgroundWorker.webContents.send(IMPORT_DIRECTORY, directory)
-      logger.info('Sent IMPORT_DIRECTORY event', { directory })
+      backgroundWorker.webContents.send(CRAWL_DIRECTORY, directory)
+      logger.info('Sent CRAWL_DIRECTORY event to bgWorker', { directory })
     } else {
       logger.info('User canceled directory file dialog')
     }
@@ -167,7 +167,7 @@ ipcMain.on(SEARCHING_DIRECTORY, function (event, directory) {
   logger.debug('Received SEARCHING_DIRECTORY event', { directory })
   if (appWindow) {
     appWindow.webContents.send(SEARCHING_DIRECTORY, directory)
-    logger.debug('Sent SEARCHING_DIRECTORY event', { directory })
+    logger.debug('Sent SEARCHING_DIRECTORY event to appWindow', { directory })
   } else {
     logger.error('appWindow object does not exist')
   }
@@ -179,19 +179,19 @@ ipcMain.on(CRAWL_COMPLETE, function (event, directory) {
   logger.info('Received CRAWL_COMPLETE event', { directory })
   if (appWindow) {
     appWindow.webContents.send(CRAWL_COMPLETE, directory)
-    logger.info('Sent CRAWL_COMPLETE event', { directory })
+    logger.info('Sent CRAWL_COMPLETE event to appWindow', { directory })
   } else {
     logger.error('appWindow object does not exist')
   }
 })
 
-// Handle MOVIE_METADATA events.
+// Handle ADD_MOVIE events.
 // Route to DB.
-ipcMain.on(MOVIE_METADATA, function (event, movie) {
-  logger.info('Received MOVIE_METADATA event', { title: movie.title })
+ipcMain.on(ADD_MOVIE, function (event, movieFile) {
+  logger.info('Received ADD_MOVIE event', { movie: movieFile })
   if (dbWorker) {
-    dbWorker.webContents.send(ADD_MOVIE, movie)
-    logger.info('Sent ADD_MOVIE event', { title: movie.title })
+    dbWorker.webContents.send(ADD_MOVIE, movieFile)
+    logger.info('Sent ADD_MOVIE event to db', { movie: movieFile })
   } else {
     logger.error('dbWorker object does not exist')
   }
@@ -203,7 +203,7 @@ ipcMain.on(MOVIE_DATABASE, function (event, movieDB) {
   logger.info('Received MOVIE_DATABASE event', { count: movieDB.length })
   if (appWindow) {
     appWindow.webContents.send(MOVIE_DATABASE, movieDB)
-    logger.info('Sent MOVIE_DATABASE event', { count: movieDB.length })
+    logger.info('Sent MOVIE_DATABASE event to appWindow', { count: movieDB.length })
   } else {
     logger.error('appWindow object does not exist')
   }

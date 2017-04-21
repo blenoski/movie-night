@@ -1,4 +1,5 @@
 const request = require('../shared/request')
+const { ExtendableError } = require('../shared/utils')
 
 const BASE_URL = 'http://www.omdbapi.com/?plot=full&t='
 const YEAR_PARAM = '&y='
@@ -18,9 +19,11 @@ module.exports = {
   dataValidator
 }
 
+class OMDBDataError extends ExtendableError {}
+
 function dataValidator (data) {
   if (data.Error) {
-    throw new Error(data.Error)
+    throw new OMDBDataError(data.Error)
   }
 }
 

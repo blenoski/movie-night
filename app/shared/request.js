@@ -1,22 +1,9 @@
 const { RateLimiter } = require('limiter')
-const { writeFile } = require('../shared/utils')
+const { writeFile, ExtendableError } = require('./utils')
 
 // We will limit all network requests to a maximum of 40 per 10 seconds.
 const period = 10 * 1000 // 10 seconds in milliseconds
 let limiter = new RateLimiter(40, period)
-
-// Error classes
-class ExtendableError extends Error {
-  constructor (message) {
-    super(message)
-    this.name = this.constructor.name
-    if (typeof Error.captureStackTrace === 'function') {
-      Error.captureStackTrace(this, this.constructor)
-    } else {
-      this.stack = (new Error(message)).stack
-    }
-  }
-}
 
 class NetworkError extends ExtendableError {
   constructor (message, url) {

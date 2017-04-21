@@ -38,6 +38,7 @@ function loadDatabase () {
   }
 }
 
+// TODO: sort DB by imbdID, then make find a binary search?
 function find (imdbID, movieDB) {
   return movieDB.find((movie) => {
     return movie.imdbID === imdbID
@@ -56,8 +57,6 @@ function update (document, movie) {
 }
 
 function persistToFile (movies) {
-  const tmpFile = `${dbFile}.tmp`
-  const json = JSON.stringify(movies)
   try {
     fs.mkdirSync(DB_PATH)
   } catch (err) {
@@ -66,6 +65,9 @@ function persistToFile (movies) {
       throw err
     }
   }
+
+  const json = JSON.stringify(movies)
+  const tmpFile = `${dbFile}.tmp`
   fs.writeFileSync(tmpFile, json)
   fs.renameSync(tmpFile, dbFile) // overwrites old DB with just created one
 }
