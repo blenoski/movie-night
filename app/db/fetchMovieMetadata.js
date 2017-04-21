@@ -1,6 +1,6 @@
+const request = require('../shared/request')
 const { generateSearchQueriesFor } = require('./generateSearchQueries')
 const omdb = require('./omdb')
-const request = require('../shared/request')
 
 module.exports = {
   // External API.

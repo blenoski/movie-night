@@ -15,10 +15,19 @@ const { downloadPosterFor } = require('./image')
 // Handler for ADD_MOVIE events.
 ipcRenderer.on(ADD_MOVIE, (event, movieFile) => {
   logger.info('Received ADD_MOVIE event', { movie: movieFile })
-
   // TODO: only download image if it is missing or the URL has changed
   // TODO: batch database updates
-  // TODO: index on full (partial?) filename and only query new files.
+
+  // Early exit if this movie file is already in the database.
+  const document = db.findByLocation(movieFile)
+  if (document) {
+    logger.info(`Database has existing record for ${movieFile}`, {
+      title: document.title,
+      imdbID: document.imdbID
+    })
+    return
+  }
+
   fetchMovieMetadata(movieFile)
     .then((movie) => {
       return downloadPosterFor(movie)

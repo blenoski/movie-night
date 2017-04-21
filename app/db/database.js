@@ -9,7 +9,7 @@ module.exports = {
     let changed = false
 
     let movieDB = loadDatabase()
-    const document = find(movie.imdbID, movieDB)
+    const document = findInternal('imdbID', movie.imdbID, movieDB)
     if (document) {
       changed = update(document, movie)
     } else {
@@ -25,7 +25,19 @@ module.exports = {
     }
   },
 
-  loadDatabase: loadDatabase
+  findByLocation: function findByLocation (location) {
+    let movieDB = loadDatabase()
+    return movieDB.find((movie) => {
+      for (let item of movie.fileInfo) {
+        if (item.location === location) {
+          return true
+        }
+      }
+      return false
+    })
+  },
+
+  loadDatabase
 }
 
 function loadDatabase () {
@@ -36,10 +48,9 @@ function loadDatabase () {
   }
 }
 
-// TODO: sort DB by imbdID, then make find a binary search?
-function find (imdbID, movieDB) {
+function findInternal (key, value, movieDB) {
   return movieDB.find((movie) => {
-    return movie.imdbID === imdbID
+    return movie[key] === value
   })
 }
 
