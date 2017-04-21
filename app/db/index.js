@@ -20,6 +20,8 @@ ipcRenderer.on(ADD_MOVIE, (event, movie) => {
 
   // TODO: only download image if it is missing or the URL has changed
   // TODO: batch database updates
+  // TODO: index on full (partial?) filename and only query new files.
+  // TODO: sort DB by imbdID, then make find a binary search?
 
   downloadPosterFor(movie)
     .then((imgFile) => {

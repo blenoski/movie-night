@@ -40,7 +40,7 @@ const movieFileCb = (movieFile) => {
 }
 
 // Handler for IMPORT_DIRECTORY events.
-const handleImportDirectoryEvent = (event, rootDirectory) => {
+ipcRenderer.on(IMPORT_DIRECTORY, (event, rootDirectory) => {
   logger.info('Received IMPORT_DIRECTORY event', { rootDirectory })
 
   crawlForMovies({rootDirectory, searchDirCb, movieFileCb})
@@ -48,7 +48,4 @@ const handleImportDirectoryEvent = (event, rootDirectory) => {
       ipcRenderer.send(CRAWL_COMPLETE, rootDirectory)
       logger.info('Sent CRAWL_COMPLETE event', { rootDirectory })
     })
-}
-
-// Link IMPORT_DIRECTORY event to its event handler.
-ipcRenderer.on(IMPORT_DIRECTORY, handleImportDirectoryEvent)
+})

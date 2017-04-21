@@ -1,5 +1,5 @@
-const fs = require('fs')
 const path = require('path')
+const { readdir, lstat } = require('../shared/utils')
 const logger = require('./backgroundWorkerLogger')
 
 // The list of recognized movie file extensions.
@@ -48,28 +48,4 @@ function processPath (absPath, searchDirCb, movieFileCb) {
       return Promise.resolve() // ignore file
     }
   }, (err) => logger.warn(err)) // ignore error and continue crawl
-}
-
-// Promise wrapper for fs.readdir
-function readdir (directory) {
-  return new Promise((resolve, reject) => {
-    fs.readdir(directory, (err, items) => {
-      if (err) {
-        reject(err)
-      }
-      resolve(items)
-    })
-  })
-}
-
-// Promise wrapper for fs.lstat
-function lstat (absPath) {
-  return new Promise((resolve, reject) => {
-    fs.lstat(absPath, (err, stats) => {
-      if (err) {
-        reject(err)
-      }
-      resolve(stats)
-    })
-  })
 }

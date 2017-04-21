@@ -2,7 +2,7 @@ const { RateLimiter } = require('limiter')
 const { writeFile } = require('../shared/utils')
 
 // We will limit all network requests to a maximum of 40 per 10 seconds.
-const period = 10 * 1000 // 10 seconds in millisecosnds
+const period = 10 * 1000 // 10 seconds in milliseconds
 let limiter = new RateLimiter(40, period)
 
 // Error classes
@@ -34,7 +34,10 @@ class StatusError extends ExtendableError {
   }
 }
 
-// Core function for fetching API data
+// Core function for making client side GET requests.
+// Using XHR as underlying implementation because it handles things like system
+// configured proxies, following redirects, and https tunneling automatically.
+// Downside to XHR is it does not support streaming.
 function get (url, responseType = null) {
   // Return a new promise.
   return new Promise((resolve, reject) => {
@@ -47,7 +50,7 @@ function get (url, responseType = null) {
       var req = new XMLHttpRequest() /* global XMLHttpRequest */
       req.open('GET', url)
       if (responseType) {
-        req.responseType = 'arraybuffer' // XHR2 attribute
+        req.responseType = responseType
       }
 
       req.onload = () => {
@@ -89,9 +92,9 @@ function getJSON (url, validate = null) {
 // Loop over urls in order.
 // Stop on first successful response OR first network/status error.
 // Successful response returns JSON data.
-// @urls - array of ordered urls
-// @validate - function that is called with response data,
-//             should throw Error iff data is invalid
+// @urls[required] - array of urls to try in order
+// @validate[optional] - function that is called with response data,
+//                       should throw Error iff data is invalid
 function getFirstSuccess (urls, validate = null) {
   return new Promise((resolve, reject) => {
     let settled = false // flag that is set when Promise has been settled
@@ -103,20 +106,20 @@ function getFirstSuccess (urls, validate = null) {
         }
 
         // No good data yet, so lets try the current url.
-        return getJSON(url, validate) // must return async function so it gets added to chain
+        return getJSON(url, validate) // MUST return the promise here so it gets added to chain
           .then((data) => {
-            resolve(data) // SUCCESS!
             settled = true
+            resolve(data) // SUCCESS!
           })
           .catch((err) => {
             // On network or status error, reject immediately.
             if (err instanceof NetworkError || err instanceof StatusError) {
-              reject(err)
               settled = true
+              reject(err)
             // If we are out of urls, then reject.
             } else if ((index + 1) === urls.length) {
-              reject(err)
               settled = true
+              reject(err)
             }
           })
       })

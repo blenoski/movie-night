@@ -5,7 +5,7 @@ const request = require('../shared/request')
 
 module.exports = {
   // External API.
-  // Pass in the title of the movie and a completion callback.
+  // Pass in the title of the movie.
   // Returns a promise with metadata on success.
   fetchMovieMetadata: function fetchMovieMetadata (movieFile) {
     return fetchMovieDataInternal(movieFile)

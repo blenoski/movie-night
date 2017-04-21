@@ -11,17 +11,20 @@ const logEnv = (logger) => {
   })
 }
 
+// Promise wrapper for fs.mkdir
+// Ignore directory already exists error.
 function mkdir (path) {
   return new Promise((resolve, reject) => {
     fs.mkdir(path, (err) => {
       if (err && err.code !== 'EEXIST') { // OK if directory already exists
-        reject(new Error(`Creating directory ${path} failed: ${err}`))
+        reject(new Error(err))
       }
       resolve()
     })
   })
 }
 
+// Promise wrapper for fs.writeFile
 function writeFile (fname, data) {
   return new Promise((resolve, reject) => {
     fs.writeFile(fname, data, (err) => {
@@ -33,9 +36,35 @@ function writeFile (fname, data) {
   })
 }
 
+// Promise wrapper for fs.readdir
+function readdir (directory) {
+  return new Promise((resolve, reject) => {
+    fs.readdir(directory, (err, items) => {
+      if (err) {
+        reject(new Error(err))
+      }
+      resolve(items)
+    })
+  })
+}
+
+// Promise wrapper for fs.lstat
+function lstat (absPath) {
+  return new Promise((resolve, reject) => {
+    fs.lstat(absPath, (err, stats) => {
+      if (err) {
+        reject(new Error(err))
+      }
+      resolve(stats)
+    })
+  })
+}
+
 module.exports = {
   isDevEnv,
   logEnv,
   mkdir,
-  writeFile
+  writeFile,
+  readdir,
+  lstat
 }
