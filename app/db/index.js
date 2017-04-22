@@ -10,13 +10,11 @@ const { logEnv } = require('../shared/utils')
 const db = require('./database')
 const logger = require('./dbLogger')
 const { fetchMovieMetadata } = require('./fetchMovieMetadata')
-const { downloadPosterFor } = require('./image')
+const { checkIfPosterFileHasBeenDownloadedFor, downloadPosterFor } = require('./poster')
 
 // Handler for ADD_MOVIE events.
 ipcRenderer.on(ADD_MOVIE, (event, movieFile) => {
   logger.info('Received ADD_MOVIE event', { movie: movieFile })
-  // TODO: only download image if it is missing or the URL has changed
-  // TODO: batch database updates
 
   // Early exit if this movie file is already in the database.
   const document = db.findByLocation(movieFile)
@@ -30,9 +28,20 @@ ipcRenderer.on(ADD_MOVIE, (event, movieFile) => {
 
   fetchMovieMetadata(movieFile)
     .then((movie) => {
-      return downloadPosterFor(movie)
+      return checkIfPosterFileHasBeenDownloadedFor(movie)
     })
-    .then((movie) => {
+    .then(({posterDownloaded, movie}) => {
+      let document = null
+      if (posterDownloaded) {
+        document = db.findByID(movie.imdbID)
+        if (document && movie.imgUrl === document.imgUrl) {
+          return {movie, document} // poster image is already good to go
+        }
+      }
+      return downloadPosterFor(movie).then(() => { return {movie, document} })
+    })
+    .then(({movie, document}) => {
+      // TODO: do document conflation here and not in DB
       let movieDB = db.addOrUpdateMovie(movie)
       if (movieDB.length > 0) {
         ipcRenderer.send(MOVIE_DATABASE, movieDB) // SUCCESS!
@@ -41,8 +50,7 @@ ipcRenderer.on(ADD_MOVIE, (event, movieFile) => {
     })
     .catch((err) => {
       logger.warn(`${movieFile} not added to database:`, { type: err.name, message: err.message })
-      // TODO: send an error event?
-      // TODO: verify that promise chain ends here
+      // TODO: send an data not found event to appWindow?
     })
 })
 
@@ -52,6 +60,16 @@ ipcRenderer.once(LOAD_MOVIE_DATABASE, (event) => {
   let movieDB = db.loadDatabase()
   ipcRenderer.send(MOVIE_DATABASE, movieDB) // SUCCESS!
   logger.info('Sent MOVIE_DATABASE event', { count: movieDB.length })
+
+  // Try to download any missing poster images
+  movieDB.forEach((movie) => {
+    checkIfPosterFileHasBeenDownloadedFor(movie)
+      .then((posterDownloaded) => {
+        if (!posterDownloaded) {
+          downloadPosterFor(movie).then().catch()
+        }
+      })
+  })
 })
 
 // Records environment AND indicates that initialization is complete.

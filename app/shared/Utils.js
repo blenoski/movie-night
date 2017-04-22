@@ -60,6 +60,19 @@ function lstat (absPath) {
   })
 }
 
+// Determine whether or not provided file exists.
+function fileExists (fname) {
+  return new Promise((resolve, reject) => {
+    return lstat(fname)
+      .then((stats) => {
+        resolve(stats.isFile())
+      })
+      .catch(() => {
+        resolve(false)
+      })
+  })
+}
+
 // Base class for custom errors.
 class ExtendableError extends Error {
   constructor (message) {
@@ -80,5 +93,6 @@ module.exports = {
   writeFile,
   readdir,
   lstat,
+  fileExists,
   ExtendableError
 }

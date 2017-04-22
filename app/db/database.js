@@ -4,6 +4,8 @@ const APPDATA_PATH = '/Users/blenoski/Developer/ConfidentCruiser/confident-cruis
 const DB_PATH = `${APPDATA_PATH}/database`
 const dbFile = `${DB_PATH}/movieDB.json`
 
+// TODO: batch database updates
+
 module.exports = {
   addOrUpdateMovie: function addOrUpdateMovie (movie) {
     let changed = false
@@ -37,7 +39,12 @@ module.exports = {
     })
   },
 
-  loadDatabase
+  findByID: function findByID (imdbID) {
+    let movieDB = loadDatabase()
+    return findInternal('imdbID', imdbID, movieDB)
+  },
+
+  loadDatabase: loadDatabase
 }
 
 function loadDatabase () {

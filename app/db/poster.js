@@ -1,6 +1,5 @@
-const path = require('path')
 const request = require('../shared/request')
-const { mkdir } = require('../shared/utils')
+const { mkdir, fileExists } = require('../shared/utils')
 const logger = require('./dbLogger')
 
 const APPDATA_PATH = '/Users/blenoski/Developer/ConfidentCruiser/confident-cruiser/movie-night/appdata'
@@ -11,17 +10,21 @@ module.exports = {
   downloadPosterFor: function downloadPosterFor (movie) {
     return mkdir(IMAGE_PATH)
       .then(() => {
-        const { ext } = path.parse(movie.imgUrl)
-        const fname = `${IMAGE_PATH}/${movie.imdbID}${ext}`
-        return request.downloadFile(movie.imgUrl, fname).then(() => fname)
+        return request.downloadFile(movie.imgUrl, movie.imgFile)
       })
-      .then((fname) => {
-        movie.imgFile = fname
+      .then(() => {
         return movie
       })
       .catch((err) => {
         logger.error(`Downloading image failed for ${movie.title}`, err)
         return movie
+      })
+  },
+
+  checkIfPosterFileHasBeenDownloadedFor: function checkIfPosterFileHasBeenDownloadedFor (movie) {
+    return fileExists(movie.imgFile)
+      .then((posterDownloaded) => {
+        return {posterDownloaded, movie}
       })
   }
 }
