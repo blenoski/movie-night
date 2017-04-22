@@ -12,6 +12,28 @@ const logger = require('./dbLogger')
 const { fetchMovieMetadata } = require('./fetchMovieMetadata')
 const { checkIfPosterFileHasBeenDownloadedFor, downloadPosterFor } = require('./poster')
 
+function conflate (document, movie) {
+  // TODO: delegate this to a proper meta class, e.g., conflate method
+  // and do a full conflation
+
+  // Early return if document is currently null, i.e., not in database.
+  if (!document) {
+    return { documentChanged: true, finalDocument: movie }
+  }
+
+  // Currently only checking for new locations
+  const duplicateLocation = document.fileInfo.find((info) => {
+    return info.location === movie.fileInfo[0].location
+  })
+  if (!duplicateLocation) {
+    let finalDoc = JSON.parse(JSON.stringify(document))
+    finalDoc.fileInfo.push(movie.fileInfo[0])
+    return { documentChanged: true, finalDocument: finalDoc }
+  } else {
+    return { documentChanged: false, finalDocument: document }
+  }
+}
+
 // Handler for ADD_MOVIE events.
 ipcRenderer.on(ADD_MOVIE, (event, movieFile) => {
   logger.info('Received ADD_MOVIE event', { movie: movieFile })
@@ -31,19 +53,17 @@ ipcRenderer.on(ADD_MOVIE, (event, movieFile) => {
       return checkIfPosterFileHasBeenDownloadedFor(movie)
     })
     .then(({posterDownloaded, movie}) => {
-      let document = null
-      if (posterDownloaded) {
-        document = db.findByID(movie.imdbID)
-        if (document && movie.imgUrl === document.imgUrl) {
-          return {movie, document} // poster image is already good to go
-        }
+      let document = db.findByID(movie.imdbID)
+      if (posterDownloaded && document && movie.imgUrl === document.imgUrl) {
+        return {movie, document} // poster image is already good to go
       }
       return downloadPosterFor(movie).then(() => { return {movie, document} })
     })
     .then(({movie, document}) => {
-      // TODO: do document conflation here and not in DB
-      let movieDB = db.addOrUpdateMovie(movie)
-      if (movieDB.length > 0) {
+      let {documentChanged, finalDocument} = conflate(document, movie)
+      if (documentChanged) {
+        console.log(`Updating database with`, finalDocument)
+        let movieDB = db.addOrUpdateMovie(finalDocument)
         ipcRenderer.send(MOVIE_DATABASE, movieDB) // SUCCESS!
         logger.info('Sent MOVIE_DATABASE event with new movie', { title: movie.title, count: movieDB.length })
       }
@@ -64,7 +84,7 @@ ipcRenderer.once(LOAD_MOVIE_DATABASE, (event) => {
   // Try to download any missing poster images
   movieDB.forEach((movie) => {
     checkIfPosterFileHasBeenDownloadedFor(movie)
-      .then((posterDownloaded) => {
+      .then(({posterDownloaded, movie}) => {
         if (!posterDownloaded) {
           downloadPosterFor(movie).then().catch()
         }

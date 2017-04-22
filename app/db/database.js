@@ -8,23 +8,17 @@ const dbFile = `${DB_PATH}/movieDB.json`
 
 module.exports = {
   addOrUpdateMovie: function addOrUpdateMovie (movie) {
-    let changed = false
-
     let movieDB = loadDatabase()
-    const document = findInternal('imdbID', movie.imdbID, movieDB)
-    if (document) {
-      changed = update(document, movie)
+
+    let documentIndex = findIndexInternal('imdbID', movie.imdbID, movieDB)
+    if (documentIndex >= 0) {
+      movieDB[documentIndex] = movie // update existing document
     } else {
-      movieDB.push(movie) // add movie to database
-      changed = true
+      movieDB.push(movie) // add new document
     }
 
-    if (changed) {
-      persistToFile(movieDB)
-      return movieDB
-    } else {
-      return [] // database was not changed
-    }
+    persistToFile(movieDB)
+    return movieDB
   },
 
   findByLocation: function findByLocation (location) {
@@ -61,17 +55,10 @@ function findInternal (key, value, movieDB) {
   })
 }
 
-function update (document, movie) {
-  // TODO: delegate this to a proper meta class, e.g., conflate method
-  const dupLoc = document.fileInfo.find((info) => {
-    return info.location === movie.fileInfo[0].location
+function findIndexInternal (key, value, movieDB) {
+  return movieDB.findIndex((movie) => {
+    return movie[key] === value
   })
-  if (!dupLoc) {
-    document.fileInfo.push(movie.fileInfo[0])
-    return true
-  } else {
-    return false // document not changed
-  }
 }
 
 function persistToFile (movies) {
