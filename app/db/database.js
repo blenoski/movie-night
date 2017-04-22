@@ -5,37 +5,42 @@ const DB_PATH = `${APPDATA_PATH}/database`
 const dbFile = `${DB_PATH}/movieDB.json`
 
 // TODO: batch database updates
+// TODO: generalize database
+
+const uniqueField = 'imdbID'
 
 module.exports = {
-  addOrUpdateMovie: function addOrUpdateMovie (movie) {
-    let movieDB = loadDatabase()
+  addOrUpdateDocument: function addOrUpdateDocument (document) {
+    let db = loadDatabase()
 
-    let documentIndex = findIndexInternal('imdbID', movie.imdbID, movieDB)
+    let documentIndex = findIndexInternal(uniqueField, document[uniqueField], db)
     if (documentIndex >= 0) {
-      movieDB[documentIndex] = movie // update existing document
+      db[documentIndex] = document // update existing document
     } else {
-      movieDB.push(movie) // add new document
+      db.push(document) // add new document
     }
 
-    persistToFile(movieDB)
-    return movieDB
+    persistToFile(db)
+    return db
   },
 
-  findByLocation: function findByLocation (location) {
-    let movieDB = loadDatabase()
-    return movieDB.find((movie) => {
-      for (let item of movie.fileInfo) {
-        if (item.location === location) {
-          return true
-        }
-      }
-      return false
+  findOne: function findOne (filterFcn) {
+    const db = loadDatabase()
+    return db.find((document) => {
+      return filterFcn(document)
     })
   },
 
-  findByID: function findByID (imdbID) {
-    let movieDB = loadDatabase()
-    return findInternal('imdbID', imdbID, movieDB)
+  find: function find (filterFcn) {
+    const db = loadDatabase()
+    return db.filter((document) => {
+      return filterFcn(document)
+    })
+  },
+
+  findByID: function findByID (id) {
+    const db = loadDatabase()
+    return findInternal(uniqueField, id, db)
   },
 
   loadDatabase: loadDatabase
@@ -49,19 +54,19 @@ function loadDatabase () {
   }
 }
 
-function findInternal (key, value, movieDB) {
-  return movieDB.find((movie) => {
-    return movie[key] === value
+function findInternal (key, value, db) {
+  return db.find((document) => {
+    return document[key] === value
   })
 }
 
-function findIndexInternal (key, value, movieDB) {
-  return movieDB.findIndex((movie) => {
-    return movie[key] === value
+function findIndexInternal (key, value, db) {
+  return db.findIndex((document) => {
+    return document[key] === value
   })
 }
 
-function persistToFile (movies) {
+function persistToFile (db) {
   try {
     fs.mkdirSync(DB_PATH)
   } catch (err) {
@@ -71,7 +76,7 @@ function persistToFile (movies) {
     }
   }
 
-  const json = JSON.stringify(movies)
+  const json = JSON.stringify(db)
   const tmpFile = `${dbFile}.tmp`
   fs.writeFileSync(tmpFile, json)
   fs.renameSync(tmpFile, dbFile) // overwrites old DB with just created one

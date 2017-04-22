@@ -12,10 +12,10 @@ const logger = require('./dbLogger')
 const { fetchMovieMetadata } = require('./fetchMovieMetadata')
 const { checkIfPosterFileHasBeenDownloadedFor, downloadPosterFor } = require('./poster')
 
+// Conflate a new movie with existing database document.
+// TODO: delegate this to a proper meta class, e.g., conflate method
+// and do a full conflation
 function conflate (document, movie) {
-  // TODO: delegate this to a proper meta class, e.g., conflate method
-  // and do a full conflation
-
   // Early return if document is currently null, i.e., not in database.
   if (!document) {
     return { documentChanged: true, finalDocument: movie }
@@ -34,12 +34,27 @@ function conflate (document, movie) {
   }
 }
 
+// HOF used in conjunction with db.findOne) to find a movie in the database
+// matching the provided file.
+function movieWithAnyLocationMatching (movieFile) {
+  const filter = (document) => {
+    for (let item of document.fileInfo) {
+      if (item.location === movieFile) {
+        return true
+      }
+    }
+    return false
+  }
+  return filter
+}
+
 // Handler for ADD_MOVIE events.
 ipcRenderer.on(ADD_MOVIE, (event, movieFile) => {
   logger.info('Received ADD_MOVIE event', { movie: movieFile })
 
   // Early exit if this movie file is already in the database.
-  const document = db.findByLocation(movieFile)
+  // const document = db.findByLocation(movieFile)
+  const document = db.findOne(movieWithAnyLocationMatching(movieFile))
   if (document) {
     logger.info(`Database has existing record for ${movieFile}`, {
       title: document.title,
@@ -62,8 +77,7 @@ ipcRenderer.on(ADD_MOVIE, (event, movieFile) => {
     .then(({movie, document}) => {
       let {documentChanged, finalDocument} = conflate(document, movie)
       if (documentChanged) {
-        console.log(`Updating database with`, finalDocument)
-        let movieDB = db.addOrUpdateMovie(finalDocument)
+        let movieDB = db.addOrUpdateDocument(finalDocument)
         ipcRenderer.send(MOVIE_DATABASE, movieDB) // SUCCESS!
         logger.info('Sent MOVIE_DATABASE event with new movie', { title: movie.title, count: movieDB.length })
       }
