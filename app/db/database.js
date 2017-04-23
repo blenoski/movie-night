@@ -1,59 +1,77 @@
 const fs = require('fs')
 
-const APPDATA_PATH = '/Users/blenoski/Developer/ConfidentCruiser/confident-cruiser/movie-night/appdata'
-const DB_PATH = `${APPDATA_PATH}/database`
-const dbFile = `${DB_PATH}/movieDB.json`
-
 // TODO: batch database updates
-// TODO: generalize database
 
-const uniqueField = 'imdbID'
+module.exports = class SingleCollectionDatabase {
+  constructor ({ dbPath, dbFile, uniqueField }) {
+    this.dbPath = dbPath
+    this.dbFile = dbFile
+    this.uniqueField = uniqueField
+  }
 
-module.exports = {
-  addOrUpdateDocument: function addOrUpdateDocument (document) {
-    let db = loadDatabase()
+  // Returns the database configuration.
+  config () {
+    return {
+      dbPath: this.dbPath,
+      dbFile: this.dbFile,
+      uniqueField: this.uniqueField
+    }
+  }
 
-    let documentIndex = findIndexInternal(uniqueField, document[uniqueField], db)
+  // Add a document to the collection.
+  // Overwrites existing if document with matching uniqueField already exists.
+  addOrUpdate (document) {
+    let db = this.loadDatabase()
+
+    let documentIndex = findIndexInternal(this.uniqueField, document[this.uniqueField], db)
     if (documentIndex >= 0) {
       db[documentIndex] = document // update existing document
     } else {
       db.push(document) // add new document
     }
 
-    persistToFile(db)
+    persistToFile(db, this.dbPath, this.dbFile)
     return db
-  },
+  }
 
-  findOne: function findOne (filterFcn) {
-    const db = loadDatabase()
+  // Returns the first document matching the supplied function.
+  // Returns undefined if no matching documents are found.
+  findOne (filterFcn) {
+    const db = this.loadDatabase()
     return db.find((document) => {
       return filterFcn(document)
     })
-  },
+  }
 
-  find: function find (filterFcn) {
-    const db = loadDatabase()
+  // Returns all documents matching the supplied function.
+  // Returns empty array if no matching documents are found.
+  find (filterFcn) {
+    const db = this.loadDatabase()
     return db.filter((document) => {
       return filterFcn(document)
     })
-  },
+  }
 
-  findByID: function findByID (id) {
-    const db = loadDatabase()
-    return findInternal(uniqueField, id, db)
-  },
+  // Returns document where document[uniqueField] === id.
+  // Returns undefined if no matching document is found.
+  findByID (id) {
+    const db = this.loadDatabase()
+    return findInternal(this.uniqueField, id, db)
+  }
 
-  loadDatabase: loadDatabase
-}
-
-function loadDatabase () {
-  if (fs.existsSync(dbFile)) {
-    return JSON.parse(fs.readFileSync(dbFile))
-  } else {
-    return []
+  // Returns the collection as an array of documents.
+  loadDatabase () {
+    if (fs.existsSync(this.dbFile)) {
+      return JSON.parse(fs.readFileSync(this.dbFile))
+    } else {
+      return []
+    }
   }
 }
 
+// =================
+// Internal methods
+// =================
 function findInternal (key, value, db) {
   return db.find((document) => {
     return document[key] === value
@@ -66,9 +84,9 @@ function findIndexInternal (key, value, db) {
   })
 }
 
-function persistToFile (db) {
+function persistToFile (db, dbPath, dbFile) {
   try {
-    fs.mkdirSync(DB_PATH)
+    fs.mkdirSync(dbPath)
   } catch (err) {
     if (err && err.code !== 'EEXIST') { // OK if directory already exists
       console.log(err)

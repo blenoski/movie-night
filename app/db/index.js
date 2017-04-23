@@ -7,10 +7,25 @@ const {
 } = require('../shared/events')
 const { logEnv } = require('../shared/utils')
 
-const db = require('./database')
+const SingleCollectionDatabase = require('./database')
 const logger = require('./dbLogger')
 const { fetchMovieMetadata } = require('./fetchMovieMetadata')
 const { checkIfPosterFileHasBeenDownloadedFor, downloadPosterFor } = require('./poster')
+
+// Configuration.
+// TODO: move this to a config module
+const APPDATA_PATH = '/Users/blenoski/Developer/ConfidentCruiser/confident-cruiser/movie-night/appdata'
+const DB_PATH = `${APPDATA_PATH}/database`
+const dbFile = `${DB_PATH}/movieDB.json`
+
+// Record environment.
+logEnv(logger)
+
+// Instantiate the database.
+// This will use the existing database if it exists.
+// Otherwise it will create a new database.
+let db = new SingleCollectionDatabase({ dbPath: DB_PATH, uniqueField: 'imdbID', dbFile })
+logger.info('Database config:', db.config())
 
 // Conflate a new movie with existing database document.
 // TODO: delegate this to a proper meta class, e.g., conflate method
@@ -34,7 +49,7 @@ function conflate (document, movie) {
   }
 }
 
-// HOF used in conjunction with db.findOne) to find a movie in the database
+// HOF used in conjunction with db.findOne() to find a movie in the database
 // matching the provided file.
 function movieWithAnyLocationMatching (movieFile) {
   const filter = (document) => {
@@ -77,7 +92,7 @@ ipcRenderer.on(ADD_MOVIE, (event, movieFile) => {
     .then(({movie, document}) => {
       let {documentChanged, finalDocument} = conflate(document, movie)
       if (documentChanged) {
-        let movieDB = db.addOrUpdateDocument(finalDocument)
+        let movieDB = db.addOrUpdate(finalDocument)
         ipcRenderer.send(MOVIE_DATABASE, movieDB) // SUCCESS!
         logger.info('Sent MOVIE_DATABASE event with new movie', { title: movie.title, count: movieDB.length })
       }
@@ -106,5 +121,4 @@ ipcRenderer.once(LOAD_MOVIE_DATABASE, (event) => {
   })
 })
 
-// Records environment AND indicates that initialization is complete.
-logEnv(logger)
+logger.info('initialization complete')
