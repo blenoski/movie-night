@@ -16,14 +16,12 @@ const { checkIfPosterFileHasBeenDownloadedFor, downloadPosterFor } = require('./
 // TODO: move this to a config module
 const APPDATA_PATH = '/Users/blenoski/Developer/ConfidentCruiser/confident-cruiser/movie-night/appdata'
 const DB_PATH = `${APPDATA_PATH}/database`
-const dbFile = `${DB_PATH}/movieDB.json`
+const dbFile = 'movieDB.json'
 
 // Record environment.
 logEnv(logger)
 
 // Instantiate the database.
-// This will use the existing database if it exists.
-// Otherwise it will create a new database.
 let db = new SingleCollectionDatabase({ dbPath: DB_PATH, uniqueField: 'imdbID', dbFile })
 logger.info('Database config:', db.config())
 
@@ -106,7 +104,7 @@ ipcRenderer.on(ADD_MOVIE, (event, movieFile) => {
 // Handle the LOAD_MOVIE_DATABASE event called once at startup.
 ipcRenderer.once(LOAD_MOVIE_DATABASE, (event) => {
   logger.info('Received LOAD_MOVIE_DATABASE event')
-  let movieDB = db.loadDatabase()
+  let movieDB = db.getCollection()
   ipcRenderer.send(MOVIE_DATABASE, movieDB) // SUCCESS!
   logger.info('Sent MOVIE_DATABASE event', { count: movieDB.length })
 
