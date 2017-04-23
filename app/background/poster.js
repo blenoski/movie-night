@@ -22,7 +22,7 @@ module.exports = {
       })
   },
 
-  checkIfPosterFileHasBeenDownloadedFor: function checkIfPosterFileHasBeenDownloadedFor (movie) {
+  checkIfPosterHasBeenDownloadedFor: function checkIfPosterHasBeenDownloadedFor (movie) {
     return fileExists(movie.imgFile)
       .then((posterDownloaded) => {
         return {posterDownloaded, movie}

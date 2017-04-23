@@ -13,7 +13,7 @@ const logger = require('./backgroundWorkerLogger')
 const { crawlForMovies } = require('./crawlForMovies')
 const SingleCollectionDatabase = require('./database')
 const { fetchMovieMetadata } = require('./fetchMovieMetadata')
-const { checkIfPosterFileHasBeenDownloadedFor, downloadPosterFor } = require('./poster')
+const { checkIfPosterHasBeenDownloadedFor, downloadPosterFor } = require('./poster')
 
 // Configuration.
 // TODO: move this to a config module
@@ -40,6 +40,7 @@ ipcRenderer.on(CRAWL_DIRECTORY, (event, rootDirectory) => {
 
   crawlForMovies({rootDirectory, searchDirCb, movieFileCb})
     .then(() => {
+      // TODO: wait for all movies to finish processing
       ipcRenderer.send(CRAWL_COMPLETE, rootDirectory)
       logger.info('Sent CRAWL_COMPLETE event', { rootDirectory })
     })
@@ -62,7 +63,7 @@ function movieFileCb (movieFile) {
 
   fetchMovieMetadata(movieFile)
     .then((movie) => {
-      return checkIfPosterFileHasBeenDownloadedFor(movie)
+      return checkIfPosterHasBeenDownloadedFor(movie)
     })
     .then(({posterDownloaded, movie}) => {
       let document = db.findByID(movie.imdbID)
@@ -94,7 +95,7 @@ ipcRenderer.once(LOAD_MOVIE_DATABASE, (event) => {
 
   // Try to download any missing poster images
   movieDB.forEach((movie) => {
-    checkIfPosterFileHasBeenDownloadedFor(movie)
+    checkIfPosterHasBeenDownloadedFor(movie)
       .then(({posterDownloaded, movie}) => {
         if (!posterDownloaded) {
           downloadPosterFor(movie).then().catch()
