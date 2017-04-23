@@ -1,15 +1,12 @@
 const request = require('../shared/request')
+const { posterImagePath } = require('../../config')
 const { mkdir, fileExists } = require('../shared/utils')
 const logger = require('./backgroundWorkerLogger')
-
-// TODO: get this from config module
-const APPDATA_PATH = '/Users/blenoski/Developer/ConfidentCruiser/confident-cruiser/movie-night/appdata'
-const IMAGE_PATH = `${APPDATA_PATH}/image`
 
 module.exports = {
 
   downloadPosterFor: function downloadPosterFor (movie) {
-    return mkdir(IMAGE_PATH)
+    return mkdir(posterImagePath)
       .then(() => {
         return request.downloadFile(movie.imgUrl, movie.imgFile)
       })

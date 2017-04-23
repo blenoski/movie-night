@@ -13,18 +13,18 @@ const logger = require('./backgroundWorkerLogger')
 // This database is not intended for use on a user facing process as some operations
 // are blocking in order to preserve database integrity.
 module.exports = class SingleCollectionDatabase {
-  constructor ({ dbPath, dbFile, uniqueField }) {
+  constructor ({ dbPath, dbName, uniqueField }) {
     this.dbPath = dbPath
-    this.dbFile = dbFile
+    this.dbName = dbName
     this.uniqueField = uniqueField
     this.collection = []
     this._persist = { tokens: 0 }
 
     // Load the database if it already exists.
     try {
-      const dbFullFile = path.join(this.dbPath, this.dbFile)
-      logger.info(`Loading database: ${dbFullFile}`)
-      this.collection = JSON.parse(fs.readFileSync(dbFullFile))
+      const dbFile = path.join(this.dbPath, this.dbName)
+      logger.info(`Loading database: ${dbFile}`)
+      this.collection = JSON.parse(fs.readFileSync(dbFile))
     } catch (err) {
       ;
     }
@@ -34,7 +34,7 @@ module.exports = class SingleCollectionDatabase {
   config () {
     return {
       dbPath: this.dbPath,
-      dbFile: this.dbFile,
+      dbName: this.dbName,
       uniqueField: this.uniqueField
     }
   }
@@ -90,7 +90,7 @@ module.exports = class SingleCollectionDatabase {
   // that update will be lost.
   _scheduleSave () {
     this._persist.tokens += 1
-    setTimeout(persistDatabaseToFile, 3 * 1000, this.dbPath, this.dbFile, this.collection, this._persist)
+    setTimeout(persistDatabaseToFile, 3 * 1000, this.dbPath, this.dbName, this.collection, this._persist)
   }
 }
 
@@ -98,7 +98,7 @@ module.exports = class SingleCollectionDatabase {
 // Internal
 // =========
 // Saves the database to a file
-function persistDatabaseToFile (dbPath, dbFile, collection, persist) {
+function persistDatabaseToFile (dbPath, dbName, collection, persist) {
   // Take a persist token
   persist.tokens -= 1
 
@@ -124,15 +124,15 @@ function persistDatabaseToFile (dbPath, dbFile, collection, persist) {
   }
 
   // Serialize the collection and write to file
-  const dbFullFile = path.join(dbPath, dbFile)
+  const dbFile = path.join(dbPath, dbName)
   try {
     const json = JSON.stringify(collection)
-    const tmpFile = path.join(dbPath, `${dbFile}.tmp`)
+    const tmpFile = `${dbFile}.tmp`
     fs.writeFileSync(tmpFile, json)
-    fs.renameSync(tmpFile, dbFullFile) // overwrites old DB with just created one
-    logger.info(`Saved ${dbFullFile}`, { count: collection.length })
+    fs.renameSync(tmpFile, dbFile) // overwrites old DB with just created one
+    logger.info(`Saved ${dbFile}`, { count: collection.length })
   } catch (err) {
-    logger.error(`Save failed: ${dbFullFile}`, err)
+    logger.error(`Save failed: ${dbFile}`, err)
     throw err
   }
 }

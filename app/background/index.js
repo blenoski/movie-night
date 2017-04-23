@@ -1,5 +1,6 @@
 const { ipcRenderer } = require('electron')
 
+const { dbPath, dbName } = require('../../config')
 const {
   CRAWL_COMPLETE,
   CRAWL_DIRECTORY,
@@ -15,12 +16,8 @@ const SingleCollectionDatabase = require('./database')
 const { fetchMovieMetadata } = require('./fetchMovieMetadata')
 const { checkIfPosterHasBeenDownloadedFor, downloadPosterFor } = require('./poster')
 
-// Configuration.
-// TODO: move this to a config module
-const APPDATA_PATH = '/Users/blenoski/Developer/ConfidentCruiser/confident-cruiser/movie-night/appdata'
-const DB_PATH = `${APPDATA_PATH}/database`
-const dbFile = 'movieDB.json'
-const dbConfig = { dbPath: DB_PATH, uniqueField: 'imdbID', dbFile }
+// Database configuration.
+const dbConfig = { uniqueField: 'imdbID', dbPath, dbName }
 
 // Record environment.
 logEnv(logger)
@@ -28,7 +25,7 @@ logEnv(logger)
 // ============================================================
 // Handle the LOAD_MOVIE_DATABASE event called once at startup.
 // ============================================================
-ipcRenderer.once(LOAD_MOVIE_DATABASE, (event) => {
+ipcRenderer.on(LOAD_MOVIE_DATABASE, (event) => {
   logger.info('Received LOAD_MOVIE_DATABASE event')
 
   // Instantiate the database.
@@ -87,7 +84,7 @@ ipcRenderer.on(CRAWL_DIRECTORY, (event, rootDirectory) => {
               logger.warn(`${movieFile} not added to database:`, { type: err.name, message: err.message })
               // TODO: send a data not found event to appWindow?
             } else {
-              logger.info(`completed ${movieFile}`)
+              logger.info(`Completed processing ${movieFile}`)
             }
           })
         })

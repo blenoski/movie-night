@@ -1,10 +1,8 @@
 const path = require('path')
+const { posterImagePath } = require('../../config')
 const request = require('../shared/request')
 const { generateSearchQueriesFor } = require('./generateSearchQueries')
 const omdb = require('./omdb')
-
-const APPDATA_PATH = '/Users/blenoski/Developer/ConfidentCruiser/confident-cruiser/movie-night/appdata'
-const IMAGE_PATH = `${APPDATA_PATH}/image`
 
 module.exports = {
   // External API.
@@ -28,7 +26,7 @@ function fetchMovieDataInternal (movieFile) {
           query: url
         }]
         const { ext } = path.parse(metadata.imgUrl)
-        metadata.imgFile = `${IMAGE_PATH}/${metadata.imdbID}${ext}`
+        metadata.imgFile = path.join(posterImagePath, `${metadata.imdbID}${ext}`)
         resolve(metadata)
       })
       .catch((err) => reject(err))
