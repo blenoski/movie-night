@@ -58,6 +58,12 @@ function get (url, responseType = null) {
         reject(new NetworkError('Network error', url))
       }
 
+      // Do not wait forever
+      req.timeout = 30 * 1000 // time in milliseconds
+      req.ontimeout = () => {
+        reject(new NetworkError('Request timed out after 30 seconds', url))
+      }
+
       // Make the request
       req.send()
     })

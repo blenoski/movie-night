@@ -72,7 +72,7 @@ ipcRenderer.on(CRAWL_DIRECTORY, (event, rootDirectory) => {
   let moviesInProgress = []
 
   const movieFileCb = (movieFile) => {
-    logger.info('Found', { movie: movieFile })
+    logger.info('Found', { movieFile })
     moviesInProgress.push(addMovie(movieFile, db))
   }
 
