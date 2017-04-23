@@ -16,9 +16,6 @@ const SEARCHING_DIRECTORY = 'searching-directory'
 // This event is fired when the crawl for movies is complete.
 const CRAWL_COMPLETE = 'crawl-complete'
 
-// This event is fired when a movie file is discovered during crawl.
-const ADD_MOVIE = 'add-movie'
-
 // This event is fired whenver the movie database is updated.
 const MOVIE_DATABASE = 'movie-database'
 
@@ -26,7 +23,6 @@ const MOVIE_DATABASE = 'movie-database'
 const LOAD_MOVIE_DATABASE = 'load-movie-database'
 
 module.exports = {
-  ADD_MOVIE,
   CRAWL_COMPLETE,
   CRAWL_DIRECTORY,
   LOAD_MOVIE_DATABASE,

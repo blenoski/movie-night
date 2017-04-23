@@ -1,7 +1,8 @@
 const request = require('../shared/request')
 const { mkdir, fileExists } = require('../shared/utils')
-const logger = require('./dbLogger')
+const logger = require('./backgroundWorkerLogger')
 
+// TODO: get this from config module
 const APPDATA_PATH = '/Users/blenoski/Developer/ConfidentCruiser/confident-cruiser/movie-night/appdata'
 const IMAGE_PATH = `${APPDATA_PATH}/image`
 

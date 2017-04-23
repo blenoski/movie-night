@@ -4,12 +4,10 @@ const url = require('url')
 const electron = require('electron')
 
 const {
-  ADD_MOVIE,
   CRAWL_COMPLETE,
   CRAWL_DIRECTORY,
   LOAD_MOVIE_DATABASE,
   MOVIE_DATABASE,
-  MOVIE_METADATA,
   SEARCHING_DIRECTORY,
   SELECT_IMPORT_DIRECTORY
 } = require('../shared/events')
@@ -31,7 +29,6 @@ const ipcMain = electron.ipcMain
 // be closed automatically when the JavaScript object is garbage collected.
 let appWindow = null
 let backgroundWorker = null
-let dbWorker = null
 
 function createWindows () {
   logger.info('Creating application appWindow')
@@ -72,43 +69,27 @@ function createWindows () {
     }
   })
 
-  // Create the DB Worker only after the appWindow is ready.
+  // Create the backgroundWorker only after the appWindow is ready.
   appWindow.webContents.on('did-finish-load', () => {
-    // Create the db worker
-    if (dbWorker === null) {
-      logger.info('Creating dbWorker')
-      dbWorker = new BrowserWindow({show: isDevEnv()})
-      dbWorker.loadURL(url.format({
-        pathname: path.join(__dirname, '..', 'db', 'index.html'),
+    if (backgroundWorker === null) {
+      logger.info('Creating backgroundWorker')
+      backgroundWorker = new BrowserWindow({show: isDevEnv()})
+      backgroundWorker.loadURL(url.format({
+        pathname: path.join(__dirname, '..', 'background', 'index.html'),
         protocol: 'file:',
         slashes: true
       }))
 
       if (isDevEnv()) {
-        dbWorker.webContents.openDevTools()
+        backgroundWorker.webContents.openDevTools()
       }
 
-      dbWorker.webContents.on('did-finish-load', () => {
-        dbWorker.webContents.send(LOAD_MOVIE_DATABASE)
-        logger.info('Sent LOAD_MOVIE_DATABASE event to db')
+      backgroundWorker.webContents.on('did-finish-load', () => {
+        backgroundWorker.webContents.send(LOAD_MOVIE_DATABASE)
+        logger.info('Sent LOAD_MOVIE_DATABASE event to backgroundWorker')
       })
     }
   })
-
-  // Create the background worker
-  if (backgroundWorker === null) {
-    logger.info('Creating backgroundWorker')
-    backgroundWorker = new BrowserWindow({show: isDevEnv()})
-    backgroundWorker.loadURL(url.format({
-      pathname: path.join(__dirname, '..', 'background', 'index.html'),
-      protocol: 'file:',
-      slashes: true
-    }))
-
-    if (isDevEnv()) {
-      backgroundWorker.webContents.openDevTools()
-    }
-  }
 }
 
 // This method will be called when Electron has finished
@@ -182,18 +163,6 @@ ipcMain.on(CRAWL_COMPLETE, function (event, directory) {
     logger.info('Sent CRAWL_COMPLETE event to appWindow', { directory })
   } else {
     logger.error('appWindow object does not exist')
-  }
-})
-
-// Handle ADD_MOVIE events.
-// Route to DB.
-ipcMain.on(ADD_MOVIE, function (event, movieFile) {
-  logger.info('Received ADD_MOVIE event', { movie: movieFile })
-  if (dbWorker) {
-    dbWorker.webContents.send(ADD_MOVIE, movieFile)
-    logger.info('Sent ADD_MOVIE event to db', { movie: movieFile })
-  } else {
-    logger.error('dbWorker object does not exist')
   }
 })
 
