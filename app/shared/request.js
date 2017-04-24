@@ -2,9 +2,14 @@ const { RateLimiter } = require('limiter')
 const { writeFile, ExtendableError } = require('./utils')
 
 // We will limit all network requests to a maximum of 40 per 10 seconds.
-const period = 10 * 1000 // 10 seconds in milliseconds
-let limiter = new RateLimiter(40, period)
+// Note: Chromium will additionally limit the maximum number of concurrent
+// open requests from an origin to 6 as of April 2017.
+const fortyRequestsPer = 40
+const tenSeconds = 10 * 1000 // time in milliseconds
+let limiter = new RateLimiter(fortyRequestsPer, tenSeconds)
 
+// Requests are rejected with NetworkError when the network connection has
+// issues or the request times out.
 class NetworkError extends ExtendableError {
   constructor (message, url) {
     super(message)
@@ -12,6 +17,17 @@ class NetworkError extends ExtendableError {
   }
 }
 
+// Requests are rejected with TimeoutError when the request duration exceeds
+// the maximum duration allowed
+class TimeoutError extends ExtendableError {
+  constructor (message, url) {
+    super(message)
+    this.url = url
+  }
+}
+
+// Requests are rejected with StatusError when the response is anything
+// but 200 OK.
 class StatusError extends ExtendableError {
   constructor (status, statusText, url) {
     super(`${status}: ${statusText}`)
@@ -25,7 +41,11 @@ class StatusError extends ExtendableError {
 // Using XHR as underlying implementation because it handles things like system
 // configured proxies, following redirects, and https tunneling automatically.
 // Downside to XHR is it does not support streaming.
-function get (url, responseType = null) {
+function get (url, {
+  responseType = null, // set a custom responseType
+  timeoutInMilliseconds = 30 * 1000, // specify the request timeout
+  retries = 2 // number of retry attempts for Network and/or Timeout errors
+} = {}) {
   // Return a new promise.
   return new Promise((resolve, reject) => {
     limiter.removeTokens(1, (err, remainingRequests) => {
@@ -59,14 +79,25 @@ function get (url, responseType = null) {
       }
 
       // Do not wait forever
-      req.timeout = 30 * 1000 // time in milliseconds
+      req.timeout = timeoutInMilliseconds
       req.ontimeout = () => {
-        reject(new NetworkError('Request timed out after 30 seconds', url))
+        const msg = `Request timed out after ${timeoutInMilliseconds} milliseconds`
+        reject(new TimeoutError(msg, url))
       }
 
       // Make the request
       req.send()
     })
+  })
+  .catch((err) => {
+    console.log(err)
+    if (retries > 0 && (err instanceof TimeoutError || err instanceof NetworkError)) {
+      retries -= 1
+      console.log(`Retrying: ${url}`)
+      return get(url, { responseType, timeoutInMilliseconds, retries })
+    } else {
+      throw err
+    }
   })
 }
 
@@ -121,7 +152,7 @@ function getFirstSuccess (urls, validate = null) {
 }
 
 function downloadFile (url, fname) {
-  return get(url, 'arraybuffer') // required XHR2 responseType for binary data
+  return get(url, {responseType: 'arraybuffer'}) // required XHR2 responseType for binary data
     .then((arraybuffer) => {
       return writeFile(fname, Buffer.from(arraybuffer))
     })
