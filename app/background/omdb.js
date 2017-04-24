@@ -47,6 +47,18 @@ function dataValidator (data) {
   if (data.Error) {
     throw new OMDBDataError(data.Error)
   }
+
+  // Movies with genre "Short" or "Adult" are a common source of
+  // false positives with OMDB's search results. We will reject such results
+  // in this app with the tradeoff being we would never correctly identify
+  // a Short or Adult film.
+  if (data.Genre) {
+    ['Short', 'Adult'].forEach((blacklistedGenre) => {
+      if (data.Genre.indexOf(blacklistedGenre) >= 0) {
+        throw new OMDBDataError(`Rejecting match with genre=${blacklistedGenre}`)
+      }
+    })
+  }
 }
 
 function getUrlFor (query) {

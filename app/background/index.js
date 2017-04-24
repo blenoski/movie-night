@@ -72,7 +72,7 @@ ipcRenderer.on(CRAWL_DIRECTORY, (event, rootDirectory) => {
   const movieFileCb = (movieFile) => {
     // Check blacklist
     const { name } = path.parse(movieFile)
-    if (name === 'sample') { // e.g. sample.avi
+    if (['sample', 'test footage'].find(item => item === name.toLowerCase())) { // e.g. sample.avi
       logger.info(`Skipping blacklisted title: ${movieFile}`)
       return
     }
