@@ -25,8 +25,12 @@ function fetchMovieDataInternal (movieFile) {
           location: movieFile,
           query: url
         }]
-        const { ext } = path.parse(metadata.imgUrl)
-        metadata.imgFile = path.join(posterImagePath, `${metadata.imdbID}${ext}`)
+        if (metadata.imgUrl) {
+          const { ext } = path.parse(metadata.imgUrl)
+          metadata.imgFile = path.join(posterImagePath, `${metadata.imdbID}${ext}`)
+        } else {
+          metadata.imgFile = ''
+        }
         resolve(metadata)
       })
       .catch((err) => reject(err))
