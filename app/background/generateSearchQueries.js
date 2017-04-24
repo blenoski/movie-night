@@ -24,7 +24,7 @@ function generateQueriesFor (name) {
   let releaseYears = name.split(/[\D]/).filter((str) => {
     const year = Number(str)
     return year >= 1900 && year <= 2099
-  })
+  }).reverse() // e.g. prefer for 2009 for "2012 (2009)""
 
   // Extract potential title strings.
   let titles = getTitlesFor(name)
@@ -68,7 +68,7 @@ function getTitlesFor (name) {
 function normalize (name) {
   return name.replace(/\./g, ' ') // replace periods with spaces
     .replace(/_/g, ' ') // replace underscores with spaces
-    .replace(/-/g, ' ') // replace dashes with spaces
+    .replace(/ - /g, ' ') // replace unconnected dashes with spaces
     .trim()
 }
 

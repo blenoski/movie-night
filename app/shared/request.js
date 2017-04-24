@@ -90,10 +90,8 @@ function get (url, {
     })
   })
   .catch((err) => {
-    console.log(err)
     if (retries > 0 && (err instanceof TimeoutError || err instanceof NetworkError)) {
       retries -= 1
-      console.log(`Retrying: ${url}`)
       return get(url, { responseType, timeoutInMilliseconds, retries })
     } else {
       throw err
