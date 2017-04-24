@@ -66,10 +66,17 @@ function getTitlesFor (name) {
 
 // Replace periods, underscores, and dashes with spaces.
 function normalize (name) {
-  return name.replace(/\./g, ' ') // replace periods with spaces
-    .replace(/_/g, ' ') // replace underscores with spaces
+  let normalized = name.replace(/_/g, ' ') // replace underscores with spaces
     .replace(/ - /g, ' ') // replace unconnected dashes with spaces
+    .replace(/^[Dd]ont /g, "Don't ")
+    .replace(/ [Dd]ont /g, " don't ")
     .trim()
+
+  if (normalized.indexOf(' ') === -1) {
+    normalized = normalized.replace(/\./g, ' ') // replace periods with spaces if periods are being used as a separator
+  }
+
+  return normalized.trim()
 }
 
 // Delete anything that looks like metadata encoded in the title.
