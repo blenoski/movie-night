@@ -19,15 +19,18 @@ module.exports = {
   // Transform the OMDB HTTP response into our internal
   // movie descriptor.
   transform: function tranform (response) {
-    let rating = '<<RATING>>'
-    if (response.Ratings && response.Ratings.length > 0) {
-      rating = response.Ratings[0].Value || rating
-    }
+    let rating = (response.Ratings && response.Ratings.length > 0)
+      ? response.Ratings[0].Value || '<<RATING>>'
+      : '<<RATING>>'
+
+    const imgUrl = (response.Poster && response.Poster.startsWith('http'))
+      ? response.Poster
+      : ''
 
     return {
       genre: response.Genre || '<<GENRE>>',
       imdbID: response.imdbID || '',
-      imgUrl: response.Poster || '',
+      imgUrl: imgUrl,
       plot: response.Plot || '',
       rating: rating,
       title: response.Title || '<<TITLE>>',

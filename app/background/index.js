@@ -22,9 +22,9 @@ const dbConfig = { uniqueField: 'imdbID', dbPath, dbName }
 // Record environment.
 logEnv(logger)
 
-// ============================================================
-// Handle the LOAD_MOVIE_DATABASE event called once at startup.
-// ============================================================
+// =====================================
+// Handle the LOAD_MOVIE_DATABASE events
+// =====================================
 ipcRenderer.on(LOAD_MOVIE_DATABASE, (event) => {
   logger.info('Received LOAD_MOVIE_DATABASE event')
 
@@ -42,7 +42,7 @@ ipcRenderer.on(LOAD_MOVIE_DATABASE, (event) => {
   movieDB.forEach((movie) => {
     checkIfPosterHasBeenDownloadedFor(movie)
       .then(({posterDownloaded, movie}) => {
-        if (!posterDownloaded) {
+        if (!posterDownloaded && movie.imgUrl) {
           downloadPosterFor(movie).then().catch()
         }
       })
@@ -61,11 +61,11 @@ ipcRenderer.on(CRAWL_DIRECTORY, (event, rootDirectory) => {
   logger.info('Database config:', db.config())
 
   // As we discover movie files during the crawl, we will push Promises
-  // onto this array which represent the work of downloading the metadata
-  // for a single movie. When the crawl is complete, we can then sequentially
-  // wait on each Promise in the array using reduce. When the last Promise has
-  // completed we are finished. Note that this does not prevent the Promises
-  // from running in parallel.
+  // onto this array where each Promise represents the work of downloading the
+  // metadata for a single movie. When the crawl is complete, we can then
+  // sequentially wait on each Promise in the array using reduce. When the last
+  // Promise has completed we are finished. Note that this does not prevent the
+  // Promises from running in parallel.
   let moviesInProgress = []
 
   const movieFileCb = (movieFile) => {
@@ -123,6 +123,8 @@ function addMovie (movieFile, db) {
         let document = db.findByID(movie.imdbID)
         if (posterDownloaded && document && movie.imgUrl === document.imgUrl) {
           return {movie, document} // poster image is already good to go
+        } else if (!movie.imgUrl) {
+          return {movie, document} // there is no poster to download
         }
         return downloadPosterFor(movie).then(() => { return {movie, document} })
       })
