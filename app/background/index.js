@@ -1,3 +1,4 @@
+const path = require('path')
 const { ipcRenderer } = require('electron')
 
 const { dbPath, dbName } = require('../../config')
@@ -69,6 +70,13 @@ ipcRenderer.on(CRAWL_DIRECTORY, (event, rootDirectory) => {
   let moviesInProgress = []
 
   const movieFileCb = (movieFile) => {
+    // Check blacklist
+    const { name } = path.parse(movieFile)
+    if (name === 'sample') { // e.g. sample.avi
+      logger.info(`Skipping blacklisted title: ${movieFile}`)
+      return
+    }
+
     logger.info('Found', { movieFile })
     moviesInProgress.push(addMovie(movieFile, db))
   }
