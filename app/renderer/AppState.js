@@ -3,10 +3,15 @@ import {
   reducer as importMoviesReducer,
   stateKey as importMovieStateKey
 } from './import-movies'
+import {
+  reducer as searchMoviesReducer,
+  stateKey as searchMovieStateKey
+} from './search-movies'
 
 // Set-up the combined redux reducers.
 let reducers = {}
 reducers[importMovieStateKey] = importMoviesReducer
+reducers[searchMovieStateKey] = searchMoviesReducer
 const allReducers = combineReducers(reducers)
 
 // Create the redux store

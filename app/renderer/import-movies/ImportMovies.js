@@ -48,7 +48,7 @@ class ImportMovies extends Component {
       }, 'Location:')
 
       return (
-        <div style={{display: 'flex'}} key={movie.imdbID || movie.title}>
+        <div style={{display: 'flex'}} key={movie.imdbID}>
           <img src={movie.imgFile} alt='movie poster' />
           <div className='card'>
             <div className='card-block'>

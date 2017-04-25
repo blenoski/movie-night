@@ -15,6 +15,9 @@ import {
   updateCrawling,
   updateSearchDirectory
 } from './import-movies'
+import {
+  updateSearchTerm
+} from './search-movies'
 import logger from './mainWindowLogger'
 
 // Handle SEARCHING_DIRECTORY events
@@ -46,9 +49,16 @@ function importMovies () {
   logger.info('Sent SELECT_IMPORT_DIRECTORY event')
 }
 
+// Handler for search term updates
+const handleSearchTermChange = (text) => {
+  store.dispatch(updateSearchTerm(text))
+  // store.dispatch(updateSearchDirectory('test'))
+}
+
 // API
 const AppController = {
-  importMovies
+  importMovies,
+  handleSearchTermChange
 }
 
 export default AppController
