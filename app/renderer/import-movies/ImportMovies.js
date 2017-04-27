@@ -42,7 +42,7 @@ class ImportMovies extends Component {
       return
     }
 
-    const movieItems = this.props.movies.map((movie) => {
+    const movieItems = this.props.movies.map((movie, index) => {
       const locations = movie.fileInfo.reduce((prev, info) => {
         return prev + ` ${info.location}`
       }, 'Location:')
@@ -52,7 +52,7 @@ class ImportMovies extends Component {
           <img src={movie.imgFile} alt='movie poster' />
           <div className='card'>
             <div className='card-block'>
-              <h4 className='card-title'>{movie.title}</h4>
+              <h4 className='card-title'>{`${movie.title} (${index})`}</h4>
               <h6 className='card-subtitle mb-2 text-muted'>{movie.year}</h6>
               <h6 className='card-subtitle mb-2 text-muted'>Genre: {movie.genre}</h6>
               <h6 className='card-subtitle mb-2 text-muted'>Rating: {movie.rating}</h6>

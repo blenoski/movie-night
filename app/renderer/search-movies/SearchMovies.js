@@ -3,21 +3,29 @@ import React, { Component } from 'react'
 class SearchMovies extends Component {
   constructor (props) {
     super(props)
-    this.onClick = this.onClick.bind(this)
-    this.onChange = this.onChange.bind(this)
+    this.onSearchButtonClick = this.onSearchButtonClick.bind(this)
+    this.onSearchCategorySelection = this.onSearchCategorySelection.bind(this)
+    this.onSearchQueryChange = this.onSearchQueryChange.bind(this)
+    this.state = { showSearchOptions: false }
   }
 
-  onClick (e) {
+  onSearchButtonClick (e) {
     e.preventDefault()
-    if (this.props.onClick) {
-      this.props.onClick()
+    this.setState({showSearchOptions: true})
+  }
+
+  onSearchCategorySelection (e) {
+    e.preventDefault()
+    if (this.props.handleSearchCategoryChange) {
+      this.props.handleSearchCategoryChange(e.target.innerText)
     }
+    this.setState({showSearchOptions: false})
   }
 
-  onChange (e) {
+  onSearchQueryChange (e) {
     e.preventDefault()
-    if (this.props.onChange) {
-      this.props.onChange(e.target.value)
+    if (this.props.handleSearchQueryChange) {
+      this.props.handleSearchQueryChange(e.target.value)
     }
   }
 
@@ -25,21 +33,38 @@ class SearchMovies extends Component {
     return (
       <div>
         <div style={{display: 'flex'}}>
-          <button
-            type='button'
-            className='btn btn-outline-primary btn-lg'
-            onClick={this.onClick}
-          >
-            Search Movies
-          </button>
+          {this.renderSearchControls()}
           <input
             type='text'
             className='form-control input-lg'
-            value={this.props.searchTerm}
-            onChange={this.onChange}
+            value={this.props.searchQuery}
+            onChange={this.onSearchQueryChange}
           />
         </div>
       </div>
+    )
+  }
+
+  renderSearchControls () {
+    if (this.state.showSearchOptions) {
+      return (
+        <div style={{display: 'flex'}}>
+          <button className='btn btn-secondary btn-lg' type='button' onClick={this.onSearchCategorySelection}>All</button>
+          <button className='btn btn-secondary btn-lg' type='button' onClick={this.onSearchCategorySelection}>Title</button>
+          <button className='btn btn-secondary btn-lg' type='button' onClick={this.onSearchCategorySelection}>Genre</button>
+          <button className='btn btn-secondary btn-lg' type='button' onClick={this.onSearchCategorySelection}>Actors</button>
+        </div>
+      )
+    }
+
+    return (
+      <button
+        className='btn btn-outline-primary btn-lg dropdown-toggle'
+        type='button'
+        onClick={this.onSearchButtonClick}
+      >
+        Search {this.props.searchCategory}
+      </button>
     )
   }
 }

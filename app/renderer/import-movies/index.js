@@ -13,7 +13,7 @@ import ImportMovies, { stateKey } from './controller'
 // and a read only text box. The text in the text box can be set by dispatching
 // the 'updateSearchDirectory' action with the desired text.  The onClick event
 // handler for the clickable button can be set by passing in an 'onClick'
-// function on the props object.
+// function on the props, e.g., <ImportMovies onClick={this.importMovies} />
 export default ImportMovies
 
 // Action creators and reducer for state management.

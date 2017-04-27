@@ -1,5 +1,5 @@
 import {
-  updateSearchTerm,
+  updateSearchQuery,
   reducer
 } from './state'
 import SearchMovies, { stateKey } from './controller'
@@ -12,7 +12,7 @@ export default SearchMovies
 
 // Action creators and reducer for state management.
 export {
-  updateSearchTerm,
+  updateSearchQuery,
 
   // This is the key users of this module should use in combineReducers
   // to namespace this module's state.

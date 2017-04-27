@@ -28,6 +28,7 @@ module.exports = {
       : ''
 
     return {
+      actors: response.Actors || '<<ACTORS>>',
       genre: response.Genre || '<<GENRE>>',
       imdbID: response.imdbID || '',
       imgUrl: imgUrl,

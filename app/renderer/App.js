@@ -13,9 +13,7 @@ class App extends Component {
           <h2>Welcome to Confident Cruiser's Movie Night</h2>
         </div>
         <div>
-          <SearchMovies
-            onChange={AppController.handleSearchTermChange}
-          />
+          <SearchMovies />
         </div>
         <div>
           <ImportMovies
