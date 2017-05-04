@@ -10,7 +10,7 @@ class App extends Component {
     return (
       <div className='App'>
         <div className='App-header'>
-          <h2>Welcome to Confident Cruiser's Movie Night</h2>
+          <h2>Confident Cruiser's Movie Night</h2>
         </div>
         <div>
           <SearchMovies />

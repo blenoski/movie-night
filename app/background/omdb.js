@@ -2,6 +2,9 @@ const request = require('../shared/request')
 const { ExtendableError } = require('../shared/utils')
 
 const BASE_URL = 'http://www.omdbapi.com/?plot=full&t='
+const IMDBID_PARAM = 'i='
+const PLOT_PARAM = 'plot=full'
+const SEARH_PARAM = 's='
 const YEAR_PARAM = '&y='
 
 module.exports = {

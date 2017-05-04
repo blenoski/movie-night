@@ -1,5 +1,11 @@
+html {
+  background-color: #141414;
+}
+
 .App {
   font-size: large;
+  background-color: #141414;
+  width: 100%;
 }
 
 .App-header {

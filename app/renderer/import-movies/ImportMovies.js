@@ -17,7 +17,7 @@ class ImportMovies extends Component {
   render () {
     return (
       <div>
-        <div style={{display: 'flex'}}>
+        <div style={{display: 'flex', width: '100%'}}>
           <button
             type='button'
             className='btn btn-outline-primary btn-lg'
@@ -42,35 +42,54 @@ class ImportMovies extends Component {
       return
     }
 
-    const movieItems = this.props.movies.map((movie, index) => {
-      const locations = movie.fileInfo.reduce((prev, info) => {
-        return prev + ` ${info.location}`
-      }, 'Location:')
+    const genres = ['Comedy', 'Drama', 'Action']
 
+    return (
+      <div>
+        { genres.map(genre => this.renderMovieByGenre(genre)) }
+      </div>
+    )
+  }
+
+  renderMovieByGenre (genre) {
+    const movies = this.props.movies.filter((movie) => {
+      const firstGenre = movie.genre.split(',')[0]
+      return firstGenre.toLowerCase().indexOf(genre.toLowerCase()) >= 0
+    })
+
+    const movieItems = movies.map((movie) => {
       return (
-        <div style={{display: 'flex'}} key={movie.imdbID}>
-          <img src={movie.imgFile} alt='movie poster' />
-          <div className='card'>
-            <div className='card-block'>
-              <h4 className='card-title'>{`${movie.title} (${index})`}</h4>
-              <h6 className='card-subtitle mb-2 text-muted'>{movie.year}</h6>
-              <h6 className='card-subtitle mb-2 text-muted'>Genre: {movie.genre}</h6>
-              <h6 className='card-subtitle mb-2 text-muted'>Rating: {movie.rating}</h6>
-              <h6 className='card-subtitle mb-2 text-muted'>{locations}</h6>
-              <p className='card-text'>{movie.plot}</p>
-            </div>
-          </div>
+        <div key={movie.imdbID} style={{padding: '10px 0px', margin: '0px 5px'}}>
+          <img src={movie.imgFile} alt='movie poster' width='150px' height='222px' />
         </div>
       )
     })
 
     return (
       <div>
-        <h2 style={{padding: '10px'}}>Movies</h2>
-        {movieItems}
+        <h2 style={{color: 'white', margin: '10px 0 0 10px'}}>{genre.toUpperCase()}</h2>
+        <div key={genre} style={{display: 'flex', overflow: 'scroll'}}>
+          {movieItems}
+        </div>
       </div>
     )
   }
 }
+
+/*
+const locations = movie.fileInfo.reduce((prev, info) => {
+  return prev + ` ${info.location}`
+}, 'Location:')
+<div className='card'>
+  <div className='card-block'>
+    <h4 className='card-title'>{`${movie.title} (${index})`}</h4>
+    <h6 className='card-subtitle mb-2 text-muted'>{movie.year}</h6>
+    <h6 className='card-subtitle mb-2 text-muted'>Genre: {movie.genre}</h6>
+    <h6 className='card-subtitle mb-2 text-muted'>Rating: {movie.rating}</h6>
+    <h6 className='card-subtitle mb-2 text-muted'>{locations}</h6>
+    <p className='card-text'>{movie.plot}</p>
+  </div>
+</div>
+*/
 
 export default ImportMovies

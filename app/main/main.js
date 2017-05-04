@@ -138,6 +138,7 @@ ipcMain.on(SELECT_IMPORT_DIRECTORY, function (event) {
       logger.info('Sent CRAWL_DIRECTORY event to bgWorker', { directory })
     } else {
       logger.info('User canceled directory file dialog')
+      backgroundWorker.webContents.send(LOAD_MOVIE_DATABASE)
     }
   })
 })

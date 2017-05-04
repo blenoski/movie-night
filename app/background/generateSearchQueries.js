@@ -61,6 +61,12 @@ function getTitlesFor (name) {
     titles.push(splitName)
   }
 
+  // TODO:
+  // If first word is a number, then do not chop to less than two words.
+  // Instead, try chopping off the leading number.
+  // E.g. 02 - Return of the King.avi
+  // Exception: chop down to one word is okay if second to last word is a number
+
   return titles
 }
 
@@ -68,8 +74,9 @@ function getTitlesFor (name) {
 function normalize (name) {
   let normalized = name.replace(/_/g, ' ') // replace underscores with spaces
     .replace(/ - /g, ' ') // replace unconnected dashes with spaces
-    .replace(/^[Dd]ont /g, "Don't ")
-    .replace(/ [Dd]ont /g, " don't ")
+    .replace(/^[Dd]ont /g, "Don't ") // conjugate leading Dont
+    .replace(/ [Dd]ont /g, " don't ") // conjugate interior dont
+    .replace(/ [Aa]nd /g, '') // get rid of all interior 'and'
     .trim()
 
   if (normalized.indexOf(' ') === -1) {
