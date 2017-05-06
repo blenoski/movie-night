@@ -54,7 +54,7 @@ function createWindows () {
     appWindow.webContents.openDevTools()
   }
 
-  // Emitted when the window is closed.
+  // Emitted when the appWindow is closed.
   appWindow.on('closed', function () {
     logger.info('Received appWindow closed event')
     // Dereference the window object, usually you would store windows
@@ -70,8 +70,18 @@ function createWindows () {
   })
 
   // Create the backgroundWorker only after the appWindow is ready.
+  // This event will also fire when the appWindow finishes reloading.
   appWindow.webContents.on('did-finish-load', () => {
-    if (backgroundWorker === null) {
+    logger.info('Received appWindow did-finish-load event')
+
+    const loadMovieDatabase = () => {
+      backgroundWorker.webContents.send(LOAD_MOVIE_DATABASE)
+      logger.info('Sent LOAD_MOVIE_DATABASE event to backgroundWorker')
+    }
+
+    if (backgroundWorker !== null) {
+      loadMovieDatabase()
+    } else {
       logger.info('Creating backgroundWorker')
       backgroundWorker = new BrowserWindow({show: isDevEnv()})
       backgroundWorker.loadURL(url.format({
@@ -85,8 +95,7 @@ function createWindows () {
       }
 
       backgroundWorker.webContents.on('did-finish-load', () => {
-        backgroundWorker.webContents.send(LOAD_MOVIE_DATABASE)
-        logger.info('Sent LOAD_MOVIE_DATABASE event to backgroundWorker')
+        loadMovieDatabase()
       })
     }
   })
