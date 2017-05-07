@@ -11,10 +11,10 @@ import {
  } from '../shared/events'
 import store from './AppState'
 import {
-  updateMovieDB,
   updateCrawling,
   updateSearchDirectory
 } from './import-movies'
+import { updateMovieDB } from './display-movies'
 import logger from './mainWindowLogger'
 
 // Handle SEARCHING_DIRECTORY events

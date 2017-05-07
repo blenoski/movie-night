@@ -1,7 +1,6 @@
 import {
   updateSearchDirectory,
   updateCrawling,
-  updateMovieDB,
   reducer
 } from './state'
 import ImportMovies, { stateKey } from './controller'
@@ -28,9 +27,6 @@ export {
   // clickable button is disabled. Dispatch this action with false to re-enable
   // the clickable button when crawling has completed.
   updateCrawling,
-
-  // Dispatch this action to load a new movie database.
-  updateMovieDB,
 
   // This is the key users of this module should use in combineReducers
   // to namespace this module's state.

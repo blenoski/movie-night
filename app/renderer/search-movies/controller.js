@@ -1,21 +1,19 @@
 import { connect } from 'react-redux'
 import SearchMovies from './SearchMovies'
-import { updateSearchQuery, updateSearchCategory } from './state'
+import { updateSearchQuery } from './state'
 
 // Wire up state changes and dispatch actions to component props.
 export const stateKey = 'searchMovies'
 
 function mapStateToProps (state) {
   return {
-    searchQuery: state[stateKey].searchQuery,
-    searchCategory: state[stateKey].searchCategory
+    searchQuery: state[stateKey].searchQuery
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-    handleSearchQueryChange: (text) => dispatch(updateSearchQuery(text)),
-    handleSearchCategoryChange: (category) => dispatch(updateSearchCategory(category))
+    handleSearchQueryChange: (text) => dispatch(updateSearchQuery(text))
   }
 }
 

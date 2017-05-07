@@ -1,14 +1,12 @@
 // module state
 const initialState = {
   isCrawling: false,
-  searchDir: '',
-  movies: []
+  searchDir: ''
 }
 
 // action types
 const IS_CRAWLING = 'is-crawling'
 const SEARCH_DIRECTORY = 'search-directory'
-const UPDATE_MOVIE_DATABASE = 'update-movie-database'
 
 // action creators
 export function updateCrawling (isCrawling) {
@@ -25,13 +23,6 @@ export function updateSearchDirectory (directory) {
   }
 }
 
-export function updateMovieDB (movieDB) {
-  return {
-    type: UPDATE_MOVIE_DATABASE,
-    payload: movieDB
-  }
-}
-
 // reducer
 export function reducer (state = initialState, action) {
   switch (action.type) {
@@ -39,8 +30,6 @@ export function reducer (state = initialState, action) {
       return { ...state, isCrawling: action.payload }
     case SEARCH_DIRECTORY:
       return { ...state, searchDir: action.payload, isCrawling: true }
-    case UPDATE_MOVIE_DATABASE:
-      return { ...state, movies: action.payload }
     default:
       return state
   }
