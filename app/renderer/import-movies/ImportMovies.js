@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import '../App.css'
 
 class ImportMovies extends Component {
   constructor (props) {
@@ -42,7 +43,20 @@ class ImportMovies extends Component {
       return
     }
 
-    const genres = ['Comedy', 'Drama', 'Action']
+    // Create a histogram of title counts for each genre.
+    const genreMap = new Map()
+    this.props.movies.forEach((movie) => {
+      const genre = movie.genre.split(',')[0].toLowerCase() // get first genre
+      let count = genreMap.get(genre) || 0
+      genreMap.set(genre, count + 1)
+    })
+
+    // Sort genres in order from most titles to least titles.
+    const genres = [ ...genreMap ].sort((genreLhs, genreRhs) => {
+      return genreRhs[1] - genreLhs[1]
+    }).map((genre) => {
+      return genre[0]
+    })
 
     return (
       <div>
@@ -53,22 +67,44 @@ class ImportMovies extends Component {
 
   renderMovieByGenre (genre) {
     const movies = this.props.movies.filter((movie) => {
-      const firstGenre = movie.genre.split(',')[0]
-      return firstGenre.toLowerCase().indexOf(genre.toLowerCase()) >= 0
+      const firstGenre = movie.genre.split(',')[0].toLowerCase()
+      return firstGenre.indexOf(genre.toLowerCase()) >= 0
+    }).sort((movieLhs, movieRhs) => {
+      if (movieLhs.imgFile && !movieRhs.imgFile) {
+        return -1
+      } else if (movieRhs.imgFile && !movieLhs.imgFile) {
+        return 1
+      } else {
+        return 0
+      }
     })
 
     const movieItems = movies.map((movie) => {
       return (
-        <div key={movie.imdbID} style={{padding: '10px 0px', margin: '0px 5px'}}>
-          <img src={movie.imgFile} alt='movie poster' width='150px' height='222px' />
+        <div className='movie' key={movie.imdbID} style={{
+          margin: '5px 5px',
+          backgroundColor: '#141414',
+          color: '#999',
+          transitionProperty: 'all',
+          transitionDuration: '500ms',
+          transitionTimingFunction: 'linear'
+        }}>
+          <img
+            src={movie.imgFile}
+            alt={movie.title}
+            style={{
+              width: '150px',
+              height: '222px'
+            }}
+          />
         </div>
       )
     })
 
     return (
-      <div>
-        <h2 style={{color: 'white', margin: '10px 0 0 10px'}}>{genre.toUpperCase()}</h2>
-        <div key={genre} style={{display: 'flex', overflow: 'scroll'}}>
+      <div style={{marginTop: '10px'}}>
+        <h2>{genre}</h2>
+        <div className='mscroll' key={genre} style={{display: 'flex', overflowX: 'auto'}}>
           {movieItems}
         </div>
       </div>

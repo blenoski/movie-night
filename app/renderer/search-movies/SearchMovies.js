@@ -32,7 +32,7 @@ class SearchMovies extends Component {
   render () {
     return (
       <div>
-        <div style={{display: 'flex'}}>
+        <div style={{display: 'flex', marginTop: '85px'}}>
           {this.renderSearchControls()}
           <input
             type='text'

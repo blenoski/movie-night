@@ -1,6 +1,8 @@
 const request = require('../shared/request')
 const { ExtendableError } = require('../shared/utils')
 
+// TODO: Use the search API
+// TODO: Normalize genres into an array. Possibly define tier1 genres and prefer.
 const BASE_URL = 'http://www.omdbapi.com/?plot=full&t='
 const IMDBID_PARAM = 'i='
 const PLOT_PARAM = 'plot=full'
