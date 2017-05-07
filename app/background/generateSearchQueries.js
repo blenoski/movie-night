@@ -10,7 +10,7 @@ module.exports = {
     // Compute search queries from file name.
     let queries = generateQueriesFor(name)
 
-    // Compute search queries from parent directory name
+    // TODO: Compute search queries from parent directory name
     // If and only if:
     //  - movie file's directory has no subdirs AND
     //  - movie file's directory has only 1 movie file
@@ -28,6 +28,20 @@ function generateQueriesFor (name) {
 
   // Extract potential title strings.
   let titles = getTitlesFor(name)
+
+  // Do not include year in title strings if it is the last word
+  // E.g. 'Star Trek 2009.avi' should resolve to 'Star Trek'.
+  // Do not apply rule if year is the only word, e.g. '2012 (2009).avi'
+  releaseYears.forEach((releaseYear) => {
+    titles = titles.map((title) => {
+      let words = title.split(' ')
+      if (words.length > 1 && words.pop() === releaseYear) {
+        return words.join(' ')
+      } else {
+        return title
+      }
+    })
+  })
 
   // Conflate release year and title into query objects
   // Titles can also be considered standalone but titles with year are preferred.
