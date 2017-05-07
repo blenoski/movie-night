@@ -21,7 +21,7 @@ class DisplayMovies extends Component {
     // Create a histogram of title counts for each genre.
     const genreMap = new Map()
     this.props.movies.forEach((movie) => {
-      const genre = movie.genre.split(',')[0].toLowerCase() // get first genre
+      const genre = movie.genres[0] // get first genre
       const count = genreMap.get(genre) || 0
       genreMap.set(genre, count + 1)
     })
@@ -42,8 +42,7 @@ class DisplayMovies extends Component {
 
   renderMovieByGenre (genre) {
     const movies = this.props.movies.filter((movie) => {
-      const firstGenre = movie.genre.split(',')[0].toLowerCase()
-      return firstGenre.indexOf(genre.toLowerCase()) >= 0
+      return movie.genres[0] === genre
     })
     .sort((movieLhs, movieRhs) => {
       if (movieLhs.imgFile && !movieRhs.imgFile) {

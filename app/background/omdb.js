@@ -1,53 +1,61 @@
 const request = require('../shared/request')
 const { ExtendableError } = require('../shared/utils')
+const { generateSearchQueriesFor } = require('./generateSearchQueries')
 
-// TODO: Use the search API
-// TODO: Normalize genres into an array. Possibly define tier1 genres and prefer.
-const BASE_URL = 'http://www.omdbapi.com/?plot=full&t='
-const IMDBID_PARAM = 'i='
-const PLOT_PARAM = 'plot=full'
-const SEARH_PARAM = 's='
-const YEAR_PARAM = '&y='
+const BASE_URL = 'http://www.omdbapi.com/'
 
 module.exports = {
-  convertQueriesToOMDBUrls: function convertQueriesToOMDBUrls (queries) {
-    return queries.map((query) => {
-      return getUrlFor(query)
-    })
-  },
-
-  getJSON: function getJSON (query) {
-    const url = getUrlFor(query)
-    return request.getJSON(url, dataValidator)
-  },
-
-  // Transform the OMDB HTTP response into our internal
-  // movie descriptor.
-  transform: function tranform (response) {
-    let rating = (response.Ratings && response.Ratings.length > 0)
-      ? response.Ratings[0].Value || '<<RATING>>'
-      : '<<RATING>>'
-
-    const imgUrl = (response.Poster && response.Poster.startsWith('http'))
-      ? response.Poster
-      : ''
-
-    return {
-      actors: response.Actors || '<<ACTORS>>',
-      genre: response.Genre || '<<GENRE>>',
-      imdbID: response.imdbID || '',
-      imgUrl: imgUrl,
-      plot: response.Plot || '',
-      rating: rating,
-      title: response.Title || '<<TITLE>>',
-      year: response.Year || '<<RELEASE YEAR>>'
-    }
-  },
-
-  dataValidator
+  fetchMovieMetadata
 }
 
 class OMDBDataError extends ExtendableError {}
+
+function fetchMovieMetadata (movieFile) {
+  const queries = generateSearchQueriesFor(movieFile)
+  const urls = convertQueriesToOMDBUrls(queries)
+  let successUrl = ''
+  return request.getFirstSuccess(urls, searchValidator)
+    .then(({data, url}) => {
+      successUrl = url
+
+      // Get imdbID for first item that is not a game.
+      const items = data.Search.filter(result => result.Type !== 'game')
+      if (items.length === 0) {
+        throw new Error('Movie not found, only games!') // programming error if this is caught here.
+      }
+
+      return getJSON(items[0].imdbID, dataValidator) // get the actual metadata
+    })
+    .then((data) => {
+      const metadata = transform(data)
+      return { metadata, url: successUrl }
+    })
+}
+
+function convertQueriesToOMDBUrls (queries) {
+  return queries.map((query) => {
+    const year = (query.releaseYear) ? `&y=${query.releaseYear}` : ''
+    const url = `${BASE_URL}?&s=${query.title}${year}`
+    return encodeURI(url)
+  })
+}
+
+function searchValidator (data) {
+  if (data.Error) {
+    throw new OMDBDataError(data.Error)
+  }
+
+  // Looking for one result that is not a game.
+  const items = data.Search.filter(result => result.Type !== 'game')
+  if (items.length === 0) {
+    throw new OMDBDataError('Movie not found!')
+  }
+}
+
+function getJSON (imdbID) {
+  const url = `${BASE_URL}?plot=full&i=${imdbID}`
+  return request.getJSON(url, dataValidator)
+}
 
 function dataValidator (data) {
   if (data.Error) {
@@ -67,8 +75,32 @@ function dataValidator (data) {
   }
 }
 
-function getUrlFor (query) {
-  const year = (query.releaseYear) ? `${YEAR_PARAM}${query.releaseYear}` : ''
-  const url = `${BASE_URL}${query.title}${year}`
-  return encodeURI(url)
+// Transform the OMDB HTTP response into our internal movie descriptor.
+function transform (response) {
+  const rating = (response.Ratings && response.Ratings.length > 0)
+    ? response.Ratings[0].Value || '<<RATING>>'
+    : '<<RATING>>'
+
+  const imgUrl = (response.Poster && response.Poster.startsWith('http'))
+    ? response.Poster
+    : ''
+
+  const genres = (response.Genre)
+    ? response.Genre.split(',').map(e => e.trim().toLowerCase())
+    : ['<<GENRE>>']
+
+  const actors = (response.Actors)
+    ? response.Actors.split(',').map(e => e.trim().toLowerCase())
+    : ['<<ACTOR>>']
+
+  return {
+    actors: actors,
+    genres: genres,
+    imdbID: response.imdbID || '',
+    imgUrl: imgUrl,
+    plot: response.Plot || '',
+    rating: rating,
+    title: response.Title || '<<TITLE>>',
+    year: response.Year || '<<RELEASE YEAR>>'
+  }
 }
