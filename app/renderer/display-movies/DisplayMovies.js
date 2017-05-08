@@ -80,9 +80,9 @@ class DisplayMovies extends Component {
     })
 
     return (
-      <div style={{marginTop: '30px'}}>
+      <div key={genre} style={{marginTop: '30px'}}>
         <h2>{genre}<i className='fa fa-chevron-right fa-fw' aria-hidden='true' /></h2>
-        <div className='mscroll' key={genre} style={{display: 'flex', overflowX: 'auto'}}>
+        <div className='mscroll' style={{display: 'flex', overflowX: 'auto'}}>
           {movieItems}
         </div>
       </div>
