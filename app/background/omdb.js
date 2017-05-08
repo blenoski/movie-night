@@ -13,22 +13,31 @@ class OMDBDataError extends ExtendableError {}
 function fetchMovieMetadata (movieFile) {
   const queries = generateSearchQueriesFor(movieFile)
   const urls = convertQueriesToOMDBUrls(queries)
+  return omdbFetch(urls)
+}
+
+function omdbFetch (urls) {
   let successUrl = ''
   return request.getFirstSuccess(urls, searchValidator)
     .then(({data, url}) => {
       successUrl = url
-
-      // Get imdbID for first item that is not a game.
-      const items = data.Search.filter(result => result.Type !== 'game')
-      if (items.length === 0) {
-        throw new Error('Movie not found, only games!') // programming error if this is caught here.
-      }
-
-      return getJSON(items[0].imdbID, dataValidator) // get the actual metadata
+      const movie = data.Search.find(result => result.Type !== 'game')
+      return getJSON(movie.imdbID, dataValidator) // get actual metadata
     })
     .then((data) => {
       const metadata = transform(data)
       return { metadata, url: successUrl }
+    }, (err) => {
+      // Handle case where search query is successful but metadata query fails.
+      // What we want to do is try again starting with the remaining URLs.
+      const badIndex = urls.indexOf(successUrl)
+      const remainingUrls = urls.filter((successUrl, index) => {
+        return index > badIndex
+      })
+      if (badIndex < 0 || remainingUrls.length === 0) {
+        throw err
+      }
+      return omdbFetch(remainingUrls) // RECURSIVE!!!
     })
 }
 
@@ -46,8 +55,7 @@ function searchValidator (data) {
   }
 
   // Looking for one result that is not a game.
-  const items = data.Search.filter(result => result.Type !== 'game')
-  if (items.length === 0) {
+  if (data.Search.findIndex(result => result.Type !== 'game') < 0) {
     throw new OMDBDataError('Movie not found!')
   }
 }

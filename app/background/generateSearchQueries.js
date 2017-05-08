@@ -141,5 +141,6 @@ function clean (name) {
     .replace(/x264.*/i, '')
     .replace(/xvid.*/i, '')
     .replace(/yify.*/i, '')
+    .replace(/0[1-9] /, '') // remove leading zero padded number, e.g., 05
     .trim() // remove all leading and trailing whitespace after cleaning
 }
