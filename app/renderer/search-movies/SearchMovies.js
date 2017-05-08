@@ -15,7 +15,7 @@ class SearchMovies extends Component {
 
   render () {
     return (
-      <div style={{display: 'flex', color: 'white', marginRight: '10px'}}>
+      <div style={{display: 'flex', color: 'white', opacity: '0.7', marginRight: '10px'}}>
         <i className='fa fa-search fa-lg' style={{marginTop: '6px', marginRight: '5px'}} />
         <input
           type='text'

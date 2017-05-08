@@ -18,13 +18,10 @@ function mapStateToProps (state) {
         return true
       }
 
-      // Look for matching genre. Use traditional for loop for performance.
-      const genres = movie.genres
-      const genresLength = genres.length
-      for (let i = 0; i < genresLength; i += 1) {
-        if (genres[i].indexOf(searchQuery) >= 0) {
-          return true
-        }
+      // Look for matching genre.
+      // Here we only consider the first/primary genre.
+      if (movie.genres[0].indexOf(searchQuery) >= 0) {
+        return true
       }
 
       // Look for matching actor. Use traditional for loop for performance.

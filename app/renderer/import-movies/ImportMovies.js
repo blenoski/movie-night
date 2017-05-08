@@ -22,9 +22,17 @@ class ImportMovies extends Component {
         onClick={this.onClick}
         disabled={this.props.isCrawling}
       >
-        <i className='fa fa-database' />
+        {this.renderIcon()}
       </button>
     )
+  }
+
+  renderIcon () {
+    if (this.props.isCrawling) {
+      return <i className='fa fa-spinner fa-pulse fa-lg fa-fw' />
+    } else {
+      return <i className='fa fa-database' />
+    }
   }
 }
 
