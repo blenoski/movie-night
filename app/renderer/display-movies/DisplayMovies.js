@@ -1,16 +1,31 @@
 import React, { Component } from 'react'
+import { shell } from 'electron'
+import '../App.css'
 
 class DisplayMovies extends Component {
   constructor (props) {
     super(props)
     this.onClick = this.onClick.bind(this)
+    this.onMouseDown = this.onMouseDown.bind(this)
+    this.onMouseUp = this.onMouseUp.bind(this)
   }
 
   onClick (e) {
     e.preventDefault()
+    console.log('mouse-click')
     if (this.props.onClick) {
       this.props.onClick()
     }
+  }
+
+  onMouseDown (e) {
+    // e.preventDefault()
+    console.log('mouse-down')
+  }
+
+  onMouseUp (e) {
+    e.preventDefault()
+    console.log('mouse-up')
   }
 
   render () {
@@ -40,6 +55,103 @@ class DisplayMovies extends Component {
     )
   }
 
+  renderDetailsFor (movie, genre) {
+    // if (genre !== 'adventure') {
+    //   return null
+    // }
+
+    // if (movie.title === '2012') {
+    //   console.log('attempting to open finder')
+    //   shell.showItemInFolder(movie.fileInfo[0].location) // open movie selected in finder
+    //   shell.openItem(movie.fileInfo[0].location) // open movie in default program
+    // }
+
+    return (
+      <div style={{display: 'flex'}}>
+        <div
+          style={{
+            marginRight: '20px',
+            width: '300px',
+            height: '444px',
+            background: `url(${movie.imgFile}) no-repeat center`,
+            display: 'flex',
+            flexShrink: '0',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          <button
+            type='button'
+            className='play-button'
+          >
+            <i className='fa fa-play fa-3x' />
+          </button>
+        </div>
+        <div style={{color: 'rgba(255,255,255,0.7)', height: '444px', display: 'flex', flexDirection: 'column'}}>
+          <div>
+            <div style={{display: 'flex', flexDirection: 'column'}}>
+              <h1 style={{color: 'rgba(255,255,255,1.0)'}}>
+                {`${movie.title}`}
+              </h1>
+            </div>
+            <h6>
+              <span>{movie.year}</span>
+              <span style={{border: '1px solid', borderRadius: '5px', margin: '0px 10px', padding: '1px 4px'}}>
+                {movie.rated}
+              </span>
+              <span>{movie.runtime}</span>
+            </h6>
+            <div>
+              <h6>
+                <span>Audience: {this.renderStarRating(Number(movie.imdbRating) / 10.0)}</span>
+                <span style={{marginLeft: '20px'}}>Critics: {this.renderStarRating(Number(movie.metascore) / 100.0)}</span>
+              </h6>
+            </div>
+          </div>
+          <div style={{marginTop: '10px', overflowY: 'auto'}}>
+            <p>{movie.plot}</p>
+          </div>
+          <div style={{marginTop: '20px'}}>
+            <h6 style={{textTransform: 'capitalize'}}>
+              <span style={{color: 'rgba(255,255,255,0.9)'}}>Starring:</span> {movie.actors.join(', ')}
+            </h6>
+            <h6 style={{textTransform: 'capitalize'}}>
+              <span style={{color: 'rgba(255,255,255,0.9)'}}>Director:</span> {movie.director}
+            </h6>
+            <h6 style={{textTransform: 'capitalize'}}>
+              <span style={{color: 'rgba(255,255,255,0.9)'}}>Genres:</span> {movie.genres.join(', ')}
+            </h6>
+          </div>
+          <div style={{display: 'flex', cursor: 'pointer', marginTop: '20px'}}>
+            <span
+              className='fa fa-file-video-o fa-lg'
+              style={{color: 'rgba(255,255,255,0.9)', marginRight: '5px'}}
+            />
+            <h6>
+              {movie.fileInfo[0].location}
+            </h6>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  renderStarRating (rating) {
+    const getIcon = (starId, starRating) => {
+      if (starRating >= starId) {
+        return <i key={starId} className='fa fa-star' />
+      } else if (starRating + 0.5 >= starId) {
+        return <i key={starId} className='fa fa-star-half-o' />
+      } else {
+        return <i key={starId} className='fa fa-star-o' />
+      }
+    }
+
+    return (
+      [1, 2, 3, 4, 5].map(starId => getIcon(starId, rating * 5))
+    )
+  }
+
   renderMovieByGenre (genre) {
     const movies = this.props.movies.filter((movie) => {
       return movie.genres[0] === genre
@@ -57,15 +169,11 @@ class DisplayMovies extends Component {
     const movieItems = movies.map((movie) => {
       return (
         <div className='movie' key={movie.imdbID} style={{
-          margin: '5px 0px 5px 0px',
+          margin: '5px 10px 5px 0px',
           backgroundColor: '#141414',
           color: '#999',
-          transitionProperty: 'all',
-          transitionDuration: '500ms',
-          transitionTimingFunction: 'linear',
           display: 'inline-block',
-          cursor: 'pointer',
-          paddingRight: '10px'
+          cursor: 'pointer'
         }}>
           <img
             src={movie.imgFile}
@@ -80,30 +188,17 @@ class DisplayMovies extends Component {
     })
 
     return (
-      <div key={genre} style={{marginTop: '30px'}}>
-        <h2>{genre}<i className='fa fa-chevron-right fa-fw' aria-hidden='true' /></h2>
-        <div className='mscroll' style={{display: 'flex', overflowX: 'auto'}}>
-          {movieItems}
+      <div>
+        <div key={genre} style={{marginTop: '30px', marginRight: '10px'}}>
+          <h2>{genre}<i className='fa fa-chevron-right fa-fw' aria-hidden='true' /></h2>
+          <div className='mscroll' style={{display: 'flex', overflowX: 'auto'}}>
+            {movieItems}
+          </div>
         </div>
+        {this.renderDetailsFor(movies[0], genre)}
       </div>
     )
   }
 }
-
-/*
-const locations = movie.fileInfo.reduce((prev, info) => {
-  return prev + ` ${info.location}`
-}, 'Location:')
-<div className='card'>
-  <div className='card-block'>
-    <h4 className='card-title'>{`${movie.title} (${index})`}</h4>
-    <h6 className='card-subtitle mb-2 text-muted'>{movie.year}</h6>
-    <h6 className='card-subtitle mb-2 text-muted'>Genre: {movie.genre}</h6>
-    <h6 className='card-subtitle mb-2 text-muted'>Rating: {movie.rating}</h6>
-    <h6 className='card-subtitle mb-2 text-muted'>{locations}</h6>
-    <p className='card-text'>{movie.plot}</p>
-  </div>
-</div>
-*/
 
 export default DisplayMovies

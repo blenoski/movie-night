@@ -31,7 +31,7 @@ function omdbFetch (urls) {
       // Handle case where search query is successful but metadata query fails.
       // What we want to do is try again starting with the remaining URLs.
       const badIndex = urls.indexOf(successUrl)
-      const remainingUrls = urls.filter((successUrl, index) => {
+      const remainingUrls = urls.filter((url, index) => {
         return index > badIndex
       })
       if (badIndex < 0 || remainingUrls.length === 0) {
@@ -61,7 +61,7 @@ function searchValidator (data) {
 }
 
 function getJSON (imdbID) {
-  const url = `${BASE_URL}?plot=full&i=${imdbID}`
+  const url = `${BASE_URL}?plot=short&i=${imdbID}`
   return request.getJSON(url, dataValidator)
 }
 
@@ -85,10 +85,6 @@ function dataValidator (data) {
 
 // Transform the OMDB HTTP response into our internal movie descriptor.
 function transform (response) {
-  const rating = (response.Ratings && response.Ratings.length > 0)
-    ? response.Ratings[0].Value || '<<RATING>>'
-    : '<<RATING>>'
-
   const imgUrl = (response.Poster && response.Poster.startsWith('http'))
     ? response.Poster
     : ''
@@ -103,11 +99,15 @@ function transform (response) {
 
   return {
     actors: actors,
+    director: response.Director || '',
     genres: genres,
     imdbID: response.imdbID || '',
+    imdbRating: response.imdbRating || '',
     imgUrl: imgUrl,
+    metascore: response.Metascore || '',
     plot: response.Plot || '',
-    rating: rating,
+    rated: response.Rated || '<<RATED>>',
+    runtime: response.Runtime || '',
     title: response.Title || '<<TITLE>>',
     year: response.Year || '<<RELEASE YEAR>>'
   }

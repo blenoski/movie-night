@@ -11,7 +11,7 @@ function mapStateToProps (state) {
     // WARNING:
     // Tight inner loop executing in real time as user is typing search query.
     // Performance really matters inside this block.
-    searchQuery = searchQuery.toLowerCase()
+    searchQuery = searchQuery.toLowerCase().trim()
 
     filteredMovies = filteredMovies.filter((movie) => {
       if (movie.title.toLowerCase().indexOf(searchQuery) >= 0) {
@@ -19,8 +19,9 @@ function mapStateToProps (state) {
       }
 
       // Look for matching genre.
-      // Here we only consider the first/primary genre.
-      if (movie.genres[0].indexOf(searchQuery) >= 0) {
+      // Here we only consider the first/primary genre and
+      // we are looking for a startsWith match.
+      if (movie.genres[0].startsWith(searchQuery)) {
         return true
       }
 

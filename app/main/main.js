@@ -38,6 +38,7 @@ function createWindows () {
   const initialWindowSizeScaleFactor = 0.95
   height = Math.round(height * initialWindowSizeScaleFactor)
   width = Math.round(width * initialWindowSizeScaleFactor)
+  width = Math.min(982, width)
 
   // Create the browser window.
   appWindow = new BrowserWindow({width, height})
