@@ -8,6 +8,8 @@ class DisplayMovies extends Component {
     this.onClick = this.onClick.bind(this)
     this.onMouseDown = this.onMouseDown.bind(this)
     this.onMouseUp = this.onMouseUp.bind(this)
+    this.onPlayMovie = this.onPlayMovie.bind(this)
+    this.onShowMovie = this.onShowMovie.bind(this)
   }
 
   onClick (e) {
@@ -55,17 +57,17 @@ class DisplayMovies extends Component {
     )
   }
 
+  onPlayMovie (movie) {
+    console.log('play', movie)
+    shell.openItem(movie) // open movie in default program
+  }
+
+  onShowMovie (movie) {
+    console.log('show', movie)
+    shell.showItemInFolder(movie) // open movie selected in finder
+  }
+
   renderDetailsFor (movie, genre) {
-    // if (genre !== 'adventure') {
-    //   return null
-    // }
-
-    // if (movie.title === '2012') {
-    //   console.log('attempting to open finder')
-    //   shell.showItemInFolder(movie.fileInfo[0].location) // open movie selected in finder
-    //   shell.openItem(movie.fileInfo[0].location) // open movie in default program
-    // }
-
     return (
       <div style={{display: 'flex'}}>
         <div
@@ -83,6 +85,7 @@ class DisplayMovies extends Component {
           <button
             type='button'
             className='play-button'
+            onClick={(e) => { e.preventDefault(); this.onPlayMovie(movie.fileInfo[0].location) }}
           >
             <i className='fa fa-play fa-3x' />
           </button>
@@ -122,7 +125,10 @@ class DisplayMovies extends Component {
               <span style={{color: 'rgba(255,255,255,0.9)'}}>Genres:</span> {movie.genres.join(', ')}
             </h6>
           </div>
-          <div style={{display: 'flex', cursor: 'pointer', marginTop: '20px'}}>
+          <div
+            style={{display: 'flex', cursor: 'pointer', marginTop: '20px'}}
+            onClick={(e) => { e.preventDefault(); this.onShowMovie(movie.fileInfo[0].location) }}
+          >
             <span
               className='fa fa-file-video-o fa-lg'
               style={{color: 'rgba(255,255,255,0.9)', marginRight: '5px'}}
