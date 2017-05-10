@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
+import styled from 'styled-components'
+import { TextInput } from '../components'
+import { Search } from '../icons'
 
-class SearchMovies extends Component {
+export default class SearchMovies extends Component {
   constructor (props) {
     super(props)
     this.onSearchQueryChange = this.onSearchQueryChange.bind(this)
@@ -15,19 +18,26 @@ class SearchMovies extends Component {
 
   render () {
     return (
-      <div style={{display: 'flex', color: 'white', opacity: '0.7', marginRight: '10px'}}>
-        <i className='fa fa-search fa-lg' style={{marginTop: '6px', marginRight: '5px'}} />
-        <input
-          type='text'
+      <SearchContainer>
+        <IconContainer><Search large /></IconContainer>
+        <TextInput
           placeholder='Title, genre, actor'
-          className='form-control input'
-          style={{fontSize: '1rem', marginLeft: '1%'}}
           value={this.props.searchQuery}
           onChange={this.onSearchQueryChange}
         />
-      </div>
+      </SearchContainer>
     )
   }
 }
 
-export default SearchMovies
+const SearchContainer = styled.div`
+  display: flex;
+  color: white;
+  opacity: 0.7;
+  margin-right: 10px;
+`
+
+const IconContainer = styled.div`
+  margin-top: 3px;
+  margin-right: 8px;
+`

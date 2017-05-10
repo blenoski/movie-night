@@ -1,27 +1,50 @@
 import React, { Component } from 'react'
+import styled from 'styled-components'
 import AppController from './AppController'
 import DisplayMovies from './display-movies'
 import ImportMovies from './import-movies'
 import Logo from './logo'
 import SearchMovies from './search-movies'
 
-import './App.css'
-
-class App extends Component {
+export default class App extends Component {
   render () {
     return (
-      <div className='App'>
-        <div className='App-header'>
+      <Application>
+        <Header>
           <Logo />
-          <div style={{display: 'flex'}}>
+          <AppControls>
             <SearchMovies />
-            <ImportMovies onClick={AppController.importMovies} />
-          </div>
-        </div>
+            <ImportMovies
+              onClick={AppController.importMovies}
+            />
+          </AppControls>
+        </Header>
         <DisplayMovies />
-      </div>
+      </Application>
     )
   }
 }
 
-export default App
+const Application = styled.div`
+  background-color: #141414;
+  width: 100%;
+`
+
+const Header = styled.header`
+  background-color: rgba(20,20,20,0.7);
+  color: white;
+  display: flex;
+  flex-wrap: nowrap;
+  font-family: CopperPlate, Times;
+  font-size: 1.5em;
+  justify-content: space-between;
+  left: 0;
+  right: 0;
+  top: 0;
+  padding: 10px 10px 10px 20px;
+  position: fixed;
+`
+
+const AppControls = styled.div`
+  display: flex;
+`

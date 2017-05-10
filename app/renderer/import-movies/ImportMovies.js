@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import '../App.css'
+import { Button } from '../components'
+import { Database, Spinner } from '../icons'
 
 class ImportMovies extends Component {
   constructor (props) {
@@ -16,32 +17,22 @@ class ImportMovies extends Component {
 
   render () {
     return (
-      <button
-        type='button'
-        className='btn btn-outline-primary'
+      <Button primary outline
         onClick={this.onClick}
         disabled={this.props.isCrawling}
       >
         {this.renderIcon()}
-      </button>
+      </Button>
     )
   }
 
   renderIcon () {
     if (this.props.isCrawling) {
-      return <i className='fa fa-spinner fa-pulse fa-lg fa-fw' />
+      return <Spinner fixedWidth large pulse />
     } else {
-      return <i className='fa fa-database' />
+      return <Database />
     }
   }
 }
 
 export default ImportMovies
-
-/*
-<input
-  type='text'
-  className='form-control input'
-  value={this.props.searchDir}
-/>
-*/
