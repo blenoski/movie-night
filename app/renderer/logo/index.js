@@ -1,12 +1,22 @@
 import React from 'react'
+import styled from 'styled-components'
+import { Anchor } from '../icons'
+
+const LogoContainer = styled.div`
+  flex-shrink: 0;
+  color: rgb(2,117,216);
+  text-decoration: underline;
+`
+
+const IconContainer = styled.span`
+  margin: 0 5px;
+`
 
 const Logo = () => {
   return (
-    <div className='logo' style={{flexShrink: '0', color: '#0275d8'}}>
-      <span style={{textDecoration: 'underline'}}>Movie</span>
-      <i className='fa fa-anchor fa-lg' style={{margin: '0 5px'}} />
-      <span style={{textDecoration: 'underline'}}>Night</span>
-    </div>
+    <LogoContainer>
+      Movie<IconContainer><Anchor large /></IconContainer>Night
+    </LogoContainer>
   )
 }
 
