@@ -1,31 +1,73 @@
 import cn from 'classnames'
 import React from 'react'
 
-const Icon = ({ className, fixedWidth, large, pulse, ...props }) => {
+const Icon = ({ className, fixedWidth, large, pulse, size3x, ...props }) => {
   return <i
     className={cn(
       'fa',
       className,
       pulse && 'fa-pulse',
       large && 'fa-lg',
-      fixedWidth && 'fa-fw'
+      fixedWidth && 'fa-fw',
+      size3x && 'fa-3x'
     )}
     {...props}
   />
 }
 
 export const Anchor = ({ className, ...props }) => {
-  return <Icon className='fa-anchor' {...props} />
+  return <Icon className={cn('fa-anchor', className)} {...props} />
+}
+
+export const Chevron = ({ className, down, left, right, up, ...props }) => {
+  return <Icon
+    className={cn(
+      down && 'fa-chevron-down',
+      left && 'fa-chevron-left',
+      right && 'fa-chevron-right',
+      up && 'fa-chevron-up',
+      !down && !left && !right && !up && 'fa-chevron-right', // default
+      className
+    )}
+    {...props}
+  />
 }
 
 export const Database = ({ className, ...props }) => {
-  return <Icon className='fa-database' {...props} />
+  return <Icon className={cn('fa-database', className)} {...props} />
+}
+
+export const FileIcon = ({ className, video, ...props }) => {
+  return <Icon
+    className={cn(
+      video && 'fa-file-video-o',
+      !video && 'fa-file', // default
+      className
+    )}
+    {...props}
+  />
+}
+
+export const Play = ({ className, ...props }) => {
+  return <Icon className={cn('fa-play', className)} {...props} />
 }
 
 export const Search = ({ className, ...props }) => {
-  return <Icon className='fa-search' {...props} />
+  return <Icon className={cn('fa-search', className)} {...props} />
 }
 
 export const Spinner = ({ className, ...props }) => {
-  return <Icon className='fa-spinner' {...props} />
+  return <Icon className={cn('fa-spinner', className)} {...props} />
+}
+
+export const Star = ({ className, half, outline, ...props }) => {
+  return <Icon
+    className={cn(
+      half && 'fa-star-half-o',
+      outline && 'fa-star-o',
+      !half && !outline && 'fa-star', // default
+      className
+    )}
+    {...props}
+  />
 }

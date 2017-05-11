@@ -26,8 +26,9 @@ export default class App extends Component {
 }
 
 const Application = styled.div`
-  background-color: #141414;
+  background: rgb(20,20,20);
   width: 100%;
+  padding-top: 40px;
 `
 
 const Header = styled.header`

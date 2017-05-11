@@ -19,7 +19,7 @@ export default class SearchMovies extends Component {
   render () {
     return (
       <SearchContainer>
-        <IconContainer><Search large /></IconContainer>
+        <StyledSearchIcon large />
         <TextInput
           placeholder='Title, genre, actor'
           value={this.props.searchQuery}
@@ -37,7 +37,7 @@ const SearchContainer = styled.div`
   margin-right: 10px;
 `
 
-const IconContainer = styled.div`
-  margin-top: 3px;
+const StyledSearchIcon = styled(Search)`
+  margin-top: 7px;
   margin-right: 8px;
 `

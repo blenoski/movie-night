@@ -5,7 +5,7 @@ import { Anchor } from '../icons'
 const Logo = () => {
   return (
     <LogoContainer>
-      Movie<IconContainer><Anchor large /></IconContainer>Night
+      Movie<StyledAnchor large />Night
     </LogoContainer>
   )
 }
@@ -20,6 +20,6 @@ const LogoContainer = styled.div`
   paddingTop: 3px;
 `
 
-const IconContainer = styled.span`
+const StyledAnchor = styled(Anchor)`
   margin: 0 5px;
 `
