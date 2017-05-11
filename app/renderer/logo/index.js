@@ -14,7 +14,7 @@ export default Logo
 
 const LogoContainer = styled.div`
   flex-shrink: 0;
-  color: rgb(2,117,216);
+  color: rgba(2,117,216,1);
   text-decoration: underline;
   font-family: CopperPlate, Times;
   paddingTop: 3px;

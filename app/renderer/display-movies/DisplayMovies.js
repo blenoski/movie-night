@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import MovieDetail from './movie-detail'
 import MovieGallery from './MovieGallery'
 
 export default class DisplayMovies extends Component {

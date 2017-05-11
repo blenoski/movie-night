@@ -17,9 +17,28 @@ export default class App extends Component {
             <ImportMovies onClick={AppController.importMovies} />
           </AppControls>
         </Header>
-        <DisplayMovies />
+
+        {this.renderContent()}
       </Application>
     )
+  }
+
+  renderContent () {
+    const movies = this.props.movies || []
+
+    if (movies.length === 0) {
+      return (
+        <OnFirstRunOrEmptyDatabase>
+          Add Media
+          <BigImportMovies
+            onClick={AppController.importMovies}
+          />
+        </OnFirstRunOrEmptyDatabase>
+      )
+    }
+
+    // Normal case. Display movies from database.
+    return <DisplayMovies movies={movies} />
   }
 }
 
@@ -45,4 +64,21 @@ const Header = styled.header`
 
 const AppControls = styled.div`
   display: flex;
+`
+
+const OnFirstRunOrEmptyDatabase = styled.div`
+  align-items: center;
+  color: rgba(2,117,216,1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: 100px;
+  font-family: CopperPlate, serif;
+  font-size: 3rem;
+`
+
+const BigImportMovies = styled(ImportMovies)`
+  font-size: 10rem;
+  padding: 3% 5%;
+  text-decoration: none;
 `
