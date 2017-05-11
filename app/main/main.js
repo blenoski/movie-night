@@ -36,12 +36,23 @@ function createWindows () {
   // Get the usable screen size.
   let {width, height} = electron.screen.getPrimaryDisplay().workAreaSize
   const initialWindowSizeScaleFactor = 0.95
+
+  const maxInitialSize = 980
+  const minHeight = 510
   height = Math.round(height * initialWindowSizeScaleFactor)
+  height = Math.max(minHeight, Math.min(maxInitialSize, height))
+
+  const minWidth = 510
   width = Math.round(width * initialWindowSizeScaleFactor)
-  width = Math.min(982, width)
+  width = Math.max(minWidth, Math.min(maxInitialSize, width))
 
   // Create the browser window.
-  appWindow = new BrowserWindow({width, height})
+  appWindow = new BrowserWindow({
+    height,
+    minHeight,
+    minWidth,
+    width
+  })
 
   // and load the index.html of the app.
   appWindow.loadURL(url.format({
@@ -136,8 +147,12 @@ app.on('quit', function () {
 // to crawl for movies.
 ipcMain.on(SELECT_IMPORT_DIRECTORY, function (event) {
   logger.info('Received SELECT_IMPORT_DIRECTORY event')
+  const hint = 'SELECT MEDIA FOLDER'
   const window = BrowserWindow.fromWebContents(event.sender)
   electron.dialog.showOpenDialog(window, {
+    title: hint,
+    message: hint,
+    buttonLabel: 'Add Media',
     properties: ['openDirectory']
   }, function (selection) {
     if (!backgroundWorker) {
