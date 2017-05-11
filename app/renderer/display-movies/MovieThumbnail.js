@@ -1,11 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 
-export default ({ movie }) =>
+export default ({ title, imgFile }) =>
   <ImageContainer>
     <StyledImage
-      src={movie.imgFile}
-      alt={movie.title}
+      src={imgFile}
+      alt={title}
     />
   </ImageContainer>
 

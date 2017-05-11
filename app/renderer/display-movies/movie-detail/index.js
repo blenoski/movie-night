@@ -47,7 +47,7 @@ export default class MovieDetail extends Component {
             />
           </header>
 
-          <Plot>{movie.plot}</Plot>
+          <VerticalScrollSection>{movie.plot}</VerticalScrollSection>
 
           <ListMeta
             actors={movie.actors}
@@ -88,7 +88,7 @@ const MovieDetailsContainer = styled.article`
   height: 444px;
 `
 
-const Plot = styled.section`
+const VerticalScrollSection = styled.section`
   margin-top: 30px;
   overflow-y: auto;
 `

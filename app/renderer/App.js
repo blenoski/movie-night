@@ -14,9 +14,7 @@ export default class App extends Component {
           <Logo />
           <AppControls>
             <SearchMovies />
-            <ImportMovies
-              onClick={AppController.importMovies}
-            />
+            <ImportMovies onClick={AppController.importMovies} />
           </AppControls>
         </Header>
         <DisplayMovies />
@@ -27,7 +25,6 @@ export default class App extends Component {
 
 const Application = styled.div`
   background: rgb(20,20,20);
-  width: 100%;
   padding-top: 40px;
 `
 

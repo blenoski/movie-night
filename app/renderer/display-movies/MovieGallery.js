@@ -5,13 +5,17 @@ import MovieThumbnail from './MovieThumbnail'
 
 export default ({ genre, movies }) => {
   const thumbnails = movies.map((movie) => {
-    return <MovieThumbnail key={movie.imdbID} movie={movie} />
+    return <MovieThumbnail
+      key={movie.imdbID}
+      title={movie.title}
+      imgFile={movie.imgFile}
+    />
   })
 
   return (
     <Gallery key={genre}>
       <Title>{genre}<Chevron right fixedWidth /></Title>
-      <Thumbnails>{thumbnails}</Thumbnails>
+      <HorizontalScrollContainer>{thumbnails}</HorizontalScrollContainer>
     </Gallery>
   )
 }
@@ -33,9 +37,11 @@ const Title = styled.h2`
   text-transform: capitalize;
 `
 
-const Thumbnails = styled.div`
+const HorizontalScrollContainer = styled.div`
   display: flex;
   overflowX: auto;
+`
+/* [SAVE] Custom scrollbar styling
   &::-webkit-scrollbar {
       height: 10px;
   }
@@ -60,3 +66,4 @@ const Thumbnails = styled.div`
       box-shadow: inset 0 0 4px rgba(255,255,255,0.4);
   }
 `
+*/

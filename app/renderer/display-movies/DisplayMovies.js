@@ -26,8 +26,10 @@ export default class DisplayMovies extends Component {
     })
 
     // Sort genres in order from most titles to least titles.
-    const genres = [ ...genreMap ].sort((genreLhs, genreRhs) => {
-      return genreRhs[1] - genreLhs[1]
+    const genres = [ ...genreMap ].sort((lhs, rhs) => {
+      const countRhs = rhs[1]
+      const countLhs = lhs[1]
+      return countRhs - countLhs
     }).map((genre) => {
       return genre[0]
     })
@@ -48,6 +50,8 @@ export default class DisplayMovies extends Component {
   }
 
   renderMovieByGenre (genre) {
+    // Grab the movies in this genre.
+    // Sort any movies with no poster to the end.
     const movies = this.props.movies.filter((movie) => {
       return movie.genres[0] === genre
     })
@@ -64,7 +68,6 @@ export default class DisplayMovies extends Component {
     return (
       <div key={genre}>
         <MovieGallery key={genre} genre={genre} movies={movies} />
-        <MovieDetail movie={movies[0]} />
       </div>
     )
   }
