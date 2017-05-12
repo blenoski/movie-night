@@ -9,12 +9,11 @@ import {
   SEARCHING_DIRECTORY,
   SELECT_IMPORT_DIRECTORY
  } from '../shared/events'
-import store from './AppState'
+import store, { updateMovieDB } from './AppState'
 import {
   updateCrawling,
   updateSearchDirectory
 } from './import-movies'
-import { updateMovieDB } from './display-movies'
 import logger from './mainWindowLogger'
 
 // Handle SEARCHING_DIRECTORY events
