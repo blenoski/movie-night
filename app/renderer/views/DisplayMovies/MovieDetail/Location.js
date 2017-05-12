@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { FileIcon } from '../../icons'
+import { FileIcon } from '../../../icons'
 
 export default ({ location, handleClick }) =>
   <Section onClick={handleClick}>

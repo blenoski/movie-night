@@ -141,7 +141,11 @@ function addMovie (movieFile, db) {
         if (documentChanged) {
           let movieDB = db.addOrUpdate(finalDocument)
           ipcRenderer.send(MOVIE_DATABASE, movieDB) // SUCCESS!
-          logger.info('Sent MOVIE_DATABASE event with new movie', { title: movie.title, count: movieDB.length })
+          logger.info('Sent MOVIE_DATABASE event with new movie', {
+            title: movie.title,
+            location: movie.fileInfo[0].location,
+            count: movieDB.length
+          })
         }
         return resolve({err: null, movieFile})
       })

@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Chevron } from '../icons'
+import { Chevron } from '../../icons'
 import MovieThumbnail from './MovieThumbnail'
 
 export default ({ genre, movies }) => {

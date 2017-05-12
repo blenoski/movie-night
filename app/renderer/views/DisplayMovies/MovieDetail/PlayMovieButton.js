@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Play as PlayIcon } from '../../icons'
+import { Play as PlayIcon } from '../../../icons'
 
 export default styled(PlayIcon)`
   background: rgba(0,0,0,0.1);

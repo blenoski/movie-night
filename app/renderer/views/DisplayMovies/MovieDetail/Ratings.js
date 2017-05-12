@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Star } from '../../icons'
+import { Star } from '../../../icons'
 
 export default ({ audience, critics }) =>
   <h6>

@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 
 import { logEnv } from '../shared/utils'
 import App from './App'
-import store from './AppState'
+import store from './model'
 import logger from './mainWindowLogger'
 
 logEnv(logger)
