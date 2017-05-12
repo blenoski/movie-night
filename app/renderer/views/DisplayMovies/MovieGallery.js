@@ -40,8 +40,7 @@ const Title = styled.h2`
 const HorizontalScrollContainer = styled.div`
   display: flex;
   overflowX: auto;
-`
-/* [SAVE] Custom scrollbar styling
+
   &::-webkit-scrollbar {
       height: 10px;
   }
@@ -66,4 +65,3 @@ const HorizontalScrollContainer = styled.div`
       box-shadow: inset 0 0 4px rgba(255,255,255,0.4);
   }
 `
-*/
