@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
-import { TextInput } from '../components'
+import TextInput from './TextInput'
 import { Search } from '../icons'
 
 export default class SearchBar extends Component {
