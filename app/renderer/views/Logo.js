@@ -2,9 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 import { Anchor } from '../icons'
 
-const Logo = () => {
+const Logo = ({ className }) => {
   return (
-    <LogoContainer>
+    <LogoContainer className={className}>
       Movie<StyledAnchor large />Night
     </LogoContainer>
   )

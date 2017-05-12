@@ -3,8 +3,15 @@ import styled from 'styled-components'
 
 import Button from './Button'
 import DisplayMovies from './DisplayMovies'
+import Logo from './Logo'
 
-export default ({ movies, filteredMovies, isCrawling, handleAddMediaClick }) => {
+export default ({ dbLoaded, filteredMovies, isCrawling, handleAddMediaClick, movies }) => {
+  // Handle application load.
+  if (!dbLoaded) {
+    return <Splash><Logo /></Splash>
+  }
+
+  // Handle first time application started and/or empty database.
   if (movies.length === 0) {
     return (
       <NoMovieStyles>
@@ -15,13 +22,32 @@ export default ({ movies, filteredMovies, isCrawling, handleAddMediaClick }) => 
         />
       </NoMovieStyles>
     )
-  } else if (filteredMovies.length === 0) {
+  }
+
+  // Handle no matching search results.
+  if (filteredMovies.length === 0) {
     return <NoMovieStyles>No Matches</NoMovieStyles>
   }
 
   // Normal case. Display movies from database.
   return <DisplayMovies movies={filteredMovies} />
 }
+
+const Splash = styled.div`
+  align-items: center;
+  background-color: rgba(20,20,20,1);
+  color: black;
+  display: flex;
+  font-size: 400%;
+  font-family: CopperPlate, serif;
+  justify-content: center;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  position: fixed;
+  padding-bottom: 10%;
+`
 
 const NoMovieStyles = styled.div`
   align-items: center;

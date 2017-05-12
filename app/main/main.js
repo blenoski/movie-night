@@ -51,7 +51,9 @@ function createWindows () {
     height,
     minHeight,
     minWidth,
-    width
+    width,
+    backgroundColor: '#141414',
+    show: false
   })
 
   // and load the index.html of the app.
@@ -60,6 +62,10 @@ function createWindows () {
     protocol: 'file:',
     slashes: true
   }))
+
+  appWindow.once('ready-to-show', () => {
+    appWindow.show()
+  })
 
   // Open the DevTools if we are in dev.
   if (isDevEnv()) {

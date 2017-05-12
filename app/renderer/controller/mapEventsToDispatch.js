@@ -7,7 +7,8 @@ import {
 import store, {
   updateMovieDB,
   updateCrawlState,
-  updateCurrentCrawlDirectory
+  updateCurrentCrawlDirectory,
+  databaseLoaded
 } from '../model'
 import logger from '../mainWindowLogger'
 
@@ -31,5 +32,9 @@ ipcRenderer.on(CRAWL_COMPLETE, function (event, directory) {
 ipcRenderer.on(MOVIE_DATABASE, (event, movieDB) => {
   logger.info('Recieved MOVIE_DATABASE event', { count: movieDB.length })
   store.dispatch(updateMovieDB(movieDB))
+  setTimeout(() => {
+    store.dispatch(databaseLoaded())
+    logger.info('Dispatched databaseLoaded action')
+  }, 500)
   logger.info('Dispatched updateMovieDB action', { count: movieDB.length })
 })

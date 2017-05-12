@@ -44,8 +44,9 @@ export const SearchMovies = connect(
 
 // MainContent Container
 // ---------------------
-export const MainContent = connect(({ movies, filteredMovies, isCrawling }) => {
+export const MainContent = connect(({ dbLoaded, filteredMovies, isCrawling, movies }) => {
   return {
+    dbLoaded,
     movies,
     filteredMovies,
     isCrawling,
