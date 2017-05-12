@@ -28,6 +28,11 @@ export default (searchQuery, movies) => {
         }
       }
 
+      // Look for matching director.
+      if (movie.director.toLowerCase().startsWith(searchQuery)) {
+        return true
+      }
+
       return false
     })
   }
