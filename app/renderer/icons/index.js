@@ -19,6 +19,20 @@ export const Anchor = ({ className, ...props }) => {
   return <Icon className={cn('fa-anchor', className)} {...props} />
 }
 
+export const Angle = ({ className, down, left, right, up, ...props }) => {
+  return <Icon
+    className={cn(
+      down && 'fa-angle-down',
+      left && 'fa-angle-left',
+      right && 'fa-angle-right',
+      up && 'fa-angle-up',
+      !down && !left && !right && !up && 'fa-angle-right', // default
+      className
+    )}
+    {...props}
+  />
+}
+
 export const Chevron = ({ className, down, left, right, up, ...props }) => {
   return <Icon
     className={cn(
@@ -35,6 +49,10 @@ export const Chevron = ({ className, down, left, right, up, ...props }) => {
 
 export const Database = ({ className, ...props }) => {
   return <Icon className={cn('fa-database', className)} {...props} />
+}
+
+export const Close = ({ className, ...props }) => {
+  return <Icon className={cn('fa-close', className)} {...props} />
 }
 
 export const FileIcon = ({ className, video, ...props }) => {

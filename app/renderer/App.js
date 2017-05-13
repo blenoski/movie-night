@@ -41,6 +41,7 @@ const Header = styled.header`
   top: 0;
   padding: 10px 10px 10px 20px;
   position: fixed;
+  z-index: 1;
 `
 
 const AppControls = styled.div`

@@ -7,12 +7,14 @@ import Meta from './Meta'
 import PlayMovieButton from './PlayMovieButton'
 import Ratings from './Ratings'
 import Title from './Title'
+import { Close } from '../../../icons'
 
 export default class MovieDetail extends Component {
   constructor (props) {
     super(props)
     this.openMovieInDefaultPlayer = this.openMovieInDefaultPlayer.bind(this)
     this.showMovieInFinder = this.showMovieInFinder.bind(this)
+    this.close = this.close.bind(this)
   }
 
   openMovieInDefaultPlayer (e) {
@@ -27,6 +29,14 @@ export default class MovieDetail extends Component {
     shell.showItemInFolder(movie.fileInfo[0].location)
   }
 
+  close (e) {
+    e.preventDefault()
+    const { handleCloseMovieDetails } = this.props
+    if (handleCloseMovieDetails) {
+      handleCloseMovieDetails()
+    }
+  }
+
   render () {
     const { movie } = this.props
 
@@ -34,7 +44,7 @@ export default class MovieDetail extends Component {
       <FlexboxDiv>
 
         <Poster imgFile={movie.imgFile}>
-          <PlayMovieButton onClick={this.openMovieInDefaultPlayer} size3x />
+          <PlayMovieButton onClick={this.openMovieInDefaultPlayer} />
         </Poster>
 
         <MovieDetailsContainer>
@@ -61,6 +71,8 @@ export default class MovieDetail extends Component {
           />
         </MovieDetailsContainer>
 
+        <CloseButton onClick={this.close} />
+
       </FlexboxDiv>
     )
   }
@@ -68,6 +80,16 @@ export default class MovieDetail extends Component {
 
 const FlexboxDiv = styled.div`
   display: flex;
+  position: relative;
+`
+
+const CloseButton = styled(Close)`
+  color: rgba(255,255,255,0.9);
+  cursor: pointer;
+  font-size: 30px;
+  position: abolute;
+  right: 0;
+  padding: 0 15px 0 0;
 `
 
 const Poster = styled.aside`

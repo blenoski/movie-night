@@ -1,23 +1,67 @@
-import React from 'react'
+import React, { Component } from 'react'
 import styled from 'styled-components'
 import { Chevron } from '../../icons'
+import MovieDetail from './MovieDetail'
 import MovieThumbnail from './MovieThumbnail'
 
-export default ({ genre, movies }) => {
-  const thumbnails = movies.map((movie) => {
-    return <MovieThumbnail
-      key={movie.imdbID}
-      title={movie.title}
-      imgFile={movie.imgFile}
-    />
-  })
+export default class MovieGallery extends Component {
+  constructor (props) {
+    super(props)
+    this.state = { detail: null }
+    this.showMovieDetails = this.showMovieDetails.bind(this)
+    this.updateMovieDetails = this.updateMovieDetails.bind(this)
+    this.closeMovieDetails = this.closeMovieDetails.bind(this)
+  }
 
-  return (
-    <Gallery key={genre}>
-      <Title>{genre}<Chevron right fixedWidth /></Title>
-      <HorizontalScrollContainer>{thumbnails}</HorizontalScrollContainer>
-    </Gallery>
-  )
+  showMovieDetails (movie) {
+    this.setState({ detail: movie })
+  }
+
+  updateMovieDetails (movie) {
+    if (this.state.detail) {
+      this.setState({ detail: movie })
+    }
+  }
+
+  closeMovieDetails (movie) {
+    this.setState({ detail: null })
+  }
+
+  render () {
+    const { genre, movies } = this.props
+
+    const thumbnails = movies.map((movie) => {
+      return (
+        <MovieThumbnail
+          key={movie.imdbID}
+          movie={movie}
+          handleShowMovieDetails={this.showMovieDetails}
+          handleUpdateMovieDetails={this.updateMovieDetails}
+        />
+      )
+    })
+
+    return (
+      <Gallery key={genre}>
+        <Title>{genre}<Chevron right fixedWidth /></Title>
+        <HorizontalScrollContainer>{thumbnails}</HorizontalScrollContainer>
+        {this.renderDetails()}
+      </Gallery>
+    )
+  }
+
+  renderDetails () {
+    if (!this.state.detail) {
+      return null
+    }
+
+    return (
+      <MovieDetail
+        movie={this.state.detail}
+        handleCloseMovieDetails={this.closeMovieDetails}
+      />
+    )
+  }
 }
 
 const Gallery = styled.div`

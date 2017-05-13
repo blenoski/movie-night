@@ -36,28 +36,24 @@ export default ({ dbLoaded, filteredMovies, isCrawling, handleAddMediaClick, mov
 const Splash = styled.div`
   align-items: center;
   background-color: rgba(20,20,20,1);
-  color: black;
+  bottom: 0;
   display: flex;
-  font-size: 400%;
   font-family: CopperPlate, serif;
+  font-size: 400%;
   justify-content: center;
   left: 0;
+  padding-bottom: 20%;
+  position: fixed;
   right: 0;
   top: 0;
-  bottom: 0;
-  position: fixed;
-  padding-bottom: 10%;
+  z-index: 2;
 `
 
-const NoMovieStyles = styled.div`
-  align-items: center;
+const NoMovieStyles = styled(Splash)`
   color: rgba(2,117,216,1);
-  display: flex;
   flex-direction: column;
-  justify-content: center;
-  margin-top: 100px;
-  font-family: CopperPlate, serif;
   font-size: 3rem;
+  z-index: 0;
 `
 
 const AddMediaButton = styled(Button)`

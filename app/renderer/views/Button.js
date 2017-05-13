@@ -28,7 +28,7 @@ const Button = styled.div`
 `
 
 const HoverButton = styled(Button)`
-  transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in;
   &:hover {
     background-color: rgba(2, 117, 216, 1);
     color: rgba(255,255,255,0.9);
