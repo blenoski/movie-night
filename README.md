@@ -1,6 +1,11 @@
 # movie-night 
 An Electron powered app for browsing your digital movie collection
 
+## Technology Stack
+<a href="https://electron.atom.io/"><img src="https://camo.githubusercontent.com/11e7cfd04eceb1ea7464e99edda0e7000487f343/68747470733a2f2f656c656374726f6e2e61746f6d2e696f2f696d616765732f656c656374726f6e2d6c6f676f2e737667" height="56px"/></a>
+
+<a href="https://facebook.github.io/react/"> <img src="https://react-etc.net/files/2016-07/logo-578x270.png" height="56px"/></a>  <a href="http://redux.js.org/"><img src="https://i2.wp.com/blog.js-republic.com/wp-content/uploads/2016/11/logo-redux.png?fit=500%2C500" height="80px"/></a>  <a href="https://nodejs.org/"><img src="http://meegraphics.in/tech/nodejs-stacked.png" height="70px"/></a>  <a href="https://www.w3schools.com/"><img src="https://www.w3.org/html/logo/downloads/HTML5_Logo_512.png" height="70px"/></a>  <a href="https://www.w3schools.com/"><img src="https://www.brandsoftheworld.com/sites/default/files/styles/logo-thumbnail/public/042015/css3.png?itok=bzukaL4s" height="70px"/></a>  <a href="https://standardjs.com/"><img src="https://cdn.rawgit.com/feross/standard/master/badge.svg"/></a>
+
 ## Developers
 ### Running locally in development mode
 ```
@@ -20,9 +25,3 @@ $ npm run start-dev
 $ cd movie-night
 $ npm start
 ```
-
-
-## Technology Stack
-<a href="https://electron.atom.io/"><img src="https://camo.githubusercontent.com/11e7cfd04eceb1ea7464e99edda0e7000487f343/68747470733a2f2f656c656374726f6e2e61746f6d2e696f2f696d616765732f656c656374726f6e2d6c6f676f2e737667" height="56px"/></a>
-
-<a href="https://facebook.github.io/react/"> <img src="https://react-etc.net/files/2016-07/logo-578x270.png" height="56px"/></a>  <a href="http://redux.js.org/"><img src="https://i2.wp.com/blog.js-republic.com/wp-content/uploads/2016/11/logo-redux.png?fit=500%2C500" height="80px"/></a>  <a href="https://nodejs.org/"><img src="http://meegraphics.in/tech/nodejs-stacked.png" height="70px"/></a>  <a href="https://www.w3schools.com/"><img src="https://www.w3.org/html/logo/downloads/HTML5_Logo_512.png" height="70px"/></a>  <a href="https://www.w3schools.com/"><img src="https://www.brandsoftheworld.com/sites/default/files/styles/logo-thumbnail/public/042015/css3.png?itok=bzukaL4s" height="70px"/></a>  <a href="https://standardjs.com/"><img src="https://cdn.rawgit.com/feross/standard/master/badge.svg"/></a>
