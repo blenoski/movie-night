@@ -12,8 +12,9 @@ const {
   SELECT_IMPORT_DIRECTORY
 } = require('../shared/events')
 const { isDevEnv, logEnv } = require('../shared/utils')
-
 const logger = require('./mainLogger')
+
+// Log out the environemnt
 logEnv(logger)
 
 // Module to control application life.

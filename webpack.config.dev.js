@@ -6,6 +6,9 @@ console.log('NODE_ENV=' + process.env.NODE_ENV)
 module.exports = {
   // Tells webpack to set-up some Electron specific variables.
   target: 'electron-renderer',
+  node: {
+    __dirname: false
+  },
   // Generate source maps with original line numbers.
   devtool: 'cheap-module-eval-source-map',
   // This is the entry point for the React application.
@@ -24,7 +27,8 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         include: [
-          path.resolve(__dirname, 'app')
+          path.resolve(__dirname, 'app'),
+          path.resolve(__dirname, 'config')
         ],
         loader: 'babel-loader'
       },

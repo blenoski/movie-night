@@ -9,6 +9,9 @@ module.exports = {
   bail: true,
   // Tells webpack to set-up some Electron specific variables.
   target: 'electron-renderer',
+  node: {
+    __dirname: false
+  },
   // We generate source maps in production. This is slow but gives good results.
   // You can exclude the *.map files from the build during deployment.
   devtool: 'cheap-module-source-map',
@@ -28,7 +31,8 @@ module.exports = {
       {
         test: /\.(js|jsx)$/,
         include: [
-          path.resolve(__dirname, 'app')
+          path.resolve(__dirname, 'app'),
+          path.resolve(__dirname, 'config')
         ],
         loader: 'babel-loader'
       },
