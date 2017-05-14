@@ -11,7 +11,8 @@ export default class MovieGallery extends Component {
     super(props)
     this.state = {
       movie: null,
-      closing: false
+      closing: false,
+      scrollTo: true
     }
     this.showMovieDetails = this.showMovieDetails.bind(this)
     this.updateMovieDetails = this.updateMovieDetails.bind(this)
@@ -20,12 +21,12 @@ export default class MovieGallery extends Component {
   }
 
   showMovieDetails (movie) {
-    this.setState({ movie })
+    this.setState({ movie, scrollTo: true })
   }
 
   updateMovieDetails (movie) {
     if (this.state.movie) {
-      this.setState({ movie })
+      this.setState({ movie, scrollTo: false })
     }
   }
 
@@ -85,6 +86,7 @@ export default class MovieGallery extends Component {
         <MovieDetail
           movie={movie}
           handleCloseMovieDetails={this.closeMovieDetails}
+          center={this.state.scrollTo}
         />
       </FadeIn>
     )

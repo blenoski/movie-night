@@ -15,6 +15,13 @@ export default class MovieDetail extends Component {
     this.openMovieInDefaultPlayer = this.openMovieInDefaultPlayer.bind(this)
     this.showMovieInFinder = this.showMovieInFinder.bind(this)
     this.close = this.close.bind(this)
+    this.anchor = null
+  }
+
+  componentDidMount () {
+    this.anchor &&
+    this.props.center &&
+    this.anchor.scrollIntoViewIfNeeded() // centers anchor in viewport
   }
 
   openMovieInDefaultPlayer (e) {
@@ -43,6 +50,11 @@ export default class MovieDetail extends Component {
 
     return (
       <FlexboxDiv >
+        <button
+          /* Hook for scrolling top of div to center of viewport */
+          ref={(node) => { if (node) this.anchor = node }}
+          style={{visibility: 'hidden'}}
+        />
 
         <Poster imgFile={movie.imgFile}>
           <PlayMovieButton onClick={this.openMovieInDefaultPlayer} />
@@ -61,7 +73,9 @@ export default class MovieDetail extends Component {
             />
           </header>
 
-          <VerticalScrollSection>{movie.plot}</VerticalScrollSection>
+          <VerticalScrollSection>
+            {movie.plot}
+          </VerticalScrollSection>
 
           <ListMeta
             actors={movie.actors}
