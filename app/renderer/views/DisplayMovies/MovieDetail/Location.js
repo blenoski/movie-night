@@ -12,6 +12,7 @@ const Section = styled.section`
   display: flex;
   cursor: pointer;
   margin-top: 30px;
+  word-break: break-all;
   &:hover {
     color: rgba(255,255,255,0.9);
   }

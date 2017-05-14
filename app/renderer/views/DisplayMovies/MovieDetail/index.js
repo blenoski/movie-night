@@ -19,8 +19,8 @@ export default class MovieDetail extends Component {
   }
 
   componentDidMount () {
-    this.anchor &&
     this.props.center &&
+    this.anchor &&
     this.anchor.scrollIntoViewIfNeeded() // centers anchor in viewport
   }
 
@@ -50,8 +50,7 @@ export default class MovieDetail extends Component {
 
     return (
       <FlexboxDiv >
-        <button
-          /* Hook for scrolling top of div to center of viewport */
+        <button /* Hook for scrolling top of div to center of viewport */
           ref={(node) => { if (node) this.anchor = node }}
           style={{visibility: 'hidden'}}
         />
