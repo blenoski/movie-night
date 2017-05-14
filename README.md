@@ -1,12 +1,26 @@
 # movie-night 
 An Electron powered app for browsing your digital movie collection
 
-## Developers
-Clone repository   
+## Developer
+Clone repository 
+
+### Running locally in development mode
 ```
 $ cd movie-night   
 $ yarn install   
-$ npm start  
+$ npm run start-dev-server  
+```
+
+In a second terminal
+```
+$ cd movie-night
+$ npm run start-dev
+```
+
+### Run in release mode
+```
+$ cd movie-night
+$ npm start
 ```
 
 
