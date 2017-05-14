@@ -2,10 +2,12 @@
 An Electron powered app for browsing your digital movie collection
 
 ## Developers
-* Clone repository
-* $ cd movie-night
-* $ yarn install
-* $ npm start
+Clone repository   
+```
+$ cd movie-night   
+$ yarn install   
+$ npm start  
+```
 
 
 ## Technology Stack
