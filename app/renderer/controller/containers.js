@@ -44,7 +44,8 @@ export const SearchMovies = connect(
 
 // MainContent Container
 // ---------------------
-export const MainContent = connect(({ dbLoaded, filteredMovies, isCrawling, movies }) => {
+function mapStateToMainContentProps (state) {
+  const { dbLoaded, filteredMovies, isCrawling, movies } = state
   return {
     dbLoaded,
     movies,
@@ -52,4 +53,13 @@ export const MainContent = connect(({ dbLoaded, filteredMovies, isCrawling, movi
     isCrawling,
     handleAddMediaClick: importMovies
   }
-})(MainContentArea)
+}
+
+function mapDispatchToMainContentProps (dispatch) {
+  return {
+    updateSearchQuery: (text) => dispatch(updateSearchQuery(text))
+  }
+}
+
+export const MainContent = connect(mapStateToMainContentProps,
+  mapDispatchToMainContentProps)(MainContentArea)

@@ -4,27 +4,38 @@ import { Chevron } from '../../icons'
 import MovieDetail from './MovieDetail'
 import MovieThumbnail from './MovieThumbnail'
 
+import { fadeIn, fadeOut } from '../styleUtils'
+
 export default class MovieGallery extends Component {
   constructor (props) {
     super(props)
-    this.state = { detail: null }
+    this.state = {
+      movie: null,
+      closing: false
+    }
     this.showMovieDetails = this.showMovieDetails.bind(this)
     this.updateMovieDetails = this.updateMovieDetails.bind(this)
     this.closeMovieDetails = this.closeMovieDetails.bind(this)
+    this.movieDetailsClosed = this.movieDetailsClosed.bind(this)
   }
 
   showMovieDetails (movie) {
-    this.setState({ detail: movie })
+    this.setState({ movie })
   }
 
   updateMovieDetails (movie) {
-    if (this.state.detail) {
-      this.setState({ detail: movie })
+    if (this.state.movie) {
+      this.setState({ movie })
     }
   }
 
-  closeMovieDetails (movie) {
-    this.setState({ detail: null })
+  closeMovieDetails () {
+    this.setState({ closing: true })
+  }
+
+  movieDetailsClosed (e) {
+    e.preventDefault()
+    this.setState({ movie: null, closing: false })
   }
 
   render () {
@@ -32,12 +43,14 @@ export default class MovieGallery extends Component {
 
     const thumbnails = movies.map((movie) => {
       return (
-        <MovieThumbnail
-          key={movie.imdbID}
-          movie={movie}
-          handleShowMovieDetails={this.showMovieDetails}
-          handleUpdateMovieDetails={this.updateMovieDetails}
-        />
+        <FadeIn key={movie.imdbID}>
+          <MovieThumbnail
+            key={movie.imdbID}
+            movie={movie}
+            handleShowMovieDetails={this.showMovieDetails}
+            handleUpdateMovieDetails={this.updateMovieDetails}
+          />
+        </FadeIn>
       )
     })
 
@@ -45,24 +58,46 @@ export default class MovieGallery extends Component {
       <Gallery key={genre}>
         <Title>{genre}<Chevron right fixedWidth /></Title>
         <HorizontalScrollContainer>{thumbnails}</HorizontalScrollContainer>
-        {this.renderDetails()}
+        {this.renderMovieDetails()}
       </Gallery>
     )
   }
 
-  renderDetails () {
-    if (!this.state.detail) {
+  renderMovieDetails () {
+    const { movie, closing } = this.state
+    if (!movie) {
       return null
     }
 
+    if (closing) {
+      return (
+        <FadeOut
+          key={`out-${movie.imdbID}`}
+          onAnimationEnd={this.movieDetailsClosed}
+        >
+          <MovieDetail movie={movie} />
+        </FadeOut>
+      )
+    }
+
     return (
-      <MovieDetail
-        movie={this.state.detail}
-        handleCloseMovieDetails={this.closeMovieDetails}
-      />
+      <FadeIn key={movie.imdbID}>
+        <MovieDetail
+          movie={movie}
+          handleCloseMovieDetails={this.closeMovieDetails}
+        />
+      </FadeIn>
     )
   }
 }
+
+const FadeIn = styled.div`
+  animation: 0.5s ${fadeIn} ease-in;
+`
+
+const FadeOut = styled.div`
+  animation: 0.3s ${fadeOut} ease-out;
+`
 
 const Gallery = styled.div`
   marginTop: 30px;
@@ -84,9 +119,8 @@ const Title = styled.h2`
 const HorizontalScrollContainer = styled.div`
   display: flex;
   overflowX: auto;
-
   &::-webkit-scrollbar {
-      height: 10px;
+      height: 12px;
   }
 
   &::-webkit-scrollbar-button {
@@ -97,15 +131,9 @@ const HorizontalScrollContainer = styled.div`
       display: none;
   }
 
-  &::-webkit-scrollbar-track:hover {
+  &::-webkit-scrollbar-thumb {
     display: block;
     border-radius: 10px;
-    box-shadow: inset 0 0 4px rgba(255,255,255,0.4);
-  }
-
-  &::-webkit-scrollbar-thumb {
-      display: block;
-      border-radius: 10px;
-      box-shadow: inset 0 0 4px rgba(255,255,255,0.4);
+    background-color: rgba(255,255,255,0.1);
   }
 `

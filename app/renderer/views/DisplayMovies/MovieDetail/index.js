@@ -31,9 +31,10 @@ export default class MovieDetail extends Component {
 
   close (e) {
     e.preventDefault()
+    const { movie } = this.props
     const { handleCloseMovieDetails } = this.props
     if (handleCloseMovieDetails) {
-      handleCloseMovieDetails()
+      handleCloseMovieDetails(movie)
     }
   }
 
@@ -41,7 +42,7 @@ export default class MovieDetail extends Component {
     const { movie } = this.props
 
     return (
-      <FlexboxDiv>
+      <FlexboxDiv >
 
         <Poster imgFile={movie.imgFile}>
           <PlayMovieButton onClick={this.openMovieInDefaultPlayer} />
@@ -49,7 +50,10 @@ export default class MovieDetail extends Component {
 
         <MovieDetailsContainer>
           <header>
-            <Title title={movie.title} />
+            <Div>
+              <Title title={movie.title} />
+              <CloseButton onClick={this.close} />
+            </Div>
             <Meta year={movie.year} rated={movie.rated} runtime={movie.runtime} />
             <Ratings
               audience={Number(movie.imdbRating) / 10.0}
@@ -71,8 +75,6 @@ export default class MovieDetail extends Component {
           />
         </MovieDetailsContainer>
 
-        <CloseButton onClick={this.close} />
-
       </FlexboxDiv>
     )
   }
@@ -80,16 +82,18 @@ export default class MovieDetail extends Component {
 
 const FlexboxDiv = styled.div`
   display: flex;
-  position: relative;
+  margin-top: 30px;
+`
+const Div = styled.div`
+  display: flex;
+  justify-content: space-between;
 `
 
 const CloseButton = styled(Close)`
   color: rgba(255,255,255,0.9);
   cursor: pointer;
   font-size: 30px;
-  position: abolute;
-  right: 0;
-  padding: 0 15px 0 0;
+  padding: 5px 0 0 0;
 `
 
 const Poster = styled.aside`

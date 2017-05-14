@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
+import MovieDetail from './MovieDetail'
 import MovieGallery from './MovieGallery'
 
 export default class DisplayMovies extends Component {
@@ -37,8 +38,19 @@ export default class DisplayMovies extends Component {
   }
 
   render () {
-    if (this.props.movies.length <= 0) {
+    const { movies, closeMovieDetailsWhenOnlyOneMovie } = this.props
+
+    if (movies.length <= 0) {
       return null
+    }
+
+    if (movies.length === 1) {
+      return (
+        <MovieDetail
+          movie={movies[0]}
+          handleCloseMovieDetails={closeMovieDetailsWhenOnlyOneMovie}
+        />
+      )
     }
 
     return (

@@ -5,7 +5,14 @@ import Button from './Button'
 import DisplayMovies from './DisplayMovies'
 import Logo from './Logo'
 
-export default ({ dbLoaded, filteredMovies, isCrawling, handleAddMediaClick, movies }) => {
+export default ({
+  dbLoaded,
+  filteredMovies,
+  isCrawling,
+  handleAddMediaClick,
+  movies,
+  updateSearchQuery
+}) => {
   // Handle application load.
   if (!dbLoaded) {
     return <Splash><Logo /></Splash>
@@ -15,7 +22,7 @@ export default ({ dbLoaded, filteredMovies, isCrawling, handleAddMediaClick, mov
   if (movies.length === 0) {
     return (
       <NoMovieStyles>
-        Add Media
+        Where are your movies?
         <AddMediaButton
           handleClick={handleAddMediaClick}
           busy={isCrawling}
@@ -30,7 +37,12 @@ export default ({ dbLoaded, filteredMovies, isCrawling, handleAddMediaClick, mov
   }
 
   // Normal case. Display movies from database.
-  return <DisplayMovies movies={filteredMovies} />
+  return (
+    <DisplayMovies
+      movies={filteredMovies}
+      closeMovieDetailsWhenOnlyOneMovie={() => updateSearchQuery('')}
+    />
+  )
 }
 
 const Splash = styled.div`

@@ -1,7 +1,7 @@
 import cn from 'classnames'
 import React from 'react'
 
-const Icon = ({ className, fixedWidth, large, pulse, size3x, ...props }) => {
+const Icon = ({ className, border, fixedWidth, large, pulse, size3x, ...props }) => {
   return <i
     className={cn(
       'fa',
@@ -9,7 +9,8 @@ const Icon = ({ className, fixedWidth, large, pulse, size3x, ...props }) => {
       pulse && 'fa-pulse',
       large && 'fa-lg',
       fixedWidth && 'fa-fw',
-      size3x && 'fa-3x'
+      size3x && 'fa-3x',
+      border && 'fa-border'
     )}
     {...props}
   />
@@ -31,6 +32,10 @@ export const Angle = ({ className, down, left, right, up, ...props }) => {
     )}
     {...props}
   />
+}
+
+export const Bars = ({ className, ...props }) => {
+  return <Icon className={cn('fa-bars', className)} {...props} />
 }
 
 export const Chevron = ({ className, down, left, right, up, ...props }) => {
@@ -60,6 +65,17 @@ export const FileIcon = ({ className, video, ...props }) => {
     className={cn(
       video && 'fa-file-video-o',
       !video && 'fa-file', // default
+      className
+    )}
+    {...props}
+  />
+}
+
+export const Info = ({ className, circle, ...props }) => {
+  return <Icon
+    className={cn(
+      circle && 'fa-info-circle',
+      !circle && 'fa-info',
       className
     )}
     {...props}
