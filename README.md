@@ -1,9 +1,7 @@
 # movie-night 
 An Electron powered app for browsing your digital movie collection
 
-## Developer
-Clone repository 
-
+## Developers
 ### Running locally in development mode
 ```
 $ cd movie-night   
