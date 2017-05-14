@@ -2,7 +2,7 @@
 An Electron powered app for browsing your digital movie collection
 
 <div align="right">
-  <a href="https://electron.atom.io/"><img src="https://avatars3.githubusercontent.com/u/13409222?v=3&s=400" height="56px"/></a>
+  <a href="https://electron.atom.io/"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQGHy5_E_ESgbpEh_tnmylqZ-4o9DZRLa-41OXuDRQhAQvGCp_ig" height="56px"/></a>
 </div>
 
 <div align="right">
@@ -26,7 +26,6 @@ An Electron powered app for browsing your digital movie collection
 </div>
 
 <div align="right">
-  <a href="#">&nbsp&nbsp<img src="https://cdn.rawgit.com/feross/standard/master/badge.svg"/></a><
-/div>
+  <a href="#">&nbsp&nbsp<img src="https://cdn.rawgit.com/feross/standard/master/badge.svg"/></a></div>
 
 
