@@ -2,7 +2,7 @@ const path = require('path')
 
 // This is where we store application data which is OS dependent behavior.
 // TODO: get this from electron API
-const appDataPath = '/Users/blenoski/Developer/ConfidentCruiser/confident-cruiser/movie-night/appdata'
+const appDataPath = path.resolve(__dirname, '..', 'appdata')
 
 // This is where we will store poster images for movies.
 const posterImagePath = path.join(appDataPath, 'image')
