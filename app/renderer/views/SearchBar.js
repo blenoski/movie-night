@@ -1,3 +1,4 @@
+import _ from 'underscore'
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import TextInput from './TextInput'
@@ -8,22 +9,29 @@ export default class SearchBar extends Component {
     super(props)
     this.update = this.update.bind(this)
     this.clear = this.clear.bind(this)
-    this.send = this.send.bind(this)
+    this.sendDebounced = _.debounce(this.sendDebounced, 250).bind(this)
+    this.state = { typing: false, query: '' }
   }
 
   update (e) {
     e.preventDefault()
-    this.send(e.target.value)
+    this.setState({ typing: true, query: e.target.value })
+    this.sendDebounced()
   }
 
   clear (e) {
     e.preventDefault()
-    this.send('')
+    this.setState({ typing: false, query: '' })
+    if (this.props.handleQueryChange) {
+      this.props.handleQueryChange('')
+    }
   }
 
-  send (text) {
+  sendDebounced () {
     if (this.props.handleQueryChange) {
+      const text = this.state.query
       this.props.handleQueryChange(text)
+      this.setState({ typing: false, query: '' })
     }
   }
 
@@ -33,7 +41,7 @@ export default class SearchBar extends Component {
         <SearchIcon large />
         <TextInput
           placeholder='Title, genre, actor'
-          value={this.props.searchQuery}
+          value={this.state.typing ? this.state.query : this.props.searchQuery}
           onChange={this.update}
         />
         {this.renderClose()}
