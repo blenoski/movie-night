@@ -4,7 +4,18 @@ An Electron powered app for browsing your digital movie collection
 ## Summary
 The goal of this project is to provide a delightful movie browsing experience in areas without reliable and/or affordable internet access. Adventure travelers are a good example user segement.
 
+### Browse
+![Browse](screenshots/browse.png?raw=true "Browse")
+
+### Movie Details
+![Movie Details](screenshots/oldschool.png?raw=true "Movie Details")
+
+### Search
+![Search](screenshots/search.png?raw=true "Search")
+
 ## Developers
+Pull requests welcome.
+
 ### Running locally in development mode
 ```
 $ cd movie-night   
