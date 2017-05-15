@@ -66,6 +66,7 @@ const NoMovieStyles = styled(Splash)`
   flex-direction: column;
   font-size: 3rem;
   z-index: 0;
+  top: 50px;
 `
 
 const AddMediaButton = styled(Button)`
