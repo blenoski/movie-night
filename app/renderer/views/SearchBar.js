@@ -1,18 +1,29 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import TextInput from './TextInput'
-import { Search } from '../icons'
+import { Search, Close } from '../icons'
 
 export default class SearchBar extends Component {
   constructor (props) {
     super(props)
-    this.onChange = this.onChange.bind(this)
+    this.update = this.update.bind(this)
+    this.clear = this.clear.bind(this)
+    this.send = this.send.bind(this)
   }
 
-  onChange (e) {
+  update (e) {
     e.preventDefault()
+    this.send(e.target.value)
+  }
+
+  clear (e) {
+    e.preventDefault()
+    this.send('')
+  }
+
+  send (text) {
     if (this.props.handleQueryChange) {
-      this.props.handleQueryChange(e.target.value)
+      this.props.handleQueryChange(text)
     }
   }
 
@@ -23,10 +34,17 @@ export default class SearchBar extends Component {
         <TextInput
           placeholder='Title, genre, actor'
           value={this.props.searchQuery}
-          onChange={this.onChange}
+          onChange={this.update}
         />
+        {this.renderClose()}
       </Bar>
     )
+  }
+
+  renderClose () {
+    return (this.props.searchQuery)
+      ? <span><CloseButton onClick={this.clear} /></span>
+      : null
   }
 }
 
@@ -40,4 +58,11 @@ const Bar = styled.div`
 const SearchIcon = styled(Search)`
   margin-top: 7px;
   margin-right: 8px;
+`
+
+const CloseButton = styled(Close)`
+  color: rgba(0,0,0,0.5);
+  cursor: pointer;
+  margin-left: -25px
+  padding-top: 6px;
 `
