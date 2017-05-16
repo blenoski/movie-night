@@ -1,4 +1,4 @@
-# movie-night 
+# movie-night [![CircleCI](https://circleci.com/gh/blenoski/movie-night.svg?style=shield)](https://circleci.com/gh/blenoski/movie-night)
 An Electron powered app for browsing your digital movie collection
 
 ## Summary
