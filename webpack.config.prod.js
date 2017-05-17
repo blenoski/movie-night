@@ -12,6 +12,9 @@ module.exports = {
   node: {
     __dirname: false
   },
+  externals: {
+    'winston': 'require("winston")'
+  },
   // We generate source maps in production. This is slow but gives good results.
   // You can exclude the *.map files from the build during deployment.
   devtool: 'cheap-module-source-map',

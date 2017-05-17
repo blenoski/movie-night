@@ -9,6 +9,9 @@ module.exports = {
   node: {
     __dirname: false
   },
+  externals: {
+    'winston': 'require("winston")'
+  },
   // Generate source maps with original line numbers.
   devtool: 'cheap-module-eval-source-map',
   // This is the entry point for the React application.
