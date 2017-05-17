@@ -11,7 +11,8 @@
     "start-dev": "npm run build-dev && cross-env NODE_ENV=development electron .",
     "build-dev": "cross-env NODE_ENV=development webpack --config webpack.config.dev.js --progress --profile --colors",
     "start-dev-server": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.dev.js --output-public-path bundle --port 3000",
-    "test": "standard && cross-env NODE_ENV=test jest --coverage --verbose",
+    "test": "standard && npm run build && npm run test-all",
+    "test-all": "cross-env NODE_ENV=test jest --coverage --verbose",
     "pack": "build --dir",
     "dist": "build",
     "postinstall": "install-app-deps"
@@ -57,8 +58,8 @@
       "^.+\\.(js|jsx)$": "<rootDir>/node_modules/babel-jest"
     },
     "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/jest/fileMock.js",
-      "\\.(css|less)$": "<rootDir>/jest/styleMock.js"
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/fileMock.js",
+      "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js"
     }
   },
   "build": {
