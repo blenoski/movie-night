@@ -32,8 +32,12 @@ $ npm run start-dev
 
 ### Run in release mode
 ```
-$ cd movie-night
 $ npm start
+```
+
+### Run tests
+```
+$ npm test
 ```
 
 ### Technology Stack
