@@ -28,6 +28,16 @@ const dbName = 'movieDB.json'
 // This is where we will store application log files.
 const logPath = path.join(appDataPath, 'logs')
 
+// Make the log output directory if it does not already exist.
+// This occurs during application startup so use sync form.
+try {
+  fs.mkdirSync(logPath)
+} catch (err) {
+  if (err && err.code !== 'EEXIST') { // OK if directory already exists
+    throw new Error(`Creating ${logPath} failed: ${err}`)
+  }
+}
+
 // This is logfile basename
 const logName = 'movie_night.log'
 
