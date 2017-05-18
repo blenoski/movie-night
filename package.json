@@ -11,10 +11,11 @@
     "start-dev": "npm run build-dev && cross-env NODE_ENV=development electron .",
     "build-dev": "cross-env NODE_ENV=development webpack --config webpack.config.dev.js --progress --profile --colors",
     "start-dev-server": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.dev.js --output-public-path bundle --port 3000",
-    "test": "standard && npm run build && npm run test-all",
+    "test": "standard && npm run build && npm run test-watch",
     "test-all": "cross-env NODE_ENV=test jest --coverage --verbose",
     "test-ci": "standard && npm run build && npm run test-coveralls",
     "test-coveralls": "cross-env NODE_ENV=test jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
+    "test-watch": "cross-env NODE_ENV=test jest --watchAll",
     "pack": "build --dir",
     "dist": "build",
     "postinstall": "install-app-deps"

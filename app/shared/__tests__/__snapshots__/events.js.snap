@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`event names have not changed 1`] = `
+Object {
+  "CRAWL_COMPLETE": "crawl-complete",
+  "CRAWL_DIRECTORY": "crawl-directory",
+  "LOAD_MOVIE_DATABASE": "load-movie-database",
+  "MOVIE_DATABASE": "movie-database",
+  "SEARCHING_DIRECTORY": "searching-directory",
+  "SELECT_IMPORT_DIRECTORY": "select-import-directory",
+}
+`;
