@@ -1,4 +1,4 @@
-# movie-night [![CircleCI](https://circleci.com/gh/blenoski/movie-night.svg?style=shield)](https://circleci.com/gh/blenoski/movie-night)  [![Coverage Status](https://coveralls.io/repos/github/blenoski/movie-night/badge.svg?branch=master)](https://coveralls.io/github/blenoski/movie-night?branch=master)  [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#developers)
+# movie-night [![CircleCI](https://circleci.com/gh/blenoski/movie-night.svg?style=shield&maxAge=0)](https://circleci.com/gh/blenoski/movie-night)  [![Coverage Status](https://coveralls.io/repos/github/blenoski/movie-night/badge.svg?branch=master&maxAge=0)](https://coveralls.io/github/blenoski/movie-night?branch=master)  [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#developers)
 
 An Electron powered app for browsing your digital movie collection
 
