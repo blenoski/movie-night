@@ -19,11 +19,10 @@ const {
 describe('utils', () => {
   describe('ExtendableError', () => {
     test('base class name and message properties', () => {
-      const errorMsg = 'base error message'
-      const error = new ExtendableError(errorMsg)
+      const error = new ExtendableError()
       expect(error).toBeInstanceOf(ExtendableError)
       expect(error.name).toBe('ExtendableError')
-      expect(error.message).toBe(errorMsg)
+      expect(error.message).toBe('error')
     })
 
     test('derived class overrides name', () => {

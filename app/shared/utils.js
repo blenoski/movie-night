@@ -74,7 +74,7 @@ function fileExists (fname) {
 }
 
 function ExtendableError (message) {
-  this.name = this.constructor.name || 'ExtendableError'
+  this.name = this.constructor.name
   this.message = message || 'error'
   this.stack = (new Error()).stack
 }
