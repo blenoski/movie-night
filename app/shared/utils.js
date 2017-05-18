@@ -73,18 +73,13 @@ function fileExists (fname) {
   })
 }
 
-// Base class for custom errors.
-class ExtendableError extends Error {
-  constructor (message) {
-    super(message)
-    this.name = this.constructor.name
-    if (typeof Error.captureStackTrace === 'function') {
-      Error.captureStackTrace(this, this.constructor)
-    } else {
-      this.stack = (new Error(message)).stack
-    }
-  }
+function ExtendableError (message) {
+  this.name = this.constructor.name || 'ExtendableError'
+  this.message = message || 'error'
+  this.stack = (new Error()).stack
 }
+ExtendableError.prototype = Object.create(Error.prototype)
+ExtendableError.prototype.constructor = ExtendableError
 
 module.exports = {
   isDevEnv,
