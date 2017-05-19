@@ -126,6 +126,12 @@ describe('request', () => {
         done()
       })
     })
+
+    test('rejects on RateLimiter error', () => {
+      request.setRequestAgent(XHRMockSuccess)
+      require('../../../__mocks__/limiter').setSimulateErrorOnce()
+      return expect(request.get(url)).rejects.toBeInstanceOf(Error)
+    })
   })
 
   describe('getJSON', () => {
