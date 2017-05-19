@@ -1,6 +1,16 @@
 const { RateLimiter } = require('limiter')
 const { writeFile, ExtendableError } = require('./utils')
 
+// For testing purposes.
+// Allows swapping in a mock implementation of XMLHttpRequest when testing.
+// Using XHR as underlying implementation because it handles things like system
+// configured proxies, following redirects, and https tunneling automatically.
+// Downside to XHR is it does not support streaming.
+let RequestAgent = XMLHttpRequest /* global XMLHttpRequest */
+const setRequestAgent = (Agent) => {
+  RequestAgent = Agent
+}
+
 // We will limit all network requests to a maximum of 80 per 10 seconds.
 // Note: Chromium will additionally limit the maximum number of concurrent
 // open requests from an origin to 6 as of April 2017.
@@ -38,9 +48,6 @@ class StatusError extends ExtendableError {
 }
 
 // Core function for making client side GET requests.
-// Using XHR as underlying implementation because it handles things like system
-// configured proxies, following redirects, and https tunneling automatically.
-// Downside to XHR is it does not support streaming.
 function get (url, {
   responseType = null, // set a custom responseType
   timeoutInMilliseconds = 30 * 1000, // specify the request timeout
@@ -54,7 +61,7 @@ function get (url, {
       }
 
       // Do the usual XHR stuff
-      var req = new XMLHttpRequest() /* global XMLHttpRequest */
+      var req = new RequestAgent()
       req.open('GET', url)
       if (responseType) {
         req.responseType = responseType
@@ -112,13 +119,17 @@ function getJSON (url, validate = null) {
 }
 
 // Loop over urls in order.
-// Stop on first successful response OR first network/status error.
+// Stop on first successful response OR first network/status/timeout error.
 // Successful response returns {data, url} => JSON data and successful url.
 // @urls[required] - array of urls to try in order
 // @validate[optional] - function that is called with response data,
 //                       should throw Error iff data is invalid
 function getFirstSuccess (urls, validate = null) {
   return new Promise((resolve, reject) => {
+    if (urls.length === 0) {
+      reject(new Error('no urls passed in'))
+    }
+
     let settled = false // flag that is set when Promise has been settled
 
     return urls.reduce((previous, url, index) => {
@@ -134,12 +145,12 @@ function getFirstSuccess (urls, validate = null) {
             resolve({data, url}) // SUCCESS!
           })
           .catch((err) => {
-            // On network or status error, reject immediately.
-            if (err instanceof NetworkError || err instanceof StatusError) {
-              settled = true
-              reject(err)
-            // If we are out of urls, then reject.
-            } else if ((index + 1) === urls.length) {
+            // Reject immediately on network, status, or timeout error.
+            if (err instanceof NetworkError ||
+              err instanceof StatusError ||
+              err instanceof TimeoutError ||
+              (index + 1) === urls.length // If we are out of urls, then reject.
+            ) {
               settled = true
               reject(err)
             }
@@ -161,6 +172,8 @@ module.exports = {
   getJSON,
   getFirstSuccess,
   downloadFile,
+  setRequestAgent, // for testing purposes
+  NetworkError,
   StatusError,
-  NetworkError
+  TimeoutError
 }
