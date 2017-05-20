@@ -1,13 +1,16 @@
 const {
-  createBackgroundWindow,
   createWindows,
   handleCrawlCompleteEvent,
-  handleCrawlDirectorySelectionEvent,
   handleImportDirectoryEvent,
   handleMovieDatabaseEvent,
-  handleSearchingDirectoryEvents,
-  loadMovieDatabase
+  handleSearchingDirectoryEvents
 } = require('../main')
+
+const {
+  createBackgroundWindow,
+  handleCrawlDirectorySelectionEvent,
+  loadMovieDatabase
+} = require('../backgroundWorker')
 
 const {
   CRAWL_COMPLETE,

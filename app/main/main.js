@@ -1,3 +1,4 @@
+'use strict'
 const path = require('path')
 const url = require('url')
 
@@ -5,13 +6,13 @@ const electron = require('electron')
 
 const {
   CRAWL_COMPLETE,
-  CRAWL_DIRECTORY,
-  LOAD_MOVIE_DATABASE,
   MOVIE_DATABASE,
   SEARCHING_DIRECTORY,
   SELECT_IMPORT_DIRECTORY
 } = require('../shared/events')
 const { isDevEnv, logEnv } = require('../shared/utils')
+
+const backgroundWorker = require('./backgroundWorker')
 const logger = require('./mainLogger')
 
 // Log out the environemnt
@@ -29,7 +30,6 @@ const ipcMain = electron.ipcMain
 // Keep a global reference of the window objects, if you don't, the windows will
 // be closed automatically when the JavaScript object is garbage collected.
 let appWindow = null
-let backgroundWorker = null
 
 function createWindows () {
   logger.info('Creating application appWindow')
@@ -88,33 +88,11 @@ function createWindows () {
     }
   })
 
-  // Create the backgroundWorker only after the appWindow is ready.
+  // Load the database only after the appWindow is ready.
   // This event will also fire when the appWindow finishes reloading.
   appWindow.webContents.on('did-finish-load', () => {
     logger.info('Received appWindow did-finish-load event')
-    if (backgroundWorker === null) {
-      createBackgroundWindow()
-    } else {
-      loadMovieDatabase()
-    }
-  })
-}
-
-function createBackgroundWindow () {
-  logger.info('Creating backgroundWorker')
-  backgroundWorker = new BrowserWindow({show: isDevEnv()})
-  backgroundWorker.loadURL(url.format({
-    pathname: path.join(__dirname, '..', 'background', 'index.html'),
-    protocol: 'file:',
-    slashes: true
-  }))
-
-  if (isDevEnv()) {
-    backgroundWorker.webContents.openDevTools()
-  }
-
-  backgroundWorker.webContents.on('did-finish-load', () => {
-    loadMovieDatabase()
+    backgroundWorker.loadMovieDatabase()
   })
 }
 
@@ -146,16 +124,6 @@ app.on('quit', function () {
   logger.info('Quitting app')
 })
 
-// Triggers the load movie database workflow.
-function loadMovieDatabase () {
-  if (backgroundWorker !== null) {
-    backgroundWorker.webContents.send(LOAD_MOVIE_DATABASE)
-    logger.info('Sent LOAD_MOVIE_DATABASE event to backgroundWorker')
-  } else {
-    logger.error(`Cannot send ${LOAD_MOVIE_DATABASE}, backgroundWorker is null`)
-  }
-}
-
 // Handle SELECT_IMPORT_DIRECTORY events.
 // Open a native select directory file dialog. When user
 // makes selection, delegate to backgroundWorker process
@@ -170,18 +138,7 @@ function handleImportDirectoryEvent (event) {
     message: hint,
     buttonLabel: 'Add Media',
     properties: ['openDirectory']
-  }, handleCrawlDirectorySelectionEvent)
-}
-function handleCrawlDirectorySelectionEvent (selection) {
-  if (!backgroundWorker) {
-    logger.error('backgroundWorker object does not exist')
-  } else if (selection && selection[0]) {
-    const directory = selection[0]
-    backgroundWorker.webContents.send(CRAWL_DIRECTORY, directory)
-    logger.info('Sent CRAWL_DIRECTORY event to bgWorker', { directory })
-  } else {
-    logger.info('User canceled directory file dialog')
-  }
+  }, backgroundWorker.handleCrawlDirectorySelectionEvent)
 }
 
 // Handle SEARCHING_DIRECTORY events.
@@ -225,12 +182,9 @@ function handleMovieDatabaseEvent (event, movieDB) {
 
 // Exporting for testing purposes.
 module.exports = {
-  createBackgroundWindow,
   createWindows,
   handleCrawlCompleteEvent,
-  handleCrawlDirectorySelectionEvent,
   handleImportDirectoryEvent,
   handleMovieDatabaseEvent,
-  handleSearchingDirectoryEvents,
-  loadMovieDatabase
+  handleSearchingDirectoryEvents
 }
