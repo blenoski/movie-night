@@ -1,10 +1,13 @@
 const {
-  createWindows,
+  handleImportDirectoryEvent
+} = require('../main')
+
+const {
+  createAppWindow,
   handleCrawlCompleteEvent,
-  handleImportDirectoryEvent,
   handleMovieDatabaseEvent,
   handleSearchingDirectoryEvents
-} = require('../main')
+} = require('../appWindow')
 
 const {
   createBackgroundWindow,
@@ -46,7 +49,7 @@ describe('main process', () => {
 
   describe('event handling', () => {
     beforeAll(() => {
-      createWindows() // Create the mocked app window
+      createAppWindow() // Create the mocked app window
       createBackgroundWindow() // Create the mocked backgroundWorker
     })
 
