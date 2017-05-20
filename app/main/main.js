@@ -92,31 +92,29 @@ function createWindows () {
   // This event will also fire when the appWindow finishes reloading.
   appWindow.webContents.on('did-finish-load', () => {
     logger.info('Received appWindow did-finish-load event')
-
-    const loadMovieDatabase = () => {
-      backgroundWorker.webContents.send(LOAD_MOVIE_DATABASE)
-      logger.info('Sent LOAD_MOVIE_DATABASE event to backgroundWorker')
-    }
-
-    if (backgroundWorker !== null) {
-      loadMovieDatabase()
+    if (backgroundWorker === null) {
+      createBackgroundWindow()
     } else {
-      logger.info('Creating backgroundWorker')
-      backgroundWorker = new BrowserWindow({show: isDevEnv()})
-      backgroundWorker.loadURL(url.format({
-        pathname: path.join(__dirname, '..', 'background', 'index.html'),
-        protocol: 'file:',
-        slashes: true
-      }))
-
-      if (isDevEnv()) {
-        backgroundWorker.webContents.openDevTools()
-      }
-
-      backgroundWorker.webContents.on('did-finish-load', () => {
-        loadMovieDatabase()
-      })
+      loadMovieDatabase()
     }
+  })
+}
+
+function createBackgroundWindow () {
+  logger.info('Creating backgroundWorker')
+  backgroundWorker = new BrowserWindow({show: isDevEnv()})
+  backgroundWorker.loadURL(url.format({
+    pathname: path.join(__dirname, '..', 'background', 'index.html'),
+    protocol: 'file:',
+    slashes: true
+  }))
+
+  if (isDevEnv()) {
+    backgroundWorker.webContents.openDevTools()
+  }
+
+  backgroundWorker.webContents.on('did-finish-load', () => {
+    loadMovieDatabase()
   })
 }
 
@@ -148,11 +146,22 @@ app.on('quit', function () {
   logger.info('Quitting app')
 })
 
+// Triggers the load movie database workflow.
+function loadMovieDatabase () {
+  if (backgroundWorker !== null) {
+    backgroundWorker.webContents.send(LOAD_MOVIE_DATABASE)
+    logger.info('Sent LOAD_MOVIE_DATABASE event to backgroundWorker')
+  } else {
+    logger.error(`Cannot send ${LOAD_MOVIE_DATABASE}, backgroundWorker is null`)
+  }
+}
+
 // Handle SELECT_IMPORT_DIRECTORY events.
 // Open a native select directory file dialog. When user
 // makes selection, delegate to backgroundWorker process
 // to crawl for movies.
-ipcMain.on(SELECT_IMPORT_DIRECTORY, function (event) {
+ipcMain.on(SELECT_IMPORT_DIRECTORY, handleImportDirectoryEvent)
+function handleImportDirectoryEvent (event) {
   logger.info('Received SELECT_IMPORT_DIRECTORY event')
   const hint = 'SELECT MEDIA FOLDER'
   const window = BrowserWindow.fromWebContents(event.sender)
@@ -161,23 +170,24 @@ ipcMain.on(SELECT_IMPORT_DIRECTORY, function (event) {
     message: hint,
     buttonLabel: 'Add Media',
     properties: ['openDirectory']
-  }, function (selection) {
-    if (!backgroundWorker) {
-      logger.error('backgroundWorker object does not exist')
-    } else if (selection && selection[0]) {
-      const directory = selection[0]
-      backgroundWorker.webContents.send(CRAWL_DIRECTORY, directory)
-      logger.info('Sent CRAWL_DIRECTORY event to bgWorker', { directory })
-    } else {
-      logger.info('User canceled directory file dialog')
-      backgroundWorker.webContents.send(LOAD_MOVIE_DATABASE)
-    }
-  })
-})
+  }, handleCrawlDirectorySelectionEvent)
+}
+function handleCrawlDirectorySelectionEvent (selection) {
+  if (!backgroundWorker) {
+    logger.error('backgroundWorker object does not exist')
+  } else if (selection && selection[0]) {
+    const directory = selection[0]
+    backgroundWorker.webContents.send(CRAWL_DIRECTORY, directory)
+    logger.info('Sent CRAWL_DIRECTORY event to bgWorker', { directory })
+  } else {
+    logger.info('User canceled directory file dialog')
+  }
+}
 
 // Handle SEARCHING_DIRECTORY events.
 // Pass event through to appWindow process.
-ipcMain.on(SEARCHING_DIRECTORY, function (event, directory) {
+ipcMain.on(SEARCHING_DIRECTORY, handleSearchingDirectoryEvents)
+function handleSearchingDirectoryEvents (event, directory) {
   logger.debug('Received SEARCHING_DIRECTORY event', { directory })
   if (appWindow) {
     appWindow.webContents.send(SEARCHING_DIRECTORY, directory)
@@ -185,11 +195,12 @@ ipcMain.on(SEARCHING_DIRECTORY, function (event, directory) {
   } else {
     logger.error('appWindow object does not exist')
   }
-})
+}
 
 // Handle CRAWL_COMPLETE events.
 // Pass event through to appWindow process.
-ipcMain.on(CRAWL_COMPLETE, function (event, directory) {
+ipcMain.on(CRAWL_COMPLETE, handleCrawlCompleteEvent)
+function handleCrawlCompleteEvent (event, directory) {
   logger.info('Received CRAWL_COMPLETE event', { directory })
   if (appWindow) {
     appWindow.webContents.send(CRAWL_COMPLETE, directory)
@@ -197,11 +208,12 @@ ipcMain.on(CRAWL_COMPLETE, function (event, directory) {
   } else {
     logger.error('appWindow object does not exist')
   }
-})
+}
 
 // Handle MOVIE_DB events.
 // Route to appWindow
-ipcMain.on(MOVIE_DATABASE, function (event, movieDB) {
+ipcMain.on(MOVIE_DATABASE, handleMovieDatabaseEvent)
+function handleMovieDatabaseEvent (event, movieDB) {
   logger.info('Received MOVIE_DATABASE event', { count: movieDB.length })
   if (appWindow) {
     appWindow.webContents.send(MOVIE_DATABASE, movieDB)
@@ -209,4 +221,16 @@ ipcMain.on(MOVIE_DATABASE, function (event, movieDB) {
   } else {
     logger.error('appWindow object does not exist')
   }
-})
+}
+
+// Exporting for testing purposes.
+module.exports = {
+  createBackgroundWindow,
+  createWindows,
+  handleCrawlCompleteEvent,
+  handleCrawlDirectorySelectionEvent,
+  handleImportDirectoryEvent,
+  handleMovieDatabaseEvent,
+  handleSearchingDirectoryEvents,
+  loadMovieDatabase
+}
