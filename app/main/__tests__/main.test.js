@@ -24,11 +24,6 @@ const {
 
 /* globals describe, test, expect, beforeAll */
 
-const log = () => {
-  let count = sendMock.mock.calls.length
-  console.log(sendMock.mock.calls[count - 1])
-}
-
 // Helper functions for accessing send mock.
 const sendCount = () => sendMock.mock.calls.length
 const sendLast = () => sendMock.mock.calls[sendCount() - 1]
