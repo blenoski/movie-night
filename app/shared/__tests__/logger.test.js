@@ -1,34 +1,39 @@
 'use strict'
-const winston = require('winston')
-const { initLogger } = require('../logger')
+const path = require('path')
+const winston = require('winston') // jest uses mocked version automatically
+const { logPath, logName } = require('../../../config')
+const { initLogger, defaultLevel } = require('../logger')
 
 /* globals describe, test, expect */
 describe('logger', () => {
-  test('defaults to file and console logger with level=info', () => {
-    const loggerName = 'test-info'
-    process.env.LOG_LEVEL = 'info'
+  test('initialized with both console and file loggers', () => {
+    const loggerName = 'test-logger'
+    process.env.LOG_LEVEL = 'warn'
     initLogger(loggerName)
-    const logger = winston.loggers.get(loggerName)
 
-    expect(logger.transports).toHaveProperty('file')
-    expect(logger.transports.file.level).toBe('info')
-    expect(logger.transports).toHaveProperty('console')
-    expect(logger.transports.console.level).toBe('info')
+    // Expecting winston to get configured with file and console loggers.
+    const call = winston.loggers.add.mock.calls[0]
+    expect(call[0]).toEqual(loggerName)
+
+    const transports = call[1]
+    expect(transports).toHaveProperty('console')
+    expect(transports).toHaveProperty('file')
+
+    const consoleLogger = transports.console
+    expect(consoleLogger).toHaveProperty('label', loggerName)
+    expect(consoleLogger).toHaveProperty('level', 'warn')
+
+    const fileLogger = transports.file
+    expect(fileLogger).toHaveProperty('label', loggerName)
+    expect(fileLogger).toHaveProperty('filename', path.join(logPath, logName))
+    expect(fileLogger).toHaveProperty('level', 'warn')
   })
 
-  test('level environment variable overrides work', () => {
-    const orig = process.env.LOG_LEVEL
-    process.env.LOG_LEVEL = 'error'
-
-    const loggerName = 'test-error'
-    initLogger(loggerName)
-    const logger = winston.loggers.get(loggerName)
-
-    expect(logger.transports).toHaveProperty('file')
-    expect(logger.transports.file.level).toBe('error')
-    expect(logger.transports).toHaveProperty('console')
-    expect(logger.transports.console.level).toBe('error')
-
-    process.env.LOG_LEVEL = orig
+  test('log level environment variable overrides', () => {
+    const levels = ['error', 'warn', 'warning', 'info', 'verbose', 'debug']
+    levels.forEach(level => {
+      process.env.LOG_LEVEL = level
+      expect(defaultLevel()).toBe(level)
+    })
   })
 })

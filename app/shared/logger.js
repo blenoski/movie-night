@@ -35,5 +35,6 @@ const initLogger = (callingProcess) => {
 }
 
 module.exports = {
-  initLogger
+  initLogger,
+  defaultLevel
 }
