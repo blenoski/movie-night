@@ -12,25 +12,21 @@ module.exports = {
 }
 
 function fetchMovieDataInternal (movieFile) {
-  return new Promise((resolve, reject) => {
-    // TODO: Television Series Handling
-    // Look for 'Season' and a number in the parent directory (but not title) and use this to
-    // prioritize type=series over movies. Could also look for patterns like: S4Ep01 in title?
-
-    return omdb.fetchMovieMetadata(movieFile)
-      .then(({metadata, url}) => {
-        metadata.fileInfo = [{
-          location: movieFile,
-          query: url
-        }]
-        if (metadata.imgUrl) {
-          const { ext } = path.parse(metadata.imgUrl)
-          metadata.imgFile = path.join(posterImagePath, `${metadata.imdbID}${ext}`)
-        } else {
-          metadata.imgFile = ''
-        }
-        resolve(metadata)
-      })
-      .catch((err) => reject(err))
-  })
+  // TODO: Television Series Handling
+  // Look for 'Season' and a number in the parent directory (but not title) and use this to
+  // prioritize type=series over movies. Could also look for patterns like: S4Ep01 in title?
+  return omdb.fetchMovieMetadata(movieFile)
+    .then(({metadata, url}) => {
+      metadata.fileInfo = [{
+        location: movieFile,
+        query: url
+      }]
+      if (metadata.imgUrl) {
+        const { ext } = path.parse(metadata.imgUrl)
+        metadata.imgFile = path.join(posterImagePath, `${metadata.imdbID}${ext}`)
+      } else {
+        metadata.imgFile = ''
+      }
+      return metadata
+    })
 }

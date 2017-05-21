@@ -3,6 +3,7 @@
 const fs = require('fs')
 const path = require('path')
 
+// Set up a database to use for testing.
 const SingleCollectionDatabase = require('../database')
 const dbConfig = {
   dbPath: __dirname,
@@ -14,6 +15,7 @@ const dbOptions = {
 }
 let db = new SingleCollectionDatabase(dbConfig, dbOptions)
 
+// We call this before and after testing to delete the database file.
 const cleanup = () => {
   try {
     fs.unlinkSync(path.join(dbConfig.dbPath, dbConfig.dbName))

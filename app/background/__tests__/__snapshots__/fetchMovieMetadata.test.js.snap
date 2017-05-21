@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`fetchMovieMetadata resolves with fileInfo metadata on successful fetch 1`] = `
+Object {
+  "fileInfo": Array [
+    Object {
+      "location": "OldSchool.avi",
+      "query": "OldSchool.avi",
+    },
+  ],
+  "imgFile": "",
+}
+`;
+
+exports[`fetchMovieMetadata resolves with imgFile when metadata contains imgUrl 1`] = `
+Object {
+  "fileInfo": Array [
+    Object {
+      "location": "OldSchool imgUrl",
+      "query": "OldSchool imgUrl",
+    },
+  ],
+  "imdbID": "tt123",
+  "imgFile": "/Users/blenoski/Developer/ConfidentCruiser/movie-night/appdata/image/tt123.png",
+  "imgUrl": "http://poster.png",
+}
+`;

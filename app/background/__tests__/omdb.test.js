@@ -8,7 +8,7 @@ let mockRequestCount = 0
 // Mock request dependencies.
 // Jest will inject this moock instead of hitting OMDb server.
 // These are fairly complex mocks intended to test all the
-// various ways in which a query can fail.
+// various ways in which a query can succeed or fail.
 jest.mock('../../shared/request', () => {
   return {
     getFirstSuccess: jest.fn((urls, searchValidator) => {
