@@ -90,7 +90,7 @@ describe('search', () => {
   test('resolves with metadata on valid search result 2', (done) => {
     expect.assertions(2)
 
-    const movieFile = 'The Fifth Element.avi'
+    const movieFile = 'The Fifth Element 1997.avi'
     omdb.fetchMovieMetadata(movieFile).then(({ metadata, url }) => {
       expect(metadata).toMatchSnapshot()
       expect(metadata.imdbID).toEqual('tt456')
