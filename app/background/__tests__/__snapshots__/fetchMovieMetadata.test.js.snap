@@ -21,7 +21,7 @@ Object {
     },
   ],
   "imdbID": "tt123",
-  "imgFile": "/Users/blenoski/Developer/ConfidentCruiser/movie-night/appdata/image/tt123.png",
+  "imgFile": "/path/to/movie/posters/tt123.png",
   "imgUrl": "http://poster.png",
 }
 `;

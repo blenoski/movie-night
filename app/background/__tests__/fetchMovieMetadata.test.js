@@ -20,6 +20,14 @@ jest.mock('../omdb', () => {
   }
 })
 
+// Mock the poster image path returned from config so snapshots
+// do not contain any host information.
+jest.mock('../../../config', () => {
+  return {
+    posterImagePath: '/path/to/movie/posters'
+  }
+})
+
 // This is the module we are testing
 const { fetchMovieMetadata } = require('../fetchMovieMetadata')
 
