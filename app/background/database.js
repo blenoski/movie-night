@@ -13,12 +13,17 @@ const logger = require('./backgroundWorkerLogger')
 // This database is not intended for use on a user facing process as some operations
 // are blocking in order to preserve database integrity.
 module.exports = class SingleCollectionDatabase {
-  constructor ({ dbPath, dbName, uniqueField }) {
+  constructor (
+    { dbPath, dbName, uniqueField }, // dbConfig
+    { saveTimoutMilliseconds = 3000, writeErrorCallback = () => {} } = {} // dbOptions
+  ) {
     this.dbPath = dbPath
     this.dbName = dbName
     this.uniqueField = uniqueField
     this.collection = []
     this._persist = { tokens: 0 }
+    this.saveTimoutMilliseconds = saveTimoutMilliseconds
+    this.writeErrorCallback = writeErrorCallback
 
     // Load the database if it already exists.
     try {
@@ -90,7 +95,7 @@ module.exports = class SingleCollectionDatabase {
   // that update will be lost.
   _scheduleSave () {
     this._persist.tokens += 1
-    setTimeout(persistDatabaseToFile, 3 * 1000, this.dbPath, this.dbName, this.collection, this._persist)
+    setTimeout(persistDatabaseToFile, this.saveTimoutMilliseconds, this)
   }
 }
 
@@ -98,41 +103,37 @@ module.exports = class SingleCollectionDatabase {
 // Internal
 // =========
 // Saves the database to a file
-function persistDatabaseToFile (dbPath, dbName, collection, persist) {
+function persistDatabaseToFile (db) {
   // Take a persist token
-  persist.tokens -= 1
+  db._persist.tokens -= 1
 
   // Early exit if there are outstanding persist tokens.
   // This is how we end up batching multiple updates into a single save.
-  if (persist.tokens > 0) {
-    return
-  }
-
-  // Early exit if the collection is empty
-  if (collection.length === 0) {
+  if (db._persist.tokens > 0) {
     return
   }
 
   // Make the directory if it does not already exist
   try {
-    fs.mkdirSync(dbPath)
+    fs.mkdirSync(db.dbPath)
   } catch (err) {
     if (err && err.code !== 'EEXIST') { // OK if directory already exists
-      logger.error(`Creating database folder failed: ${dbPath}`, err)
-      throw err
+      logger.error(`Cannot create database folder: ${db.dbPath}`, err)
+      db.writeErrorCallback(err, db.dbPath)
+      return // do not continue to file write
     }
   }
 
   // Serialize the collection and write to file
-  const dbFile = path.join(dbPath, dbName)
+  const dbFile = path.join(db.dbPath, db.dbName)
   try {
-    const json = JSON.stringify(collection)
+    const json = JSON.stringify(db.collection)
     const tmpFile = `${dbFile}.tmp`
     fs.writeFileSync(tmpFile, json)
     fs.renameSync(tmpFile, dbFile) // overwrites old DB with just created one
-    logger.info(`Saved ${dbFile}`, { count: collection.length })
+    logger.info(`Saved ${dbFile}`, { count: db.collection.length })
   } catch (err) {
-    logger.error(`Save failed: ${dbFile}`, err)
-    throw err
+    logger.error(`Cannot save database: ${dbFile}`, err)
+    db.writeErrorCallback(err, dbFile)
   }
 }

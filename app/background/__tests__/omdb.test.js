@@ -44,8 +44,7 @@ jest.mock('../../shared/request', () => {
 
     getJSON: jest.fn((url, dataValidator) => {
       let data = {} // minimal response
-      mockRequestCount += 1
-      if (mockRequestCount === 2) {
+      if (mockRequestCount === 1) {
         data.imdbID = 'tt456'
         data.Poster = 'http://thefithelement.com/tt456'
         data.Genre = 'Action, Thriller'
@@ -58,13 +57,14 @@ jest.mock('../../shared/request', () => {
         data.Runtime = '127m'
         data.Title = 'The Fifth Element'
         data.Year = '1997'
-      } else if (mockRequestCount === 3 || mockRequestCount === 4) {
+      } else if (mockRequestCount === 2 || mockRequestCount === 3) {
         data.Error = 'query error'
-      } else if (mockRequestCount === 5) {
+      } else if (mockRequestCount === 4 || mockRequestCount === 5) {
         data.Genre = 'Action, Short, Comedy'
       } else if (mockRequestCount === 6) {
         data.Genre = 'Adult, Drama'
       }
+      mockRequestCount += 1
 
       try {
         dataValidator(data)
@@ -114,7 +114,7 @@ describe('search', () => {
   })
 
   test('rejects on blacklisted Short genre', () => {
-    return expect(omdb.fetchMovieMetadata('short'))
+    return expect(omdb.fetchMovieMetadata('shortGenre'))
       .rejects.toBeInstanceOf(omdb.test.OMDBDataError)
   })
 
