@@ -3,7 +3,11 @@ const { readdir, lstat } = require('../shared/utils')
 const logger = require('./backgroundWorkerLogger')
 
 // The list of recognized movie file extensions.
-const movieFileExtensions = ['.avi', '.mp4', '.m4v']
+// See https://en.wikipedia.org/wiki/Video_file_format
+const movieFileExtensions = [
+  '.webm', '.mkv', '.ogv', '.ogg', '.avi', '.mov', '.qt', '.wmv', '.mp4',
+  '.m4p', '.m4v', '.mpg', '.mpeg', '.mpv', '.mp2', '.mpe', '.m2v'
+]
 
 module.exports = {
   // Recursively searches the root directory for all movie files.
@@ -36,11 +40,6 @@ function processPath (absPath, searchDirCb, movieFileCb) {
       const ext = path.extname(absPath)
       if (movieFileExtensions.indexOf(ext) > -1) {
         return movieFileCb(absPath) // FOUND MOVIE FILE
-        // // Do not block crawl on movie callback.
-        // // This allows network requests to proceed in parallel
-        // // at the expense that we may send CRAWL_COMPLETE before
-        // // all of the network requests have been processed.
-        // return Promise.resolve()
       }
     } else if (stats.isDirectory()) {
       return crawl(absPath, searchDirCb, movieFileCb) // RECURSIVE!
