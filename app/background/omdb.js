@@ -3,12 +3,14 @@ const { ExtendableError } = require('../shared/utils')
 const { generateSearchQueriesFor } = require('./generateSearchQueries')
 
 const BASE_URL = 'http://www.omdbapi.com/'
+class OMDBDataError extends ExtendableError {}
 
 module.exports = {
-  fetchMovieMetadata
+  fetchMovieMetadata,
+  test: {
+    OMDBDataError
+  }
 }
-
-class OMDBDataError extends ExtendableError {}
 
 function fetchMovieMetadata (movieFile) {
   const queries = generateSearchQueriesFor(movieFile)
