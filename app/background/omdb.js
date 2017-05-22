@@ -2,7 +2,10 @@ const request = require('../shared/request')
 const { ExtendableError } = require('../shared/utils')
 const { generateSearchQueriesFor } = require('./generateSearchQueries')
 
-const OMDB_API_KEY = process.env.OMDB_API_KEY
+const OMDB_API_KEY = process.env.NODE_ENV === 'test'
+  ? 'testkey'
+  : process.env.OMDB_API_KEY
+
 const BASE_URL = `http://www.omdbapi.com/?apikey=${OMDB_API_KEY}`
 class OMDBDataError extends ExtendableError {}
 

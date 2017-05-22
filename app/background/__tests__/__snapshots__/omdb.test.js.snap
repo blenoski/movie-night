@@ -20,7 +20,7 @@ Object {
     "title": "<<TITLE>>",
     "year": "<<RELEASE YEAR>>",
   },
-  "url": "http://www.omdbapi.com/?&s=Old%20School",
+  "url": "http://www.omdbapi.com/?apikey=testkey&s=Old%20School",
 }
 `;
 
