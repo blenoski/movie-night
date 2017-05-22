@@ -2,7 +2,8 @@ const request = require('../shared/request')
 const { ExtendableError } = require('../shared/utils')
 const { generateSearchQueriesFor } = require('./generateSearchQueries')
 
-const BASE_URL = 'http://www.omdbapi.com/'
+const OMDB_API_KEY = process.env.OMDB_API_KEY
+const BASE_URL = `http://www.omdbapi.com/?apikey=${OMDB_API_KEY}`
 class OMDBDataError extends ExtendableError {}
 
 module.exports = {
@@ -46,7 +47,7 @@ function omdbFetch (urls) {
 function convertQueriesToOMDBUrls (queries) {
   return queries.map((query) => {
     const year = (query.releaseYear) ? `&y=${query.releaseYear}` : ''
-    const url = `${BASE_URL}?&s=${query.title}${year}`
+    const url = `${BASE_URL}&s=${query.title}${year}`
     return encodeURI(url)
   })
 }
@@ -63,7 +64,7 @@ function searchValidator (data) {
 }
 
 function getJSON (imdbID) {
-  const url = `${BASE_URL}?plot=short&i=${imdbID}`
+  const url = `${BASE_URL}&plot=short&i=${imdbID}`
   return request.getJSON(url, dataValidator)
 }
 
