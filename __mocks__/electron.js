@@ -3,8 +3,8 @@
 // https://facebook.github.io/jest/docs/manual-mocks.html
 'use strict'
 
-// To facilitate testing event handling, we will replace
-// every BrowserWindow.send call with this mock.
+// To facilitate testing event handling,
+// we will replace every send call with this mock.
 // Inspecting the last call of the mock after calling an event handler
 // can be used to *** almost *** verify expected behavior.
 // However, we still will not know which BrowserWindow sent the call.
@@ -39,7 +39,8 @@ const ipcMain = {
 }
 
 const ipcRenderer = {
-  on: jest.genMockFunction()
+  on: jest.genMockFunction(),
+  send: sendMock
 }
 
 const screen = {

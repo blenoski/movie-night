@@ -1,0 +1,147 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`handleCrawlDirectoryEvent calls movie database callback during crawl 1`] = `
+Array [
+  Array [
+    Object {
+      "fileInfo": Array [
+        Object {
+          "location": "loc1",
+        },
+      ],
+      "imdbID": "tt123",
+      "imgFile": "/Users/blenoski/Developer/ConfidentCruiser/movie-night/app/background/__tests__/index.test.js",
+      "title": "Old School",
+    },
+    Object {
+      "fileInfo": Array [
+        Object {
+          "location": "loc2",
+        },
+      ],
+      "imdbID": "tt456",
+      "imgUrl": "http://supertroopers.png",
+      "title": "Super Troopers",
+    },
+  ],
+  Array [
+    Object {
+      "fileInfo": Array [
+        Object {
+          "location": "loc1",
+        },
+      ],
+      "imdbID": "tt123",
+      "imgFile": "/Users/blenoski/Developer/ConfidentCruiser/movie-night/app/background/__tests__/index.test.js",
+      "title": "Old School",
+    },
+    Object {
+      "fileInfo": Array [
+        Object {
+          "location": "loc2",
+        },
+      ],
+      "imdbID": "tt456",
+      "imgUrl": "http://supertroopers.png",
+      "title": "Super Troopers",
+    },
+  ],
+  Array [
+    Object {
+      "fileInfo": Array [
+        Object {
+          "location": "loc1",
+        },
+      ],
+      "imdbID": "tt123",
+      "imgFile": "/Users/blenoski/Developer/ConfidentCruiser/movie-night/app/background/__tests__/index.test.js",
+      "title": "Old School",
+    },
+    Object {
+      "fileInfo": Array [
+        Object {
+          "location": "loc2",
+        },
+      ],
+      "imdbID": "tt456",
+      "imgUrl": "http://supertroopers.png",
+      "title": "Super Troopers",
+    },
+  ],
+  Array [
+    Object {
+      "fileInfo": Array [
+        Object {
+          "location": "loc1",
+        },
+      ],
+      "imdbID": "tt123",
+      "imgFile": "/Users/blenoski/Developer/ConfidentCruiser/movie-night/app/background/__tests__/index.test.js",
+      "title": "Old School",
+    },
+    Object {
+      "fileInfo": Array [
+        Object {
+          "location": "loc2",
+        },
+      ],
+      "imdbID": "tt456",
+      "imgUrl": "http://supertroopers.png",
+      "title": "Super Troopers",
+    },
+  ],
+  Array [
+    Object {
+      "fileInfo": Array [
+        Object {
+          "location": "loc1",
+        },
+      ],
+      "imdbID": "tt123",
+      "imgFile": "/Users/blenoski/Developer/ConfidentCruiser/movie-night/app/background/__tests__/index.test.js",
+      "title": "Old School",
+    },
+    Object {
+      "fileInfo": Array [
+        Object {
+          "location": "loc2",
+        },
+      ],
+      "imdbID": "tt456",
+      "imgUrl": "http://supertroopers.png",
+      "title": "Super Troopers",
+    },
+  ],
+  Array [
+    Object {
+      "fileInfo": Array [
+        Object {
+          "location": "loc1",
+        },
+      ],
+      "imdbID": "tt123",
+      "imgFile": "/Users/blenoski/Developer/ConfidentCruiser/movie-night/app/background/__tests__/index.test.js",
+      "title": "Old School",
+    },
+    Object {
+      "fileInfo": Array [
+        Object {
+          "location": "loc2",
+        },
+      ],
+      "imdbID": "tt456",
+      "imgUrl": "http://supertroopers.png",
+      "title": "Super Troopers",
+    },
+  ],
+]
+`;
+
+exports[`handleCrawlDirectoryEvent calls search directory callback during crawl 1`] = `
+Array [
+  "__tests__",
+  "__fixtures__",
+  "empty_movie_files_for_testing",
+  "__snapshots__",
+]
+`;

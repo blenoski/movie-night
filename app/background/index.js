@@ -26,7 +26,8 @@ logEnv(logger)
 // =====================================
 // Handle the LOAD_MOVIE_DATABASE events
 // =====================================
-ipcRenderer.on(LOAD_MOVIE_DATABASE, (event) => {
+ipcRenderer.on(LOAD_MOVIE_DATABASE, handleLoadMovieDatabaseEvent)
+function handleLoadMovieDatabaseEvent (event) {
   logger.info('Received LOAD_MOVIE_DATABASE event')
 
   // Instantiate the database.
@@ -48,12 +49,13 @@ ipcRenderer.on(LOAD_MOVIE_DATABASE, (event) => {
         }
       })
   })
-})
+}
 
 // ===================================
 // Handler for CRAWL_DIRECTORY events.
 // ===================================
-ipcRenderer.on(CRAWL_DIRECTORY, (event, rootDirectory) => {
+ipcRenderer.on(CRAWL_DIRECTORY, handleCrawlDirectoryEvent)
+function handleCrawlDirectoryEvent (event, rootDirectory) {
   logger.info('Received CRAWL_DIRECTORY event', { rootDirectory })
 
   // Instantiate the database.
@@ -81,7 +83,7 @@ ipcRenderer.on(CRAWL_DIRECTORY, (event, rootDirectory) => {
     moviesInProgress.push(addMovie(movieFile, db))
   }
 
-  crawlForMovies({rootDirectory, searchDirCb, movieFileCb})
+  return crawlForMovies({rootDirectory, searchDirCb, movieFileCb})
     .then(() => {
       // Wait for all movies to finish processing before
       // returning from crawl
@@ -102,7 +104,7 @@ ipcRenderer.on(CRAWL_DIRECTORY, (event, rootDirectory) => {
       ipcRenderer.send(CRAWL_COMPLETE, rootDirectory)
       logger.info('Sent CRAWL_COMPLETE event', { rootDirectory })
     })
-})
+}
 
 // Called upon ENTERING a new crawl directory
 const searchDirCb = (directory) => {
@@ -192,3 +194,10 @@ function movieWithAnyLocationMatching (movieFile) {
 }
 
 logger.info('initialization complete')
+
+module.exports = {
+  handleCrawlDirectoryEvent,
+  handleLoadMovieDatabaseEvent,
+  movieWithAnyLocationMatching,
+  conflate
+}
