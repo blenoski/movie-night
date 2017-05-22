@@ -3,7 +3,7 @@
 An Electron powered app for browsing your digital movie collection
 
 ### Notice (5/20/2017)
-The OMDb API powering metadata for this app has recently started requiring paid API keys. Work is in progress to obtain a key and/or switch to a different metadata provider.
+The OMDb API which powers metadata for this app has recently started requiring paid API keys. Work is in progress to obtain a key.
 
 ## Summary
 The goal of this project is to provide a delightful movie browsing experience in areas without reliable and/or affordable internet access. Adventure travelers are a good example user segement.
