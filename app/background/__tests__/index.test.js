@@ -102,7 +102,7 @@ describe('handleCrawlDirectoryEvent', () => {
     const movieDbCalls = sendMock.mock.calls.filter(call => {
       return call[0] === MOVIE_DATABASE
     }).map(call => {
-      return call[1]
+      return call[1].map(movie => movie.title)
     })
     expect(movieDbCalls).toMatchSnapshot()
   })
