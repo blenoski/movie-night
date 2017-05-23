@@ -5,10 +5,11 @@ Object {
   "fileInfo": Array [
     Object {
       "location": "OldSchool.avi",
-      "query": "OldSchool.avi",
+      "query": "file=OldSchool.avi",
     },
   ],
   "imgFile": "",
+  "successQuery": "file=OldSchool.avi",
 }
 `;
 
@@ -17,11 +18,12 @@ Object {
   "fileInfo": Array [
     Object {
       "location": "OldSchool imgUrl",
-      "query": "OldSchool imgUrl",
+      "query": "file=OldSchool%20imgUrl",
     },
   ],
   "imdbID": "tt123",
   "imgFile": "/path/to/movie/posters/tt123.png",
   "imgUrl": "http://poster.png",
+  "successQuery": "file=OldSchool%20imgUrl",
 }
 `;

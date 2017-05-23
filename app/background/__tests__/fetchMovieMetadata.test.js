@@ -2,20 +2,20 @@
 /* globals describe, test, expect, jest */
 
 // Mock the OMDb API responses.
-jest.mock('../omdb', () => {
+jest.mock('../../shared/request', () => {
   return {
-    fetchMovieMetadata: jest.fn(movieFile => {
+    getJSON: jest.fn(movieFile => {
       if (movieFile.includes('reject')) {
         return Promise.reject(new Error())
       }
 
-      const url = movieFile
       let metadata = {}
+      metadata.successQuery = movieFile.slice(movieFile.indexOf('file='))
       if (movieFile.includes('imgUrl')) {
         metadata.imgUrl = 'http://poster.png'
         metadata.imdbID = 'tt123'
       }
-      return Promise.resolve({ metadata, url })
+      return Promise.resolve(metadata)
     })
   }
 })
