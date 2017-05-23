@@ -16,9 +16,15 @@ module.exports = {
 // Look for 'Season' and a number in the parent directory (but not title) and use this to
 // prioritize type=series over movies. Could also look for patterns like: S4Ep01 in title?
 
+const dataValidator = (data) => {
+  if (data.error) {
+    throw new Error(data.message)
+  }
+}
+
 function fetchMovieDataInternal (movieFile) {
   const url = encodeURI(`${BASE_URL}?file=${movieFile}`)
-  return request.getJSON(url)
+  return request.getJSON(url, dataValidator)
     .then((metadata) => {
       metadata.fileInfo = [{
         location: movieFile,
