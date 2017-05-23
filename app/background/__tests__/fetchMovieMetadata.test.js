@@ -1,7 +1,7 @@
 'use strict'
 /* globals describe, test, expect, jest */
 
-// Mock the OMDb API responses.
+// Mock the API responses.
 jest.mock('../../shared/request', () => {
   return {
     getJSON: jest.fn(movieFile => {
