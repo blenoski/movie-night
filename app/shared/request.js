@@ -118,48 +118,6 @@ function getJSON (url, validate = null) {
     })
 }
 
-// Loop over urls in order.
-// Stop on first successful response OR first network/status/timeout error.
-// Successful response returns {data, url} => JSON data and successful url.
-// @urls[required] - array of urls to try in order
-// @validate[optional] - function that is called with response data,
-//                       should throw Error iff data is invalid
-function getFirstSuccess (urls, validate = null) {
-  return new Promise((resolve, reject) => {
-    if (urls.length === 0) {
-      reject(new Error('no urls passed in'))
-    }
-
-    let settled = false // flag that is set when Promise has been settled
-
-    return urls.reduce((previous, url, index) => {
-      return previous.then(() => {
-        if (settled) {
-          return // this no-ops rest of promise chain
-        }
-
-        // No good data yet, so lets try the current url.
-        return getJSON(url, validate) // MUST return the promise here so it gets added to chain
-          .then((data) => {
-            settled = true
-            resolve({data, url}) // SUCCESS!
-          })
-          .catch((err) => {
-            // Reject immediately on network, status, or timeout error.
-            if (err instanceof NetworkError ||
-              err instanceof StatusError ||
-              err instanceof TimeoutError ||
-              (index + 1) === urls.length // If we are out of urls, then reject.
-            ) {
-              settled = true
-              reject(err)
-            }
-          })
-      })
-    }, Promise.resolve())
-  })
-}
-
 function downloadFile (url, fname) {
   return get(url, {responseType: 'arraybuffer'}) // required XHR2 responseType for binary data
     .then((arraybuffer) => {
@@ -170,7 +128,6 @@ function downloadFile (url, fname) {
 module.exports = {
   get,
   getJSON,
-  getFirstSuccess,
   downloadFile,
   setRequestAgent, // for testing purposes
   NetworkError,

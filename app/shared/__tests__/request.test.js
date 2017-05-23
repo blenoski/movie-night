@@ -3,18 +3,16 @@ const fs = require('fs')
 const path = require('path')
 
 const request = require('../request')
-const { ExtendableError } = require('../utils')
 const {
   XHRMockSuccess,
   XHRMock404NotFound,
   XHRMockNetworkError,
   XHRMockTimeoutError,
   XHRMockJSON,
-  jsonTestOutput,
-  XHRMockGetFirstSuccess
+  jsonTestOutput
 } = require('../__mocks__/XHRMock')
 
-/* globals describe, test, expect, beforeAll, afterAll, beforeEach */
+/* globals describe, test, expect, beforeAll, afterAll */
 describe('request', () => {
   const url = 'http://example.com'
 
@@ -151,81 +149,6 @@ describe('request', () => {
     test('rejects on invalid data', () => {
       return expect(request.getJSON(url, () => { throw new Error() }))
         .rejects.toBeInstanceOf(Error)
-    })
-  })
-
-  describe('getFirstSuccess', () => {
-    beforeEach(() => {
-      request.setRequestAgent(XHRMockGetFirstSuccess)
-    })
-
-    // We will use this validator to identify *** good *** test urls.
-    class DataError extends ExtendableError {}
-    const validator = (data) => {
-      if (!data.includes('succeeds')) {
-        throw new DataError('bad data')
-      }
-    }
-
-    // Convenience function for creating URL arrays from integer arrays.
-    const succeeds = 'http://succeeds.com'
-    const fails = 'http://fails.com'
-    const getUrls = (results) => {
-      return results.map((result, index) => {
-        return result ? `${succeeds}?index=${index}` : fails
-      })
-    }
-
-    // Lets get to testing.
-    test('resolves when first url is good', () => {
-      const expected = `${succeeds}?index=0`
-      return expect(request.getFirstSuccess(getUrls([1, 0, 0]), validator))
-        .resolves.toEqual({ data: expected, url: expected })
-    })
-
-    test('resolves when last url is good', () => {
-      const expected = `${succeeds}?index=2`
-      return expect(request.getFirstSuccess(getUrls([0, 0, 1]), validator))
-        .resolves.toEqual({ data: expected, url: expected })
-    })
-
-    test('resolves with first of multiple good urls', () => {
-      const expected = `${succeeds}?index=1`
-      return expect(request.getFirstSuccess(getUrls([0, 1, 1]), validator))
-        .resolves.toEqual({ data: expected, url: expected })
-    })
-
-    test('rejects when all urls are bad', () => {
-      return expect(request.getFirstSuccess(getUrls([0, 0, 0]), validator))
-        .rejects.toBeInstanceOf(DataError)
-    })
-
-    test('rejects on a single bad url', () => {
-      return expect(request.getFirstSuccess(getUrls([0]), validator))
-        .rejects.toBeInstanceOf(DataError)
-    })
-
-    test('rejects on empty input', () => {
-      return expect(request.getFirstSuccess([]))
-        .rejects.toBeInstanceOf(Error)
-    })
-
-    test('rejects on NetworkError', () => {
-      request.setRequestAgent(XHRMockNetworkError)
-      return expect(request.getFirstSuccess(getUrls([1, 1, 1]), validator))
-        .rejects.toBeInstanceOf(request.NetworkError)
-    })
-
-    test('rejects on StatusError', () => {
-      request.setRequestAgent(XHRMock404NotFound)
-      return expect(request.getFirstSuccess(getUrls([0, 0, 0]), validator))
-        .rejects.toBeInstanceOf(request.StatusError)
-    })
-
-    test('rejects on TimeoutError', () => {
-      request.setRequestAgent(XHRMockTimeoutError)
-      return expect(request.getFirstSuccess(getUrls([1, 1, 1]), validator))
-        .rejects.toBeInstanceOf(request.TimeoutError)
     })
   })
 
