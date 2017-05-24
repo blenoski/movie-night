@@ -17,19 +17,19 @@ export default class DisplayMovies extends Component {
   }
 
   render () {
-    const { movies, closeMovieDetailsWhenOnlyOneMovie } = this.props
+    const { movies, updateSearchQuery, searchQuery } = this.props
 
     if (movies.length === 0) {
       return null
     }
 
-    if (movies.length === 1) {
+    if (movies.length === 1 && searchQuery) {
       const moviesFirstGenre = movies[0].movies
       if (moviesFirstGenre.length === 1) {
         return (
           <MovieDetail
             movie={moviesFirstGenre[0]}
-            handleCloseMovieDetails={closeMovieDetailsWhenOnlyOneMovie}
+            handleCloseMovieDetails={() => updateSearchQuery('')}
           />
         )
       }

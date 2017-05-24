@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { SELECT_IMPORT_DIRECTORY } from '../../shared/events'
 import { updateSearchQuery } from '../model'
 import Button from '../views/Button'
+import DisplayMovies from '../views/DisplayMovies'
 import MainContentArea from '../views/MainContent'
 import logger from '../mainWindowLogger'
 import SearchBar from '../views/SearchBar'
@@ -42,6 +43,26 @@ export const SearchMovies = connect(
   mapDispatchToSearchBarProps
 )(SearchBar)
 
+// DisplayMovies Container
+// -----------------------
+function mapStateToDisplayMoviesProps (state) {
+  return {
+    searchQuery: state.searchQuery,
+    movies: state.filteredMovies
+  }
+}
+
+function mapDispatchToDisplayMoviesProps (dispatch) {
+  return {
+    updateSearchQuery: (text) => dispatch(updateSearchQuery(text))
+  }
+}
+
+export const DisplayMoviesContainer = connect(
+  mapStateToDisplayMoviesProps,
+  mapDispatchToDisplayMoviesProps
+)(DisplayMovies)
+
 // MainContent Container
 // ---------------------
 function mapStateToMainContentProps (state) {
@@ -55,11 +76,4 @@ function mapStateToMainContentProps (state) {
   }
 }
 
-function mapDispatchToMainContentProps (dispatch) {
-  return {
-    updateSearchQuery: (text) => dispatch(updateSearchQuery(text))
-  }
-}
-
-export const MainContent = connect(mapStateToMainContentProps,
-  mapDispatchToMainContentProps)(MainContentArea)
+export const MainContent = connect(mapStateToMainContentProps)(MainContentArea)

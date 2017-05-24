@@ -1,8 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 
+import { DisplayMoviesContainer } from '../controller'
 import Button from './Button'
-import DisplayMovies from './DisplayMovies'
 import Logo from './Logo'
 
 export default ({
@@ -10,8 +10,7 @@ export default ({
   filteredMovies,
   isCrawling,
   handleAddMediaClick,
-  movies,
-  updateSearchQuery
+  movies
 }) => {
   // Handle application load.
   if (!dbLoaded) {
@@ -37,12 +36,7 @@ export default ({
   }
 
   // Normal case. Display movies from database.
-  return (
-    <DisplayMovies
-      movies={filteredMovies}
-      closeMovieDetailsWhenOnlyOneMovie={() => updateSearchQuery('')}
-    />
-  )
+  return <DisplayMoviesContainer />
 }
 
 const Splash = styled.div`
