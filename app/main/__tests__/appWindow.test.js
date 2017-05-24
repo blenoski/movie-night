@@ -1,3 +1,6 @@
+'use strict'
+/* globals describe, test, expect, beforeAll */
+
 const {
   createAppWindow,
   handleCrawlCompleteEvent,
@@ -15,17 +18,21 @@ const {
   sendMock
 } = require('electron') // jest will automatically use mocked version
 
-/* globals describe, test, expect, beforeAll */
-
 // Helper functions for accessing send mock.
 const sendCount = () => sendMock.mock.calls.length
 const sendLast = () => sendMock.mock.calls[sendCount() - 1]
+
+// A test movie database
+const movieDB = [
+  { genre: 'action', movies: ['movie1', 'movie2', 'movie3'] },
+  { genre: 'comedy', movies: ['movie1', 'movie2', 'movie3'] }
+]
 
 describe('appWindow', () => {
   describe('does not crash', () => {
     test(' when events sent before appWindow created', () => {
       handleCrawlCompleteEvent(null, 'crawlDirectory')
-      handleMovieDatabaseEvent(null, ['movie1', 'movie2', 'movie3'])
+      handleMovieDatabaseEvent(null, movieDB)
       handleSearchingDirectoryEvents(null, 'searchDir')
       expect(sendCount()).toBe(0)
     })
@@ -46,7 +53,7 @@ describe('appWindow', () => {
 
     const testData = {
       [CRAWL_COMPLETE]: 'crawlDir',
-      [MOVIE_DATABASE]: ['movie1', 'movie2', 'movie3'],
+      [MOVIE_DATABASE]: movieDB,
       [SEARCHING_DIRECTORY]: 'searchDir'
     }
 
@@ -58,8 +65,9 @@ describe('appWindow', () => {
         })
 
         test('handles empty input', () => {
-          eventHandlers[event](null, '')
-          expect(sendLast()).toEqual([event, ''])
+          const data = event === MOVIE_DATABASE ? [] : ''
+          eventHandlers[event](null, data)
+          expect(sendLast()).toEqual([event, data])
         })
       })
     })

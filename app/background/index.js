@@ -21,6 +21,9 @@ const { checkIfPosterHasBeenDownloadedFor, downloadPosterFor } = require('./post
 // Database configuration.
 const dbConfig = { uniqueField: 'imdbID', dbPath, dbName }
 
+// Throttle
+const throttleDuration = process.env.NODE_ENV === 'test' ? 0 : 1000
+
 // Record environment.
 logEnv(logger)
 
@@ -103,8 +106,11 @@ function handleCrawlDirectoryEvent (event, rootDirectory) {
       }, Promise.resolve())
     })
     .then(() => {
-      ipcRenderer.send(CRAWL_COMPLETE, rootDirectory)
-      logger.info('Sent CRAWL_COMPLETE event', { rootDirectory })
+      // Let the throttled database updates finish.
+      setTimeout(() => {
+        ipcRenderer.send(CRAWL_COMPLETE, rootDirectory)
+        logger.info('Sent CRAWL_COMPLETE event', { rootDirectory })
+      }, throttleDuration)
     })
 }
 
@@ -145,18 +151,22 @@ function addMovie (movieFile, db) {
         if (documentChanged) {
           const movieDB = db.addOrUpdate(finalDocument)
           const sortedDB = paritionMovieDatabaseByGenre(movieDB)
-          ipcRenderer.send(MOVIE_DATABASE, sortedDB) // SUCCESS!
-          logger.info('Sent MOVIE_DATABASE event with new movie', {
-            title: movie.title,
-            location: movie.fileInfo[0].location,
-            count: movieDB.length
-          })
+          throttledSendMovieDatabase(sortedDB) // SUCCESS!!!
         }
         return resolve({err: null, movieFile})
       })
       .catch((error) => {
         return resolve({err: error, movieFile})
       })
+  })
+}
+
+// Send movie database updates at most once per second.
+const throttledSendMovieDatabase = _.throttle(sendMovieDatabase, throttleDuration)
+function sendMovieDatabase (movieDB) {
+  ipcRenderer.send(MOVIE_DATABASE, movieDB)
+  logger.info('Sent MOVIE_DATABASE event', {
+    count: movieDB.reduce((sum, genre) => sum + genre.movies.length, 0)
   })
 }
 

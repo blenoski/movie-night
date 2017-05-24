@@ -106,10 +106,14 @@ function handleCrawlCompleteEvent (event, directory) {
 }
 
 function handleMovieDatabaseEvent (event, movieDB) {
-  logger.info('Received MOVIE_DATABASE event', { count: movieDB.length })
+  logger.info('Received MOVIE_DATABASE event', {
+    count: movieDB.reduce((sum, genre) => sum + genre.movies.length, 0)
+  })
   if (appWindow) {
     appWindow.webContents.send(MOVIE_DATABASE, movieDB)
-    logger.info('Sent MOVIE_DATABASE event to appWindow', { count: movieDB.length })
+    logger.info('Sent MOVIE_DATABASE event to appWindow', {
+      count: movieDB.reduce((sum, genre) => sum + genre.movies.length, 0)
+    })
   } else {
     logger.error('appWindow object does not exist')
   }

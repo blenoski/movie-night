@@ -88,8 +88,12 @@ describe('handleCrawlDirectoryEvent', () => {
     })
   })
 
-  test('last send is crawl complete', () => {
-    expect(sendMock).lastCalledWith(CRAWL_COMPLETE, __dirname)
+  test('last send is crawl complete', (done) => {
+    expect.assertions(1)
+    setTimeout(() => {
+      expect(sendMock).lastCalledWith(CRAWL_COMPLETE, __dirname)
+      done()
+    }, 0)
   })
 
   test('calls search directory callback during crawl', () => {
