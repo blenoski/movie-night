@@ -8,43 +8,29 @@
 
 export default function (searchQuery, movies) {
   searchQuery = searchQuery.toLowerCase().trim()
+  if (!searchQuery) {
+    return movies
+  }
 
-  // TODO: Movie this work to background thread minus the search filter.
-  // I.e. movies should come into render thread already indexed by genre and sorted.
-  // Loop over movies, filter on search query and partition into genres.
-  let genreMap = {}
-  let noPosters = []
-  let moviesLength = movies.length
-  for (let i = 0; i < moviesLength; i += 1) {
-    const movie = movies[i]
-    if (!searchQuery || searchFilterIncludes(movie, searchQuery)) {
-      if (movie.imgFile) {
-        const genre = movie.genres[0]
-        let items = genreMap[genre]
-        items ? items.push(movie) : genreMap[genre] = [movie]
-      } else {
-        noPosters.push(movie)
-      }
+  let filteredMovies = []
+
+  movies.forEach(genre => {
+    const genreName = genre.genre
+    filteredMovies.push({ genre: genreName, movies: [] })
+
+    // If search query includes genre, then include ALL movies in genres
+    if (genreName.includes(searchQuery)) {
+      filteredMovies[filteredMovies.length - 1].movies = genre.movies
+    } else { // Else loop over movies in genre and check if search query applies
+      filteredMovies[filteredMovies.length - 1].movies =
+        genre.movies.filter(movie => searchFilterIncludes(movie, searchQuery))
     }
-  }
-
-  // Push movies with no poster to end of genre array.
-  // Assumption is this array will be small.
-  for (let j = 0; j < noPosters.length; j += 1) {
-    const movie = noPosters[j]
-    const genre = movie.genres[0]
-    let items = genreMap[genre]
-    items ? items.push(movie) : genreMap[genre] = [movie]
-  }
-
-  // Order by genre from most movies to least movies.
-  return Object.keys(genreMap).sort((lhs, rhs) => {
-    const countRhs = genreMap[rhs].length
-    const countLhs = genreMap[lhs].length
-    return countRhs - countLhs
-  }).map(genre => {
-    return { genre, movies: genreMap[genre] }
   })
+
+  // Get rid of empty genres. Then sort by genre with most movies.
+  return filteredMovies
+    .filter(genre => genre.movies.length > 0)
+    .sort((lhs, rhs) => rhs.movies.length - lhs.movies.length)
 }
 
 function searchFilterIncludes (movie, query) {
@@ -53,10 +39,8 @@ function searchFilterIncludes (movie, query) {
     return true
   }
 
-  // Look for matching genre.
-  // Here we only consider the first/primary genre and
-  // we are looking for a startsWith match.
-  if (movie.genres[0].startsWith(query)) {
+  // Look for matching director.
+  if (movie.director.toLowerCase().indexOf(query) >= 0) {
     return true
   }
 
@@ -67,11 +51,6 @@ function searchFilterIncludes (movie, query) {
     if (actors[j].indexOf(query) >= 0) {
       return true
     }
-  }
-
-  // Look for matching director.
-  if (movie.director.toLowerCase().indexOf(query) >= 0) {
-    return true
   }
 
   return false

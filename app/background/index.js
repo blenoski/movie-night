@@ -1,5 +1,6 @@
 const path = require('path')
 const { ipcRenderer } = require('electron')
+const _ = require('underscore')
 
 const { dbPath, dbName } = require('../../config')
 const {
@@ -36,8 +37,9 @@ function handleLoadMovieDatabaseEvent (event) {
   logger.info('Database config:', db.config())
 
   // Send the movie database
-  let movieDB = db.getCollection()
-  ipcRenderer.send(MOVIE_DATABASE, movieDB) // SUCCESS!
+  const movieDB = db.getCollection()
+  const sortedDB = paritionMovieDatabaseByGenre(movieDB)
+  ipcRenderer.send(MOVIE_DATABASE, sortedDB) // SUCCESS!
   logger.info('Sent MOVIE_DATABASE event', { count: movieDB.length })
 
   // Try to download any missing poster images
@@ -141,8 +143,9 @@ function addMovie (movieFile, db) {
       .then(({movie, document}) => {
         let {documentChanged, finalDocument} = conflate(document, movie)
         if (documentChanged) {
-          let movieDB = db.addOrUpdate(finalDocument)
-          ipcRenderer.send(MOVIE_DATABASE, movieDB) // SUCCESS!
+          const movieDB = db.addOrUpdate(finalDocument)
+          const sortedDB = paritionMovieDatabaseByGenre(movieDB)
+          ipcRenderer.send(MOVIE_DATABASE, sortedDB) // SUCCESS!
           logger.info('Sent MOVIE_DATABASE event with new movie', {
             title: movie.title,
             location: movie.fileInfo[0].location,
@@ -193,11 +196,27 @@ function movieWithAnyLocationMatching (movieFile) {
   return filter
 }
 
+// This function partitions movies by primary Genre and sorts the
+// partitions from most to least movies.
+function paritionMovieDatabaseByGenre (movieDB) {
+  // Partition movies by primary genre.
+  const genreMap = _.groupBy(movieDB, (movie) => movie.genres[0])
+  return Object.keys(genreMap).map(genre => {
+    return { // Move movies with no poster image to back of genre array.
+      genre,
+      movies: _.flatten(_.partition(genreMap[genre], (movie) => movie.imgFile))
+    }
+  }).sort((lhs, rhs) => { // sort by genre from most movies to least movies
+    return rhs.movies.length - lhs.movies.length
+  })
+}
+
 logger.info('initialization complete')
 
 module.exports = {
   handleCrawlDirectoryEvent,
   handleLoadMovieDatabaseEvent,
   movieWithAnyLocationMatching,
-  conflate
+  conflate,
+  paritionMovieDatabaseByGenre
 }

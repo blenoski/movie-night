@@ -10,11 +10,13 @@ const mockImgFile = __filename
 let mockDB = [{
   imdbID: 'tt123',
   title: 'Old School',
+  genres: ['comedy'],
   imgFile: mockImgFile,
   fileInfo: [{ location: 'loc1' }]
 }, {
   imdbID: 'tt456',
   title: 'Super Troopers',
+  genres: ['action'],
   imgUrl: 'http://supertroopers.png',
   fileInfo: [{ location: 'loc2' }]
 }]
@@ -67,13 +69,15 @@ const {
   handleCrawlDirectoryEvent,
   handleLoadMovieDatabaseEvent,
   movieWithAnyLocationMatching,
-  conflate
+  conflate,
+  paritionMovieDatabaseByGenre
 } = require('../index')
 
 describe('handleLoadMovieDatabaseEvent', () => {
   test('sends movie database when invoked', () => {
     handleLoadMovieDatabaseEvent()
-    expect(sendMock).lastCalledWith(MOVIE_DATABASE, mockDB)
+    expect(sendMock)
+      .lastCalledWith(MOVIE_DATABASE, paritionMovieDatabaseByGenre(mockDB))
   })
 })
 
@@ -102,7 +106,7 @@ describe('handleCrawlDirectoryEvent', () => {
     const movieDbCalls = sendMock.mock.calls.filter(call => {
       return call[0] === MOVIE_DATABASE
     }).map(call => {
-      return call[1].map(movie => movie.title)
+      return call[1].map(genre => genre.movies[0].title)
     })
     expect(movieDbCalls).toMatchSnapshot()
   })
