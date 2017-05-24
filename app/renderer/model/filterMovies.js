@@ -30,7 +30,6 @@ export default function (searchQuery, movies) {
   // Get rid of empty genres. Then sort by genre with most movies.
   return filteredMovies
     .filter(genre => genre.movies.length > 0)
-    .sort((lhs, rhs) => rhs.movies.length - lhs.movies.length)
 }
 
 function searchFilterIncludes (movie, query) {

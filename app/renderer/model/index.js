@@ -14,7 +14,8 @@ const initialState = {
   filteredMovies: [],
   isCrawling: false,
   movies: [],
-  searchQuery: ''
+  searchQuery: '',
+  genreDisplayOrder: []
 }
 
 // Actions
@@ -74,21 +75,61 @@ function reducer (state = initialState, action) {
       return { ...state, dbLoaded: true }
     case UPDATE_MOVIE_DATABASE:
       const movies = action.payload
+      const fmud = filterMovies(state.searchQuery, movies)
+      const genreDisplayOrder = computeNextState(fmud, state.isCrawling, state.genreDisplayOrder)
       return {
         ...state,
-        filteredMovies: filterMovies(state.searchQuery, movies),
+        filteredMovies: sortIntoDisplayOrder(fmud, genreDisplayOrder),
+        genreDisplayOrder,
         movies
       }
     case UPDATE_SEARCH_QUERY:
       const searchQuery = action.payload
+      const fmsq = filterMovies(searchQuery, state.movies)
+      const nextDisplayOrder = computeNextState(fmsq, state.isCrawling, state.genreDisplayOrder)
       return {
         ...state,
-        filteredMovies: filterMovies(searchQuery, state.movies),
+        filteredMovies: sortIntoDisplayOrder(fmsq, nextDisplayOrder),
+        genreDisplayOrder: nextDisplayOrder,
         searchQuery
       }
     default:
       return state
   }
+}
+
+// Returns next state for genreDisplayOrder
+function computeNextState (movies, isCrawling, currentDisplayOrder) {
+  let genreDisplayOrder = currentDisplayOrder.filter(el => true) // make deep copy
+  if (!isCrawling || !genreDisplayOrder) {
+    genreDisplayOrder = rankGenresForDisplay(movies)
+  } else {
+    const newGenres = computeNewGenres(movies, genreDisplayOrder)
+    genreDisplayOrder.push(...newGenres)
+  }
+  return genreDisplayOrder
+}
+
+// Returns list of genres sorted from most movies to least movies.
+function rankGenresForDisplay (movies) {
+  return movies.map(genre => ({ genre: genre.genre, count: genre.movies.length }))
+    .sort((lhs, rhs) => {
+      if (rhs.count !== lhs.count) { // sort by count first
+        return rhs.count - lhs.count
+      } else {
+        return rhs.genre < lhs.genre // alphanumeric second
+      }
+    }).map(genre => genre.genre)
+}
+
+function computeNewGenres (movies, genres) {
+  return movies.map(genre => genre.genre).filter(genre => genres.indexOf(genre) < 0)
+}
+
+function sortIntoDisplayOrder (movies, genreDisplayOrder) {
+  return genreDisplayOrder.map(genre => {
+    return movies.find(el => el.genre === genre)
+  })
 }
 
 // Create the redux store
