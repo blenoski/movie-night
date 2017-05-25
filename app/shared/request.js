@@ -11,12 +11,12 @@ const setRequestAgent = (Agent) => {
   RequestAgent = Agent
 }
 
-// We will limit all network requests to a maximum of 80 per 10 seconds.
+// We will limit all network requests to a maximum of 40 per 10 seconds.
 // Note: Chromium will additionally limit the maximum number of concurrent
 // open requests from an origin to 6 as of April 2017.
-const eightyRequestsPer = 80
+const fortyRequestsPer = 40
 const tenSeconds = 10 * 1000 // time in milliseconds
-let limiter = new RateLimiter(eightyRequestsPer, tenSeconds)
+let limiter = new RateLimiter(fortyRequestsPer, tenSeconds)
 
 // Requests are rejected with NetworkError when the network connection has
 // issues or the request times out.
