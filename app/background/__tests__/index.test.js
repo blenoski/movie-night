@@ -107,12 +107,14 @@ describe('handleCrawlDirectoryEvent', () => {
   })
 
   test('calls movie database callback during crawl', () => {
-    const movieDbCalls = sendMock.mock.calls.filter(call => {
+    const movieDbLastCall = sendMock.mock.calls.filter(call => {
       return call[0] === MOVIE_DATABASE
     }).map(call => {
       return call[1].map(genre => genre.movies[0].title)
-    })
-    expect(movieDbCalls).toMatchSnapshot()
+    }).reduce((prev, curr) => {
+      return curr
+    }, {})
+    expect(movieDbLastCall).toMatchSnapshot()
   })
 })
 

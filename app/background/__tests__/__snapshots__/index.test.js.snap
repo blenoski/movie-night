@@ -2,18 +2,8 @@
 
 exports[`handleCrawlDirectoryEvent calls movie database callback during crawl 1`] = `
 Array [
-  Array [
-    "Old School",
-    "Super Troopers",
-  ],
-  Array [
-    "Old School",
-    "Super Troopers",
-  ],
-  Array [
-    "Old School",
-    "Super Troopers",
-  ],
+  "Old School",
+  "Super Troopers",
 ]
 `;
 
