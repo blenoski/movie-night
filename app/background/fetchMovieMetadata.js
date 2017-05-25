@@ -23,7 +23,7 @@ const dataValidator = (data) => {
 }
 
 function fetchMovieDataInternal (movieFile) {
-  const url = encodeURI(`${BASE_URL}?file=${movieFile}`)
+  const url = `${BASE_URL}?file=${encodeURIComponent(movieFile)}`
   return request.getJSON(url, dataValidator)
     .then((metadata) => {
       metadata.fileInfo = [{
