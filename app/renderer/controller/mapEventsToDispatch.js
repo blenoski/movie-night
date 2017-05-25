@@ -34,11 +34,11 @@ ipcRenderer.on(MOVIE_DATABASE, (event, movieDB) => {
     count: movieDB.reduce((sum, genre) => sum + genre.movies.length, 0)
   })
   store.dispatch(updateMovieDB(movieDB))
+})
+
+ipcRenderer.once(MOVIE_DATABASE, (event, movieDB) => {
   setTimeout(() => {
     store.dispatch(databaseLoaded())
     logger.info('Dispatched databaseLoaded action')
   }, 500)
-  logger.info('Dispatched updateMovieDB action', {
-    count: movieDB.reduce((sum, genre) => sum + genre.movies.length, 0)
-  })
 })
