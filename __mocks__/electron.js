@@ -40,6 +40,7 @@ const ipcMain = {
 
 const ipcRenderer = {
   on: jest.genMockFunction(),
+  once: jest.genMockFunction(),
   send: sendMock
 }
 

@@ -22,7 +22,7 @@ const { checkIfPosterHasBeenDownloadedFor, downloadPosterFor } = require('./post
 const dbConfig = { uniqueField: 'imdbID', dbPath, dbName }
 
 // Throttle
-const throttleDuration = process.env.NODE_ENV === 'test' ? 0 : 1000
+const throttleDuration = process.env.NODE_ENV === 'test' ? 0 : 250
 
 // Record environment.
 logEnv(logger)
@@ -99,7 +99,7 @@ function handleCrawlDirectoryEvent (event, rootDirectory) {
               logger.warn(`${movieFile} not added to database:`, { type: err.name, message: err.message })
               // TODO: send a data not found event to appWindow?
             } else {
-              logger.info(`Completed processing ${movieFile}`)
+              logger.debug(`Completed processing ${movieFile}`)
             }
           })
         })
@@ -149,9 +149,8 @@ function addMovie (movieFile, db) {
       .then(({movie, document}) => {
         let {documentChanged, finalDocument} = conflate(document, movie)
         if (documentChanged) {
-          const movieDB = db.addOrUpdate(finalDocument)
-          const sortedDB = paritionMovieDatabaseByGenre(movieDB)
-          throttledSendMovieDatabase(sortedDB) // SUCCESS!!!
+          db.addOrUpdate(finalDocument)
+          throttledSendMovieDatabase(db) // SUCCESS!!!
         }
         return resolve({err: null, movieFile})
       })
@@ -161,12 +160,14 @@ function addMovie (movieFile, db) {
   })
 }
 
-// Send movie database updates at most once per second.
-const throttledSendMovieDatabase = _.throttle(sendMovieDatabase, throttleDuration)
-function sendMovieDatabase (movieDB) {
-  ipcRenderer.send(MOVIE_DATABASE, movieDB)
+// Batch sending of movie database updates.
+const throttledSendMovieDatabase = _.debounce(sendMovieDatabase, throttleDuration)
+function sendMovieDatabase (db) {
+  const movieDB = db.getCollection()
+  const sortedDB = paritionMovieDatabaseByGenre(movieDB)
+  ipcRenderer.send(MOVIE_DATABASE, sortedDB)
   logger.info('Sent MOVIE_DATABASE event', {
-    count: movieDB.reduce((sum, genre) => sum + genre.movies.length, 0)
+    count: sortedDB.reduce((sum, genre) => sum + genre.movies.length, 0)
   })
 }
 
