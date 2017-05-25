@@ -15,7 +15,8 @@ const initialState = {
   isCrawling: false,
   movies: [],
   searchQuery: '',
-  genreDisplayOrder: []
+  genreDisplayOrder: [],
+  scrolling: false
 }
 
 // Actions
@@ -25,6 +26,7 @@ const CRAWL_DIRECTORY = 'crawl-directory'
 const IS_CRAWLING = 'is-crawling'
 const UPDATE_MOVIE_DATABASE = 'update-movie-database'
 const UPDATE_SEARCH_QUERY = 'update-search-query'
+const UPDATE_SCROLLING = 'update-scrolling'
 
 // Action creators.
 // These are also public interface.
@@ -63,6 +65,13 @@ export function updateSearchQuery (text) {
   }
 }
 
+export function updateScrolling (isScrolling) {
+  return {
+    type: UPDATE_SCROLLING,
+    payload: isScrolling
+  }
+}
+
 // Reducer
 // -------
 function reducer (state = initialState, action) {
@@ -75,23 +84,43 @@ function reducer (state = initialState, action) {
       return { ...state, dbLoaded: true }
     case UPDATE_MOVIE_DATABASE:
       const movies = action.payload
-      const fmud = filterMovies(state.searchQuery, movies)
-      const genreDisplayOrder = computeNextState(fmud, state.isCrawling, state.genreDisplayOrder)
+      let filteredMovies = state.filteredMovies
+      let genreDisplayOrder = state.genreDisplayOrder
+      if (!state.scrolling) { // Update displayed movies only if we are NOT scrolling
+        const fmud = filterMovies(state.searchQuery, movies)
+        genreDisplayOrder = computeNextGenreDisplayOrderState(fmud, state, false)
+        filteredMovies = sortIntoDisplayOrder(fmud, genreDisplayOrder)
+      }
       return {
         ...state,
-        filteredMovies: sortIntoDisplayOrder(fmud, genreDisplayOrder),
+        filteredMovies,
         genreDisplayOrder,
         movies
       }
     case UPDATE_SEARCH_QUERY:
       const searchQuery = action.payload
       const fmsq = filterMovies(searchQuery, state.movies)
-      const nextDisplayOrder = computeNextState(fmsq, state.isCrawling, state.genreDisplayOrder)
+      const nextDisplayOrder = computeNextGenreDisplayOrderState(fmsq, state, true)
       return {
         ...state,
         filteredMovies: sortIntoDisplayOrder(fmsq, nextDisplayOrder),
         genreDisplayOrder: nextDisplayOrder,
         searchQuery
+      }
+    case UPDATE_SCROLLING:
+      const nextScrollingState = action.payload
+      let nextFilteredMovies = state.filteredMovies
+      if (state.scrolling && !nextScrollingState) {
+        // If state is changing from scrolling to not scrolling,
+        // then go ahead and update the filtered movies.
+        const fmus = filterMovies(state.searchQuery, state.movies)
+        const genreDisplayOrder = computeNextGenreDisplayOrderState(fmus, state, false)
+        nextFilteredMovies = sortIntoDisplayOrder(fmus, genreDisplayOrder)
+      }
+      return {
+        ...state,
+        scrolling: nextScrollingState,
+        filteredMovies: nextFilteredMovies
       }
     default:
       return state
@@ -99,27 +128,38 @@ function reducer (state = initialState, action) {
 }
 
 // Returns next state for genreDisplayOrder
-function computeNextState (movies, isCrawling, currentDisplayOrder) {
-  let genreDisplayOrder = currentDisplayOrder.filter(el => true) // make deep copy
-  if (!isCrawling || !genreDisplayOrder) {
-    genreDisplayOrder = rankGenresForDisplay(movies)
+function computeNextGenreDisplayOrderState (movies, {isCrawling, genreDisplayOrder}, searchQueryUpdated) {
+  let nextGenreDisplayOrder = genreDisplayOrder.filter(el => true) // make deep copy
+  if (searchQueryUpdated || !isCrawling || !nextGenreDisplayOrder) {
+    nextGenreDisplayOrder = rankGenresForDisplay(movies)
   } else {
-    const newGenres = computeNewGenres(movies, genreDisplayOrder)
-    genreDisplayOrder.push(...newGenres)
+    const newGenres = computeNewGenres(movies, nextGenreDisplayOrder)
+    nextGenreDisplayOrder.push(...newGenres)
   }
-  return genreDisplayOrder
+  return nextGenreDisplayOrder
 }
 
 // Returns list of genres sorted from most movies to least movies.
 function rankGenresForDisplay (movies) {
-  return movies.map(genre => ({ genre: genre.genre, count: genre.movies.length }))
-    .sort((lhs, rhs) => {
-      if (rhs.count !== lhs.count) { // sort by count first
-        return rhs.count - lhs.count
-      } else {
-        return rhs.genre < lhs.genre // alphanumeric second
-      }
-    }).map(genre => genre.genre)
+  return movies.map(genre => {
+    return {
+      genre: genre.genre,
+      count: genre.movies.length,
+      hasPoster: genre.movies[0].imgFile
+    }
+  }).sort((lhs, rhs) => {
+    if (rhs.hasPoster && !lhs.hasPoster) { // sort by has poster first
+      return 1
+    } else if (lhs.hasPoster && !rhs.hasPoster) {
+      return -1
+    }
+
+    if (rhs.count !== lhs.count) { // sort by count second
+      return rhs.count - lhs.count
+    } else {
+      return rhs.genre < lhs.genre // alphanumeric third
+    }
+  }).map(genre => genre.genre)
 }
 
 function computeNewGenres (movies, genres) {
