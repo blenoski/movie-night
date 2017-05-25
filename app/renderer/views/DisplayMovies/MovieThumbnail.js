@@ -1,6 +1,7 @@
 import { shell } from 'electron'
 import React, { Component } from 'react'
 import styled from 'styled-components'
+import { fileExists } from '../../../shared/utils'
 import { Angle } from '../../icons'
 import { fadeIn, fadeOut } from '../styleUtils'
 import PlayButton from './MovieDetail/PlayMovieButton'
@@ -10,7 +11,8 @@ export default class MovieThumbnail extends Component {
     super(props)
     this.state = {
       controls: 'hide', // hide, fadingIn, fadingOut, show
-      image: 'show' // show, fadeOut
+      image: 'show', // show, fadeOut
+      fileAvailable: true
     }
 
     this.mouseEnter = this.mouseEnter.bind(this)
@@ -26,6 +28,8 @@ export default class MovieThumbnail extends Component {
   mouseEnter (e) {
     e.preventDefault()
     this.setState({ controls: 'fadingIn' })
+    fileExists(this.props.movie.fileInfo[0].location)
+      .then(result => this.setState({ fileAvailable: result }))
   }
 
   mouseLeave (e) {
@@ -98,7 +102,7 @@ export default class MovieThumbnail extends Component {
 
     return (
       <Tag onAnimationEnd={this.onAnimationEnd} >
-        <PlayButton onClick={this.openMovieInDefaultPlayer} small />
+        {this.state.fileAvailable && <PlayButton onClick={this.openMovieInDefaultPlayer} small />}
         <ShowMovieDetailsArrow
           down
           onClick={this.onShowMovieDetailsClick}

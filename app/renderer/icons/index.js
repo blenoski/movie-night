@@ -38,6 +38,10 @@ export const Bars = ({ className, ...props }) => {
   return <Icon className={cn('fa-bars', className)} {...props} />
 }
 
+export const Ban = ({ className, ...props }) => {
+  return <Icon className={cn('fa-ban', className)} {...props} />
+}
+
 export const Chevron = ({ className, down, left, right, up, ...props }) => {
   return <Icon
     className={cn(

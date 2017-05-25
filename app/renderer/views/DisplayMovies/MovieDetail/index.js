@@ -1,6 +1,8 @@
+import fs from 'fs'
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { shell } from 'electron'
+import { fileExists } from '../../../../shared/utils'
 import ListMeta from './ListMeta'
 import Location from './Location'
 import Meta from './Meta'
@@ -14,14 +16,28 @@ export default class MovieDetail extends Component {
     super(props)
     this.openMovieInDefaultPlayer = this.openMovieInDefaultPlayer.bind(this)
     this.showMovieInFinder = this.showMovieInFinder.bind(this)
+    this.updateFileAvailable = this.updateFileAvailable.bind(this)
     this.close = this.close.bind(this)
     this.anchor = null
+    this.state = { fileAvailable: true }
   }
 
   componentDidMount () {
     this.props.center &&
     this.anchor &&
     this.anchor.scrollIntoViewIfNeeded() // centers anchor in viewport
+
+    this.updateFileAvailable()
+    fs.watchFile(this.props.movie.fileInfo[0].location, this.updateFileAvailable)
+  }
+
+  componentWillUnmount () {
+    fs.unwatchFile(this.props.movie.fileInfo[0].location, this.updateFileAvailable)
+  }
+
+  updateFileAvailable () {
+    fileExists(this.props.movie.fileInfo[0].location)
+      .then(result => this.setState({ fileAvailable: result }))
   }
 
   openMovieInDefaultPlayer (e) {
@@ -38,8 +54,7 @@ export default class MovieDetail extends Component {
 
   close (e) {
     e.preventDefault()
-    const { movie } = this.props
-    const { handleCloseMovieDetails } = this.props
+    const { movie, handleCloseMovieDetails } = this.props
     if (handleCloseMovieDetails) {
       handleCloseMovieDetails(movie)
     }
@@ -56,7 +71,7 @@ export default class MovieDetail extends Component {
         />
 
         <Poster imgFile={movie.imgFile}>
-          <PlayMovieButton onClick={this.openMovieInDefaultPlayer} />
+          {this.state.fileAvailable && <PlayMovieButton onClick={this.openMovieInDefaultPlayer} />}
         </Poster>
 
         <MovieDetailsContainer>
@@ -85,6 +100,7 @@ export default class MovieDetail extends Component {
           <Location
             location={movie.fileInfo[0].location}
             handleClick={this.showMovieInFinder}
+            fileExists={this.state.fileAvailable}
           />
         </MovieDetailsContainer>
 
