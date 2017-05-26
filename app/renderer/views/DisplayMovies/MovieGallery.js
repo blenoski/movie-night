@@ -18,6 +18,7 @@ export default class MovieGallery extends Component {
     this.updateMovieDetails = this.updateMovieDetails.bind(this)
     this.closeMovieDetails = this.closeMovieDetails.bind(this)
     this.movieDetailsClosed = this.movieDetailsClosed.bind(this)
+    this.selectGenre = this.selectGenre.bind(this)
   }
 
   showMovieDetails (movie) {
@@ -39,8 +40,50 @@ export default class MovieGallery extends Component {
     this.setState({ movie: null, closing: false })
   }
 
+  selectGenre (genre) {
+    return (e) => {
+      e.preventDefault()
+      const { handleSelectGenre } = this.props
+      if (handleSelectGenre) {
+        handleSelectGenre(genre)
+      }
+    }
+  }
+
   render () {
-    const { genre, movies } = this.props
+    const { genre } = this.props
+
+    return (
+      <Gallery key={genre}>
+        { this.renderTitle() }
+        { this.renderThumbnails() }
+        { this.renderMovieDetails() }
+      </Gallery>
+    )
+  }
+
+  renderTitle () {
+    const { genre, singleCategory } = this.props
+    if (!genre) {
+      return null
+    }
+
+    if (singleCategory) {
+      return <Title>{genre}</Title>
+    }
+
+    return (
+      <Title>
+        <Genre onClick={this.selectGenre(genre)}>
+          {genre}
+          <Chevron right fixedWidth />
+        </Genre>
+      </Title>
+    )
+  }
+
+  renderThumbnails () {
+    const { movies, singleCategory } = this.props
 
     const thumbnails = movies.map((movie) => {
       return (
@@ -55,13 +98,11 @@ export default class MovieGallery extends Component {
       )
     })
 
-    return (
-      <Gallery key={genre}>
-        <Title>{genre}<Chevron right fixedWidth /></Title>
-        <HorizontalScrollContainer>{thumbnails}</HorizontalScrollContainer>
-        {this.renderMovieDetails()}
-      </Gallery>
-    )
+    if (singleCategory) {
+      return <NoScrollContainer>{thumbnails}</NoScrollContainer>
+    } else {
+      return <HorizontalScrollContainer>{thumbnails}</HorizontalScrollContainer>
+    }
   }
 
   renderMovieDetails () {
@@ -118,6 +159,14 @@ const Title = styled.h2`
   text-transform: capitalize;
 `
 
+const Genre = styled.span`
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  &:hover {
+    color: rgba(255,255,255,0.7);
+  }
+`
+
 const HorizontalScrollContainer = styled.div`
   display: flex;
   overflowX: auto;
@@ -138,4 +187,8 @@ const HorizontalScrollContainer = styled.div`
     border-radius: 10px;
     background-color: rgba(255,255,255,0.1);
   }
+`
+
+const NoScrollContainer = styled.div`
+  display: flex;
 `

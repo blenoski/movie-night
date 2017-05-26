@@ -3,20 +3,13 @@ import styled from 'styled-components'
 
 import { DisplayMoviesContainer } from '../controller'
 import Button from './Button'
-import Logo from './Logo'
 
 export default ({
-  dbLoaded,
   filteredMovies,
   isCrawling,
   handleAddMediaClick,
   movies
 }) => {
-  // Handle application load.
-  if (!dbLoaded) {
-    return <Splash><Logo /></Splash>
-  }
-
   // Handle first time application started and/or empty database.
   if (movies.length === 0) {
     return (
@@ -39,27 +32,20 @@ export default ({
   return <DisplayMoviesContainer />
 }
 
-const Splash = styled.div`
+const NoMovieStyles = styled.div`
   align-items: center;
   background-color: rgba(20,20,20,1);
   bottom: 0;
+  color: rgba(2,117,216,1);
   display: flex;
+  flex-direction: column;
+  font-size: 3rem;
   font-family: CopperPlate, serif;
-  font-size: 400%;
   justify-content: center;
   left: 0;
   padding-bottom: 20%;
   position: fixed;
   right: 0;
-  top: 0;
-  z-index: 2;
-`
-
-const NoMovieStyles = styled(Splash)`
-  color: rgba(2,117,216,1);
-  flex-direction: column;
-  font-size: 3rem;
-  z-index: 0;
   top: 50px;
 `
 

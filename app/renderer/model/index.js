@@ -14,6 +14,7 @@ const initialState = {
   filteredMovies: [],
   isCrawling: false,
   movies: [],
+  searchCategory: '',
   searchQuery: '',
   genreDisplayOrder: []
 }
@@ -24,6 +25,7 @@ const DATABASE_LOADED = 'database-loaded'
 const CRAWL_DIRECTORY = 'crawl-directory'
 const IS_CRAWLING = 'is-crawling'
 const UPDATE_MOVIE_DATABASE = 'update-movie-database'
+const UPDATE_SEARCH_CATEGORY = 'update-search-category'
 const UPDATE_SEARCH_QUERY = 'update-search-query'
 
 // Action creators.
@@ -56,6 +58,13 @@ export function updateMovieDB (movieDB) {
   }
 }
 
+export function updateSearchCategory (text) {
+  return {
+    type: UPDATE_SEARCH_CATEGORY,
+    payload: text
+  }
+}
+
 export function updateSearchQuery (text) {
   return {
     type: UPDATE_SEARCH_QUERY,
@@ -73,26 +82,43 @@ function reducer (state = initialState, action) {
       return { ...state, isCrawling: true, crawlDirectory: action.payload }
     case DATABASE_LOADED:
       return { ...state, dbLoaded: true }
-    case UPDATE_MOVIE_DATABASE:
+
+    case UPDATE_MOVIE_DATABASE: {
       const movies = action.payload
-      const fmud = filterMovies(state.searchQuery, movies)
-      const genreDisplayOrder = computeNextState(fmud, state.isCrawling, state.genreDisplayOrder)
+      const nextMovies = filterMovies(state.searchCategory, state.searchQuery, movies)
+      const nextDisplayOrder = computeNextState(nextMovies, state.isCrawling, state.genreDisplayOrder)
       return {
         ...state,
-        filteredMovies: sortIntoDisplayOrder(fmud, genreDisplayOrder),
-        genreDisplayOrder,
+        filteredMovies: sortIntoDisplayOrder(nextMovies, nextDisplayOrder),
+        genreDisplayOrder: nextDisplayOrder,
         movies
       }
-    case UPDATE_SEARCH_QUERY:
-      const searchQuery = action.payload
-      const fmsq = filterMovies(searchQuery, state.movies)
-      const nextDisplayOrder = computeNextState(fmsq, state.isCrawling, state.genreDisplayOrder)
+    }
+
+    case UPDATE_SEARCH_CATEGORY: {
+      const searchCategory = action.payload
+      const nextMovies = filterMovies(searchCategory, state.searchQuery, state.movies)
+      const nextDisplayOrder = computeNextState(nextMovies, state.isCrawling, state.genreDisplayOrder)
       return {
         ...state,
-        filteredMovies: sortIntoDisplayOrder(fmsq, nextDisplayOrder),
+        filteredMovies: sortIntoDisplayOrder(nextMovies, nextDisplayOrder),
+        genreDisplayOrder: nextDisplayOrder,
+        searchCategory
+      }
+    }
+
+    case UPDATE_SEARCH_QUERY: {
+      const searchQuery = action.payload
+      const nextMovies = filterMovies(state.searchCategory, searchQuery, state.movies)
+      const nextDisplayOrder = computeNextState(nextMovies, state.isCrawling, state.genreDisplayOrder)
+      return {
+        ...state,
+        filteredMovies: sortIntoDisplayOrder(nextMovies, nextDisplayOrder),
         genreDisplayOrder: nextDisplayOrder,
         searchQuery
       }
+    }
+
     default:
       return state
   }

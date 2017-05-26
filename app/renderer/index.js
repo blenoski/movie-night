@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 
 import { logEnv } from '../shared/utils'
-import App from './App'
+import { App } from './controller'
 import store from './model'
 import logger from './mainWindowLogger'
 

@@ -6,30 +6,39 @@
 // to database at the same time search query is being updated. Make sure to keep
 // the algorithm O(n) and only iterate through the entire database once.
 
-export default function (searchQuery, movies) {
+export default function (searchCategory, searchQuery, movies) {
   searchQuery = searchQuery.toLowerCase().trim()
-  if (!searchQuery) {
+  if (!searchCategory && !searchQuery) {
     return movies
   }
 
-  let filteredMovies = []
+  // Filter on search category first
+  let moviesMatchingCategory = searchCategory
+    ? movies.filter(category => category.genre === searchCategory)
+    : movies
 
-  movies.forEach(genre => {
+  if (!searchQuery) {
+    return moviesMatchingCategory
+  }
+
+  // Then on search query
+  let filteredMovies = []
+  moviesMatchingCategory.forEach(genre => {
     const genreName = genre.genre
     filteredMovies.push({ genre: genreName, movies: [] })
+    const index = filteredMovies.length - 1
 
     // If search query includes genre, then include ALL movies in genres
     if (genreName.includes(searchQuery)) {
-      filteredMovies[filteredMovies.length - 1].movies = genre.movies
+      filteredMovies[index].movies = genre.movies
     } else { // Else loop over movies in genre and check if search query applies
-      filteredMovies[filteredMovies.length - 1].movies =
+      filteredMovies[index].movies =
         genre.movies.filter(movie => searchFilterIncludes(movie, searchQuery))
     }
   })
 
-  // Get rid of empty genres. Then sort by genre with most movies.
-  return filteredMovies
-    .filter(genre => genre.movies.length > 0)
+  // Get rid of empty genres.
+  return filteredMovies.filter(category => category.movies.length > 0)
 }
 
 function searchFilterIncludes (movie, query) {

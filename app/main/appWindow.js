@@ -27,7 +27,7 @@ function createAppWindow (onClosedCallback) {
   let {width, height} = electron.screen.getPrimaryDisplay().workAreaSize
   const initialWindowSizeScaleFactor = 0.95
 
-  const maxInitialSize = 980
+  const maxInitialSize = 990
   const minHeight = 510
   height = Math.round(height * initialWindowSizeScaleFactor)
   height = Math.max(minHeight, Math.min(maxInitialSize, height))

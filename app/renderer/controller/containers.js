@@ -2,18 +2,29 @@ import { ipcRenderer } from 'electron'
 import { connect } from 'react-redux'
 
 import { SELECT_IMPORT_DIRECTORY } from '../../shared/events'
-import { updateSearchQuery } from '../model'
+import { updateSearchQuery, updateSearchCategory } from '../model'
+import Application from '../views/App'
 import Button from '../views/Button'
 import DisplayMovies from '../views/DisplayMovies'
 import MainContentArea from '../views/MainContent'
-import logger from '../mainWindowLogger'
 import SearchBar from '../views/SearchBar'
+import logger from '../mainWindowLogger'
 
 // This function maps a button click handler to an application event.
 function importMovies () {
   ipcRenderer.send(SELECT_IMPORT_DIRECTORY)
   logger.info('Sent SELECT_IMPORT_DIRECTORY event')
 }
+
+// App Container
+// -------------
+function mapStateToAppProps ({ dbLoaded }) {
+  return {
+    dbLoaded
+  }
+}
+
+export const App = connect(mapStateToAppProps)(Application)
 
 // ImportMovies Container
 // ----------------------
@@ -26,15 +37,20 @@ export const ImportMovies = connect(({ isCrawling }) => {
 
 // SearchMovies Container
 // ----------------------
-function mapStateToSearchBarProps (state) {
+function mapStateToSearchBarProps ({searchCategory, searchQuery}) {
   return {
-    searchQuery: state.searchQuery
+    searchCategory,
+    searchQuery
   }
 }
 
 function mapDispatchToSearchBarProps (dispatch) {
   return {
-    handleQueryChange: (text) => dispatch(updateSearchQuery(text))
+    handleQueryChange: (text) => dispatch(updateSearchQuery(text)),
+    handleClear: () => {
+      dispatch(updateSearchQuery(''))
+      dispatch(updateSearchCategory(''))
+    }
   }
 }
 
@@ -54,7 +70,8 @@ function mapStateToDisplayMoviesProps (state) {
 
 function mapDispatchToDisplayMoviesProps (dispatch) {
   return {
-    updateSearchQuery: (text) => dispatch(updateSearchQuery(text))
+    updateSearchQuery: (text) => dispatch(updateSearchQuery(text)),
+    updateSearchCategory: (category) => dispatch(updateSearchCategory(category))
   }
 }
 
@@ -66,9 +83,8 @@ export const DisplayMoviesContainer = connect(
 // MainContent Container
 // ---------------------
 function mapStateToMainContentProps (state) {
-  const { dbLoaded, filteredMovies, isCrawling, movies } = state
+  const { filteredMovies, isCrawling, movies } = state
   return {
-    dbLoaded,
     movies,
     filteredMovies,
     isCrawling,
