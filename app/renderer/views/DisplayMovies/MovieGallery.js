@@ -1,43 +1,14 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { Chevron } from '../../icons'
-import MovieDetail from './MovieDetail'
-import MovieThumbnail from './MovieThumbnail'
+import { MovieThumbnailContainer } from '../../controller'
 
-import { fadeIn, fadeOut } from '../styleUtils'
+import { fadeIn } from '../styleUtils'
 
 export default class MovieGallery extends Component {
   constructor (props) {
     super(props)
-    this.state = {
-      movie: null,
-      closing: false,
-      scrollTo: true
-    }
-    this.showMovieDetails = this.showMovieDetails.bind(this)
-    this.updateMovieDetails = this.updateMovieDetails.bind(this)
-    this.closeMovieDetails = this.closeMovieDetails.bind(this)
-    this.movieDetailsClosed = this.movieDetailsClosed.bind(this)
     this.selectGenre = this.selectGenre.bind(this)
-  }
-
-  showMovieDetails (movie) {
-    this.setState({ movie, scrollTo: true })
-  }
-
-  updateMovieDetails (movie) {
-    if (this.state.movie) {
-      this.setState({ movie, scrollTo: false })
-    }
-  }
-
-  closeMovieDetails () {
-    this.setState({ closing: true })
-  }
-
-  movieDetailsClosed (e) {
-    e.preventDefault()
-    this.setState({ movie: null, closing: false })
   }
 
   selectGenre (genre) {
@@ -57,18 +28,17 @@ export default class MovieGallery extends Component {
       <Gallery key={genre}>
         { this.renderTitle() }
         { this.renderThumbnails() }
-        { this.renderMovieDetails() }
       </Gallery>
     )
   }
 
   renderTitle () {
-    const { genre, singleCategory } = this.props
+    const { genre, renderStyle } = this.props
     if (!genre) {
       return null
     }
 
-    if (singleCategory) {
+    if (renderStyle === 'grid') {
       return <Title>{genre}</Title>
     }
 
@@ -83,14 +53,15 @@ export default class MovieGallery extends Component {
   }
 
   renderThumbnails () {
-    const { movies, singleCategory } = this.props
+    const { movies, renderStyle, id } = this.props
 
     const thumbnails = movies.map((movie) => {
       return (
         <FadeIn key={movie.imdbID}>
-          <MovieThumbnail
+          <MovieThumbnailContainer
             key={movie.imdbID}
             movie={movie}
+            panelID={id}
             handleShowMovieDetails={this.showMovieDetails}
             handleUpdateMovieDetails={this.updateMovieDetails}
           />
@@ -98,48 +69,16 @@ export default class MovieGallery extends Component {
       )
     })
 
-    if (singleCategory) {
-      return <NoScrollContainer>{thumbnails}</NoScrollContainer>
+    if (renderStyle === 'grid') {
+      return <GridContainer>{thumbnails}</GridContainer>
     } else {
       return <HorizontalScrollContainer>{thumbnails}</HorizontalScrollContainer>
     }
-  }
-
-  renderMovieDetails () {
-    const { movie, closing } = this.state
-    if (!movie) {
-      return null
-    }
-
-    if (closing) {
-      return (
-        <FadeOut
-          key={`out-${movie.imdbID}`}
-          onAnimationEnd={this.movieDetailsClosed}
-        >
-          <MovieDetail movie={movie} />
-        </FadeOut>
-      )
-    }
-
-    return (
-      <FadeIn key={movie.imdbID}>
-        <MovieDetail
-          movie={movie}
-          handleCloseMovieDetails={this.closeMovieDetails}
-          center={this.state.scrollTo}
-        />
-      </FadeIn>
-    )
   }
 }
 
 const FadeIn = styled.div`
   animation: 0.5s ${fadeIn} ease-in;
-`
-
-const FadeOut = styled.div`
-  animation: 0.3s ${fadeOut} ease-out;
 `
 
 const Gallery = styled.div`
@@ -189,6 +128,6 @@ const HorizontalScrollContainer = styled.div`
   }
 `
 
-const NoScrollContainer = styled.div`
+const GridContainer = styled.div`
   display: flex;
 `

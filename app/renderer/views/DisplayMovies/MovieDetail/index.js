@@ -141,6 +141,8 @@ const MovieDetailsContainer = styled.article`
   display: flex;
   flex-direction: column;
   height: 444px;
+  min-width: 500px;
+  max-width: 600px;
 `
 
 const VerticalScrollSection = styled.section`

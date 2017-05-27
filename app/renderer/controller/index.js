@@ -4,7 +4,8 @@ import {
   DisplayMoviesContainer,
   ImportMovies,
   SearchMovies,
-  MainContent
+  MainContent,
+  MovieThumbnailContainer
 } from './containers'
 
 // Logic for mapping application events directly to redux dispatch actions.
@@ -16,5 +17,6 @@ export {
   DisplayMoviesContainer,
   ImportMovies,
   MainContent,
+  MovieThumbnailContainer,
   SearchMovies
 }

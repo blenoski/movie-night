@@ -58,17 +58,17 @@ export default class MovieThumbnail extends Component {
 
   onShowMovieDetailsClick (e) {
     e.preventDefault()
-    const { movie, handleShowMovieDetails } = this.props
-    if (handleShowMovieDetails) {
-      handleShowMovieDetails(movie)
+    const { movie, handleMovieSelected, panelID } = this.props
+    if (handleMovieSelected) {
+      handleMovieSelected({ movie, action: 'click', panelID })
     }
   }
 
   onUpdateMovieDetails (e) {
     e.preventDefault()
-    const { movie, handleUpdateMovieDetails } = this.props
-    if (handleUpdateMovieDetails) {
-      handleUpdateMovieDetails(movie)
+    const { movie, handleMovieSelected, panelID } = this.props
+    if (handleMovieSelected) {
+      handleMovieSelected({ movie, action: 'mouseover', panelID })
     }
   }
 

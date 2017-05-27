@@ -2,11 +2,19 @@ import { ipcRenderer } from 'electron'
 import { connect } from 'react-redux'
 
 import { SELECT_IMPORT_DIRECTORY } from '../../shared/events'
-import { updateSearchQuery, updateSearchCategory } from '../model'
+import {
+  clearFeaturedMovie,
+  clearSearchResults,
+  clearSearchQuery,
+  updateSearchQuery,
+  updateSearchCategory,
+  updateFeaturedMovie
+} from '../model'
 import Application from '../views/App'
 import Button from '../views/Button'
 import DisplayMovies from '../views/DisplayMovies'
 import MainContentArea from '../views/MainContent'
+import MovieThumbnail from '../views/DisplayMovies/MovieThumbnail'
 import SearchBar from '../views/SearchBar'
 import logger from '../mainWindowLogger'
 
@@ -48,8 +56,7 @@ function mapDispatchToSearchBarProps (dispatch) {
   return {
     handleQueryChange: (text) => dispatch(updateSearchQuery(text)),
     handleClear: () => {
-      dispatch(updateSearchQuery(''))
-      dispatch(updateSearchCategory(''))
+      dispatch(clearSearchResults())
     }
   }
 }
@@ -59,18 +66,38 @@ export const SearchMovies = connect(
   mapDispatchToSearchBarProps
 )(SearchBar)
 
+// MovieThumbnail Container
+// -----------------------
+function mapDispatchToMovieThumbnailProps (dispatch) {
+  return {
+    handleMovieSelected: ({ movie, action, panelID }) => {
+      if (action === 'click') {
+        dispatch(updateFeaturedMovie({ movie, action, panelID }))
+      }
+    }
+  }
+}
+
+export const MovieThumbnailContainer = connect(
+  null,
+  mapDispatchToMovieThumbnailProps
+)(MovieThumbnail)
+
 // DisplayMovies Container
 // -----------------------
 function mapStateToDisplayMoviesProps (state) {
   return {
+    searchCategory: state.searchCategory,
     searchQuery: state.searchQuery,
-    movies: state.filteredMovies
+    movies: state.filteredMovies,
+    featuredMovie: state.featuredMovie
   }
 }
 
 function mapDispatchToDisplayMoviesProps (dispatch) {
   return {
-    updateSearchQuery: (text) => dispatch(updateSearchQuery(text)),
+    clearFeaturedMovie: () => dispatch(clearFeaturedMovie()),
+    clearSearchQuery: () => dispatch(clearSearchQuery()),
     updateSearchCategory: (category) => dispatch(updateSearchCategory(category))
   }
 }
