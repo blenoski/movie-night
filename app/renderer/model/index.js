@@ -1,5 +1,7 @@
 import { createStore, applyMiddleware } from 'redux'
+import logger from 'redux-logger'
 import filterMovies from './filterMovies'
+import { isDevEnv } from '../../shared/utils'
 
 // Application State.
 // This should be treated like a public interface.
@@ -249,7 +251,10 @@ function sortIntoDisplayOrder (movies, genreDisplayOrder) {
 
 // Create the redux store
 // -----------------------
-const createStoreWithMiddleware = applyMiddleware()(createStore)
-const store = createStoreWithMiddleware(reducer)
+let middlewares = []
+if (isDevEnv()) {
+  middlewares.push(logger)
+}
+const store = createStore(reducer, applyMiddleware(...middlewares))
 
 export default store
