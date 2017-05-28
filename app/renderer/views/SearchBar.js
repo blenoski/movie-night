@@ -15,7 +15,7 @@ export default class SearchBar extends Component {
 
   update (e) {
     e.preventDefault()
-    let query = e.target.value.trim()
+    let query = e.target.value.replace(/^\s+/, '') // trim leading spaces
     this.setState({ typing: true, query })
     this.sendDebounced()
   }
