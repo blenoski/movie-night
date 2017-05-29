@@ -15,7 +15,7 @@
     "test:all": "standard && npm run lint:css && cross-env NODE_ENV=test jest --coverage --verbose",
     "test-ci": "standard && npm run lint:css && npm run build && npm run test-coveralls",
     "test-coveralls": "cross-env NODE_ENV=test jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
-    "test-watch": "cross-env NODE_ENV=test jest --watchAll",
+    "test:watch": "cross-env NODE_ENV=test jest --watchAll",
     "pack": "build --dir",
     "dist": "build",
     "postinstall": "install-app-deps",
