@@ -1,4 +1,13 @@
-// WARNING: Performance really matters inside this module.
+'use strict'
+import { createSelector } from 'reselect'
+import {
+  displayOrderSelector,
+  movieDBSelector,
+  searchCategorySelector,
+  searchQuerySelector
+} from './selectors'
+
+// WARNING: Performance really matters inside this function.
 // Execution happens in real time as user is typing search query and/or
 // as movies are added to the database. Execution is currently blocking to
 // allow for real-time search results. Could make async at the expense of needing
@@ -6,8 +15,26 @@
 // to database at the same time search query is being updated. Make sure to keep
 // the algorithm O(n) and only iterate through the entire database once.
 
-export default function (searchCategory, searchQuery, movies) {
-  searchQuery = searchQuery.toLowerCase().trim()
+// Memoized visible movies selector using reselect. The visible movies
+// are only re-computed if one of the input selectors has changed.
+// ------------------------------------------------------------------
+const visibleMoviesSelector = createSelector(
+  displayOrderSelector,
+  movieDBSelector,
+  searchCategorySelector,
+  searchQuerySelector,
+  (displayOrder, movieDB, searchCategory, searchQuery) => {
+    const visibleMovies = computeVisibleMovies(searchCategory, searchQuery, movieDB)
+    return sortIntoDisplayOrder(visibleMovies, displayOrder)
+  }
+)
+
+export default visibleMoviesSelector
+
+// Helper functions
+// -----------------
+function computeVisibleMovies (searchCategory, searchQuery, movies) {
+  searchQuery = searchQuery.split(' ').filter(el => el).join(' ').toLowerCase()
   if (!searchCategory && !searchQuery) {
     return movies
   }
@@ -56,10 +83,20 @@ function searchFilterIncludes (movie, query) {
   const actors = movie.actors
   let actorsLength = actors.length
   for (let j = 0; j < actorsLength; j += 1) {
-    if (actors[j].indexOf(query) >= 0) {
+    if (actors[j].toLowerCase().indexOf(query) >= 0) {
       return true
     }
   }
 
   return false
+}
+
+function sortIntoDisplayOrder (visibleMovies, displayOrder) {
+  return displayOrder
+    .filter(genre => { // Filter out all categories that are not currently visible
+      return visibleMovies.findIndex(category => category.genre === genre) >= 0
+    })
+    .map(genre => { // Sort categories by display order.
+      return visibleMovies.find(category => category.genre === genre)
+    })
 }

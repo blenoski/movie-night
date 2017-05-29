@@ -5,13 +5,12 @@ import { DisplayMoviesContainer } from '../controller'
 import Button from './Button'
 
 export default ({
-  filteredMovies,
   isCrawling,
   handleAddMediaClick,
-  movies
+  totalMovieCount
 }) => {
   // Handle first time application started and/or empty database.
-  if (movies.length === 0) {
+  if (totalMovieCount === 0) {
     return (
       <NoMovieStyles>
         Where are your movies?
@@ -21,11 +20,6 @@ export default ({
         />
       </NoMovieStyles>
     )
-  }
-
-  // Handle no matching search results.
-  if (filteredMovies.length === 0) {
-    return <NoMovieStyles>No Matches</NoMovieStyles>
   }
 
   // Normal case. Display movies from database.

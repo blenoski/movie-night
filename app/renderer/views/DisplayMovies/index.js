@@ -15,8 +15,8 @@ export default class DisplayMovies extends Component {
   }
 
   // React Lifecycle Method.
-  // Based on current props and incoming props, decide if we need
-  // to fade out the currently displayed movie details component.
+  // Based on current props and incoming props, decide if we can
+  // fade out the currently displayed movie details component.
   componentWillReceiveProps (nextProps) {
     // Handle cases when we should never animate.
     const curr = this.props.featuredMovie
@@ -32,6 +32,13 @@ export default class DisplayMovies extends Component {
       if (next.action === 'search' ||
           next.movie.imdbID === curr.movie.imdbID ||
           (next.panelID >= 0 && next.panelID !== curr.panelID)) {
+        return
+      }
+    }
+
+    // Handle case where there is no incoming featured movie
+    if (!next.movie) {
+      if (curr.action === 'search' && nextProps.movies.length === 0) {
         return
       }
     }
@@ -68,8 +75,9 @@ export default class DisplayMovies extends Component {
   render () {
     const { featuredMovie, movies, clearSearchQuery } = this.props
 
+    // Handle no search results
     if (movies.length === 0) {
-      return null
+      return <NoMovieStyles>No Matches</NoMovieStyles>
     }
 
     // Special handling for featured movie from search result
@@ -192,4 +200,21 @@ const FadeIn = styled.div`
 
 const FadeOut = styled.div`
   animation: 0.3s ${fadeOut} ease-out;
+`
+
+const NoMovieStyles = styled.div`
+  align-items: center;
+  background-color: rgba(20,20,20,1);
+  bottom: 0;
+  color: rgba(2,117,216,1);
+  display: flex;
+  flex-direction: column;
+  font-size: 3rem;
+  font-family: CopperPlate, serif;
+  justify-content: center;
+  left: 0;
+  padding-bottom: 20%;
+  position: fixed;
+  right: 0;
+  top: 50px;
 `

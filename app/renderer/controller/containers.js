@@ -1,28 +1,27 @@
-import { ipcRenderer } from 'electron'
 import { connect } from 'react-redux'
-
-import { SELECT_IMPORT_DIRECTORY } from '../../shared/events'
 import {
-  clearFeaturedMovie,
+  clearFeaturedMovie, // Redux action creators
   clearSearchResults,
   clearSearchQuery,
   updateSearchQuery,
   updateSearchCategory,
-  updateFeaturedMovie
+  updateFeaturedMovie,
+  getAllMovies, // State selectors
+  getCrawlActive,
+  getFeaturedMovie,
+  getSearchCategory,
+  getSearchQuery,
+  getVisibleMovies,
+  importMovies // Electron action creators
 } from '../model'
+
+// Presentational Components
 import Application from '../views/App'
 import Button from '../views/Button'
 import DisplayMovies from '../views/DisplayMovies'
 import MainContentArea from '../views/MainContent'
 import MovieThumbnail from '../views/DisplayMovies/MovieThumbnail'
 import SearchBar from '../views/SearchBar'
-import logger from '../mainWindowLogger'
-
-// This function maps a button click handler to an application event.
-function importMovies () {
-  ipcRenderer.send(SELECT_IMPORT_DIRECTORY)
-  logger.info('Sent SELECT_IMPORT_DIRECTORY event')
-}
 
 // App Container
 // -------------
@@ -36,19 +35,19 @@ export const App = connect(mapStateToAppProps)(Application)
 
 // ImportMovies Container
 // ----------------------
-export const ImportMovies = connect(({ isCrawling }) => {
+export const ImportMovies = connect((state) => {
   return {
-    busy: isCrawling,
+    busy: getCrawlActive(state),
     handleClick: importMovies
   }
 })(Button)
 
 // SearchMovies Container
 // ----------------------
-function mapStateToSearchBarProps ({searchCategory, searchQuery}) {
+function mapStateToSearchBarProps (state) {
   return {
-    searchCategory,
-    searchQuery
+    searchCategory: getSearchCategory(state),
+    searchQuery: getSearchQuery(state)
   }
 }
 
@@ -87,10 +86,10 @@ export const MovieThumbnailContainer = connect(
 // -----------------------
 function mapStateToDisplayMoviesProps (state) {
   return {
-    searchCategory: state.searchCategory,
-    searchQuery: state.searchQuery,
-    movies: state.filteredMovies,
-    featuredMovie: state.featuredMovie
+    featuredMovie: getFeaturedMovie(state),
+    movies: getVisibleMovies(state),
+    searchCategory: getSearchCategory(state),
+    searchQuery: getSearchQuery(state)
   }
 }
 
@@ -110,12 +109,10 @@ export const DisplayMoviesContainer = connect(
 // MainContent Container
 // ---------------------
 function mapStateToMainContentProps (state) {
-  const { filteredMovies, isCrawling, movies } = state
   return {
-    movies,
-    filteredMovies,
-    isCrawling,
-    handleAddMediaClick: importMovies
+    isCrawling: getCrawlActive(state),
+    handleAddMediaClick: importMovies,
+    totalMovieCount: getAllMovies(state).length
   }
 }
 
