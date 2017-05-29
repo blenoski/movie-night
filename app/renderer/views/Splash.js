@@ -3,7 +3,7 @@ import Logo from './Logo'
 
 export default styled(Logo)`
   align-items: center;
-  background-color: rgba(20,20,20,1);
+  background-color: rgba(20, 20, 20, 1);
   bottom: 0;
   display: flex;
   font-family: CopperPlate, serif;

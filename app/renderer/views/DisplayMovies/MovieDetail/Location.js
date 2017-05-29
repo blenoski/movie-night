@@ -34,7 +34,7 @@ const Section = styled.section`
 const ClickableSection = styled(Section)`
   cursor: pointer;
   &:hover {
-    color: rgba(255,255,255,0.9);
+    color: rgba(255, 255, 255, 0.9);
   }
 `
 
@@ -44,7 +44,7 @@ const ClickableFileIcon = styled(FileIcon)`
 
 const IconStack = styled.span`
   display: flex;
-  marginRight: 15px;
+  margin-right: 15px;
 `
 const RelativelyPositionedFileIcon = styled(FileIcon)`
   position: relative;
@@ -52,5 +52,5 @@ const RelativelyPositionedFileIcon = styled(FileIcon)`
 const DangerOverlay = styled(Ban)`
   position: absolute;
   margin: -15px 0 0 -12px;
-  color: rgba(217,83,79,0.5);
+  color: rgba(217, 83, 79, 0.5);
 `

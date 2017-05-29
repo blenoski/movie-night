@@ -13,7 +13,7 @@ export default () =>
   </Header>
 
 const Header = styled.header`
-  background-color: rgba(20,20,20,0.7);
+  background-color: rgba(20, 20, 20, 0.7);
   color: white;
   display: flex;
   flex-wrap: nowrap;

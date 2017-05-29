@@ -11,14 +11,15 @@
     "start-dev": "npm run build-dev && cross-env NODE_ENV=development electron .",
     "build-dev": "cross-env NODE_ENV=development webpack --config webpack.config.dev.js --progress --profile --colors",
     "start-dev-server": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.dev.js --output-public-path bundle --port 3000",
-    "test": "standard && npm run build && npm run test-watch",
+    "test": "standard && npm run lint:css && npm run build && npm run test-watch",
     "test-all": "cross-env NODE_ENV=test jest --coverage --verbose",
-    "test-ci": "standard && npm run build && npm run test-coveralls",
+    "test-ci": "standard && npm run lint:css && npm run build && npm run test-coveralls",
     "test-coveralls": "cross-env NODE_ENV=test jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "test-watch": "cross-env NODE_ENV=test jest --watchAll",
     "pack": "build --dir",
     "dist": "build",
-    "postinstall": "install-app-deps"
+    "postinstall": "install-app-deps",
+    "lint:css": "stylelint './app/renderer/**/*.js'"
   },
   "engines": {
     "node": ">=6.10.0"
@@ -41,6 +42,9 @@
     "redux-logger": "^3.0.6",
     "standard": "^9.0.0",
     "style-loader": "^0.13.2",
+    "stylelint": "^7.10.1",
+    "stylelint-config-standard": "^16.0.0",
+    "stylelint-processor-styled-components": "^0.1.0",
     "webpack": "^2.2.1",
     "webpack-dev-server": "^2.4.1"
   },
@@ -48,13 +52,13 @@
     "bootstrap": "4.0.0-alpha.6",
     "classnames": "^2.2.5",
     "limiter": "^1.1.0",
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2",
-    "react-redux": "^5.0.3",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "react-redux": "^5.0.5",
     "react-transition-group": "^1.1.3",
     "redux": "^3.6.0",
     "reselect": "^3.0.1",
-    "styled-components": "^1.4.6",
+    "styled-components": "^2.0.0",
     "underscore": "^1.8.3",
     "winston": "^2.3.1"
   },

@@ -114,8 +114,8 @@ export default class MovieThumbnail extends Component {
 }
 
 const ImageContainer = styled.div`
-  margin: 5px 10px 5px 0px;
-  backgroundColor: #141414;
+  margin: 5px 10px 5px 0;
+  background-color: #141414;
   color: #999;
   display: flex;
   position: relative;
@@ -128,36 +128,36 @@ const Image = styled.img`
 
 const Hover = styled.div`
   position: absolute;
-  top: 0px;
-  left: 0px
-  right: 0px;
-  bottom: 0px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 `
 
-const HoverIn = styled(Hover)`
+const HoverIn = Hover.extend`
   animation: 0.5s ${fadeIn} ease-in;
 `
 
-const HoverOut = styled(Hover)`
+const HoverOut = Hover.extend`
   animation: 0.3s ${fadeOut} ease-out;
 `
 
 const ShowMovieDetailsArrow = styled(Angle)`
-  color: rgba(255,255,255,0.9);
+  color: rgba(255, 255, 255, 0.9);
   cursor: pointer;
   position: absolute;
-  bottom: 0px;
+  bottom: 0;
   font-size: 50px;
   margin-bottom: -5px;
   overflow: hidden;
   text-align: center;
-  text-shadow: 0px 0px 1px #141414;
+  text-shadow: 0 0 1px #141414;
   transition: all 0.2s ease-in-out;
   &:hover {
-    color: rgba(2,117,216,1);
+    color: rgba(2, 117, 216, 1);
   }
 `

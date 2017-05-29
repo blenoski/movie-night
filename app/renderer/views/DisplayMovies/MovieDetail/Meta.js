@@ -11,6 +11,6 @@ export default ({ rated, runtime, year }) =>
 const Rated = styled.span`
   border: 1px solid;
   border-radius: 5px;
-  margin: 0px 10px;
+  margin: 0 10px;
   padding: 1px 4px;
 `

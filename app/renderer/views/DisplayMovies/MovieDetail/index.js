@@ -119,17 +119,17 @@ const Div = styled.div`
 `
 
 const CloseButton = styled(Close)`
-  color: rgba(255,255,255,0.9);
+  color: rgba(255, 255, 255, 0.9);
   cursor: pointer;
   font-size: 30px;
-  padding: 5px 0 0 0;
+  padding: 5px 0 0;
 `
 
 const Poster = styled.aside`
   align-items: center;
   background: ${props => `url(${props.imgFile}) no-repeat center`};
   display: flex;
-  flexShrink: 0;
+  flex-shrink: 0;
   height: 444px;
   justify-content: center;
   margin-right: 20px;
@@ -137,7 +137,7 @@ const Poster = styled.aside`
 `
 
 const MovieDetailsContainer = styled.article`
-  color: rgba(255,255,255,0.7);
+  color: rgba(255, 255, 255, 0.7);
   display: flex;
   flex-direction: column;
   height: 444px;

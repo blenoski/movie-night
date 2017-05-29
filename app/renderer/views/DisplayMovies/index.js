@@ -194,6 +194,7 @@ export default class DisplayMovies extends Component {
 const MoviesGroupedByGenre = styled.div`
   padding-left: 20px;
 `
+
 const FadeIn = styled.div`
   animation: 0.5s ${fadeIn} ease-in;
 `
@@ -201,12 +202,11 @@ const FadeIn = styled.div`
 const FadeOut = styled.div`
   animation: 0.3s ${fadeOut} ease-out;
 `
-
 const NoMovieStyles = styled.div`
   align-items: center;
-  background-color: rgba(20,20,20,1);
+  background-color: rgba(20, 20, 20, 1);
   bottom: 0;
-  color: rgba(2,117,216,1);
+  color: rgba(2, 117, 216, 1);
   display: flex;
   flex-direction: column;
   font-size: 3rem;

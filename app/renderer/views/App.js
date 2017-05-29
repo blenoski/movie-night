@@ -18,6 +18,6 @@ export default (props) => {
 }
 
 const Application = styled.div`
-  background: rgb(20,20,20);
+  background: rgb(20, 20, 20);
   padding-top: 40px;
 `

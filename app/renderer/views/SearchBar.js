@@ -86,7 +86,7 @@ export default class SearchBar extends Component {
 }
 
 const Category = styled.button`
-  color: rgba(255,255,255, 1);
+  color: rgba(255, 255, 255, 1);
   position: absolute;
   left: 43px;
   z-index: 1;
@@ -94,9 +94,9 @@ const Category = styled.button`
   font-size: 0.7em;
   margin-top: 6px;
   padding: 0 3px;
-  border: 1px solid rgba(2,117,216,1);
+  border: 1px solid rgba(2, 117, 216, 1);
   border-radius: 8px;
-  background-color: rgba(2,117,216,1);
+  background-color: rgba(2, 117, 216, 1);
 `
 
 const Bar = styled.div`
@@ -113,7 +113,7 @@ const SearchIcon = styled(Search)`
 `
 
 const CloseButton = styled(Close)`
-  color: rgba(0,0,0,0.5);
+  color: rgba(0, 0, 0, 0.5);
   cursor: pointer;
   padding-top: 6px;
   position: absolute;

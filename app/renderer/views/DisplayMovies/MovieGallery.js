@@ -82,8 +82,8 @@ const FadeIn = styled.div`
 `
 
 const Gallery = styled.div`
-  marginTop: 30px;
-  marginRight: 10px;
+  margin-top: 30px;
+  margin-right: 10px;
 `
 
 const Title = styled.h2`
@@ -102,15 +102,15 @@ const Genre = styled.span`
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   &:hover {
-    color: rgba(255,255,255,0.7);
+    color: rgba(255, 255, 255, 0.7);
   }
 `
 
 const HorizontalScrollContainer = styled.div`
   display: flex;
-  overflowX: auto;
+  overflow-x: auto;
   &::-webkit-scrollbar {
-      height: 12px;
+    height: 12px;
   }
 
   &::-webkit-scrollbar-button {
@@ -118,13 +118,13 @@ const HorizontalScrollContainer = styled.div`
   }
 
   &::-webkit-scrollbar-track {
-      display: none;
+    display: none;
   }
 
   &::-webkit-scrollbar-thumb {
     display: block;
     border-radius: 10px;
-    background-color: rgba(255,255,255,0.1);
+    background-color: rgba(255, 255, 255, 0.1);
   }
 `
 

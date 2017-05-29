@@ -19,7 +19,7 @@ const Section = styled.section`
 `
 
 const Heading = styled.span`
-  color: rgba(255,255,255,0.9);
+  color: rgba(255, 255, 255, 0.9);
 `
 
 const Item = styled.h6`

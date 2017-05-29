@@ -28,9 +28,9 @@ export default ({
 
 const NoMovieStyles = styled.div`
   align-items: center;
-  background-color: rgba(20,20,20,1);
+  background-color: rgba(20, 20, 20, 1);
   bottom: 0;
-  color: rgba(2,117,216,1);
+  color: rgba(2, 117, 216, 1);
   display: flex;
   flex-direction: column;
   font-size: 3rem;
