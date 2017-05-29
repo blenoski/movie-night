@@ -12,7 +12,7 @@
     "build-dev": "cross-env NODE_ENV=development webpack --config webpack.config.dev.js --progress --profile --colors",
     "start-dev-server": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.dev.js --output-public-path bundle --port 3000",
     "test": "standard && npm run lint:css && npm run build && npm run test-all",
-    "test-all": "cross-env NODE_ENV=test jest --coverage --verbose",
+    "test:all": "standard && npm run lint:css && cross-env NODE_ENV=test jest --coverage --verbose",
     "test-ci": "standard && npm run lint:css && npm run build && npm run test-coveralls",
     "test-coveralls": "cross-env NODE_ENV=test jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "test-watch": "cross-env NODE_ENV=test jest --watchAll",
