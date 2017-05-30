@@ -21,13 +21,13 @@ Pull requests welcome.
 ```
 $ cd movie-night   
 $ yarn install   
-$ npm run start-dev-server  
+$ npm run start:devserver  
 ```
 
 In a second terminal
 ```
 $ cd movie-night
-$ npm run start-dev
+$ npm run start:dev
 ```
 
 ### Run in release mode
