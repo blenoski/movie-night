@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import styled from 'styled-components'
+import { gridPartition } from '../../../shared/utils'
 import MovieDetail from './MovieDetail'
 import MovieGallery from './MovieGallery'
 import { fadeIn, fadeOut } from '../styleUtils'
@@ -18,33 +19,9 @@ export default class DisplayMovies extends Component {
   // Based on current props and incoming props, decide if we can
   // fade out the currently displayed movie details component.
   componentWillReceiveProps (nextProps) {
-    // Handle cases when we should never animate.
-    const curr = this.props.featuredMovie
-    if (!curr.movie) { return } // nothing to fade out
-
-    if (nextProps.searchCategory !== this.props.searchCategory) {
-      return // do not animate when the search category changes
+    if (DisplayMovies.shouldFadeOutMovieDetails(this.props, nextProps)) {
+      this.setState({ closing: true, prevFeaturedMovie: this.props.featuredMovie })
     }
-
-    // Handle case when there is a new incoming featured movie
-    const next = nextProps.featuredMovie
-    if (next.movie) {
-      if (next.action === 'search' ||
-          next.movie.imdbID === curr.movie.imdbID ||
-          (next.panelID >= 0 && next.panelID !== curr.panelID)) {
-        return
-      }
-    }
-
-    // Handle case where there is no incoming featured movie
-    if (!next.movie) {
-      if (curr.action === 'search' && nextProps.movies.length === 0) {
-        return
-      }
-    }
-
-    // If we get here, then animate.
-    this.setState({ closing: true, prevFeaturedMovie: this.props.featuredMovie })
   }
 
   componentDidMount () {
@@ -97,7 +74,7 @@ export default class DisplayMovies extends Component {
       const allMovies = movies[0].movies
 
       const imagesPerPartition = Math.floor(this.state.width / 153) || 1
-      const grid = this.gridPartition(allMovies, imagesPerPartition)
+      const grid = gridPartition(allMovies, imagesPerPartition)
       let finalMovies = grid.map((movieList, index) => {
         return index === 0
           ? { genre, movies: movieList }
@@ -135,11 +112,11 @@ export default class DisplayMovies extends Component {
       <div key={index}>
         <MovieGallery
           key={index}
-          genre={genre}
+          category={genre}
           movies={movies}
           id={index}
           renderStyle={renderStyle}
-          handleSelectGenre={this.selectCategory}
+          handleSelectCategory={this.selectCategory}
         />
         { index === match && this.renderMovieDetails(clearFeaturedMovie) }
       </div>
@@ -176,18 +153,36 @@ export default class DisplayMovies extends Component {
     )
   }
 
-  gridPartition (items, size) {
-    const grid = items.reduce((result, item) => {
-      const index = result.length - 1
-      if (result[index].length < size) {
-        result[index].push(item)
-      } else {
-        result.push([item])
-      }
-      return result
-    }, [ [] ])
+  // Helper function for determining whether or not we
+  // should fade out the MovieDetails component.
+  // Exported here for testing purposes.
+  static shouldFadeOutMovieDetails (currProps, nextProps) {
+    // Handle cases when we should never animate.
+    const curr = currProps.featuredMovie
+    if (!curr.movie) { return false } // nothing to fade out
 
-    return grid
+    if (nextProps.searchCategory !== currProps.searchCategory) {
+      return false // do not animate when the search category changes
+    }
+
+    // Handle case when there is a new incoming featured movie
+    const next = nextProps.featuredMovie
+    if (next.movie) {
+      if (next.action === 'search' ||
+          next.movie.imdbID === curr.movie.imdbID ||
+          (next.panelID >= 0 && next.panelID !== curr.panelID)) {
+        return false
+      }
+    }
+
+    // Handle case where there is no incoming featured movie
+    if (!next.movie) {
+      if (curr.action === 'search' && nextProps.movies.length === 0) {
+        return false
+      }
+    }
+
+    return true
   }
 }
 

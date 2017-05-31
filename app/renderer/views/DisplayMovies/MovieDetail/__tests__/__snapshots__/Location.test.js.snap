@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`location renders clickable location when file exists 1`] = `
+<section
+  className="sc-bwzfXH glhNNQ sc-bdVaJa cKtRQx"
+  onClick={[Function]}
+>
+  <i
+    className="fa fa-file-video-o sc-htpNat cFLGcz fa-lg"
+  />
+  <h6>
+    /path/to/file
+  </h6>
+</section>
+`;
+
+exports[`location renders non clickable location when file does not exist 1`] = `
+<section
+  className="sc-bdVaJa cKtRQx"
+>
+  <span
+    className="sc-bxivhb dyUjlm"
+  >
+    <i
+      className="fa fa-file-video-o sc-ifAKCX bqyzQp fa-lg"
+    />
+    <i
+      className="fa fa-ban sc-EHOje kqKpVG fa-3x"
+    />
+  </span>
+  <h6>
+    /path/to/file
+  </h6>
+</section>
+`;

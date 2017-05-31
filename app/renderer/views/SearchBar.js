@@ -65,12 +65,6 @@ export default class SearchBar extends Component {
     return text
   }
 
-  renderClose () {
-    return (this.props.searchQuery || this.props.searchCategory)
-      ? <CloseButton onClick={this.clear} />
-      : null
-  }
-
   renderCategory () {
     const { searchCategory } = this.props
     if (!searchCategory) {
@@ -82,6 +76,12 @@ export default class SearchBar extends Component {
         {searchCategory}
       </Category>
     )
+  }
+
+  renderClose () {
+    return (this.props.searchQuery || this.props.searchCategory)
+      ? <CloseButton onClick={this.clear} />
+      : null
   }
 }
 

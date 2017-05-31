@@ -2,8 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { Play as PlayIcon } from '../../../icons'
 
-export default ({ small, onClick, ...props }) =>
-  <PlayButton small={small} onClick={onClick}>
+export default ({ small, handleClick, ...props }) =>
+  <PlayButton small={small} onClick={handleClick}>
     <CenteredPlayIcon {...props} />
   </PlayButton>
 

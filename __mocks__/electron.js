@@ -54,6 +54,12 @@ const screen = {
   }
 }
 
+const shellMock = jest.fn()
+const shell = {
+  showItemInFolder: shellMock,
+  openItem: shellMock
+}
+
 /* globals jest */
 module.exports = {
   app,
@@ -62,5 +68,7 @@ module.exports = {
   ipcMain,
   ipcRenderer,
   screen,
-  sendMock
+  shell,
+  sendMock,
+  shellMock
 }

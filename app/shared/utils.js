@@ -73,6 +73,23 @@ function fileExists (fname) {
   })
 }
 
+// Splits a collection into a size x size grid.
+// If the split is uneven, the last row will
+// have less than size elements
+function gridPartition (items, size) {
+  const grid = items.reduce((result, item) => {
+    const index = result.length - 1
+    if (result[index].length < size) {
+      result[index].push(item)
+    } else {
+      result.push([item])
+    }
+    return result
+  }, [ [] ])
+
+  return grid
+}
+
 function ExtendableError (message) {
   this.name = this.constructor.name
   this.message = message || 'error'
@@ -89,5 +106,6 @@ module.exports = {
   readdir,
   lstat,
   fileExists,
+  gridPartition,
   ExtendableError
 }

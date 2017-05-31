@@ -8,24 +8,24 @@ import { fadeIn } from '../styleUtils'
 export default class MovieGallery extends Component {
   constructor (props) {
     super(props)
-    this.selectGenre = this.selectGenre.bind(this)
+    this.selectCategory = this.selectCategory.bind(this)
   }
 
-  selectGenre (genre) {
+  selectCategory (category) {
     return (e) => {
       e.preventDefault()
-      const { handleSelectGenre } = this.props
-      if (handleSelectGenre) {
-        handleSelectGenre(genre)
+      const { handleSelectCategory } = this.props
+      if (handleSelectCategory) {
+        handleSelectCategory(category)
       }
     }
   }
 
   render () {
-    const { genre } = this.props
+    const { category } = this.props
 
     return (
-      <Gallery key={genre}>
+      <Gallery key={category}>
         { this.renderTitle() }
         { this.renderThumbnails() }
       </Gallery>
@@ -33,19 +33,19 @@ export default class MovieGallery extends Component {
   }
 
   renderTitle () {
-    const { genre, renderStyle } = this.props
-    if (!genre) {
+    const { category, renderStyle } = this.props
+    if (!category) {
       return null
     }
 
     if (renderStyle === 'grid') {
-      return <Title>{genre}</Title>
+      return <Title>{category}</Title>
     }
 
     return (
       <Title>
-        <Genre onClick={this.selectGenre(genre)}>
-          {genre}
+        <Genre onClick={this.selectCategory(category)}>
+          {category}
           <Chevron right fixedWidth />
         </Genre>
       </Title>
@@ -62,8 +62,6 @@ export default class MovieGallery extends Component {
             key={movie.imdbID}
             movie={movie}
             panelID={id}
-            handleShowMovieDetails={this.showMovieDetails}
-            handleUpdateMovieDetails={this.updateMovieDetails}
           />
         </FadeIn>
       )

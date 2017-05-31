@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Ratings renders ratings 1`] = `
+<h6>
+  <span
+    className="sc-bdVaJa KZukk"
+  >
+    Audience: 
+    <i
+      className="fa fa-star"
+    />
+    <i
+      className="fa fa-star"
+    />
+    <i
+      className="fa fa-star"
+    />
+    <i
+      className="fa fa-star-o"
+    />
+    <i
+      className="fa fa-star-o"
+    />
+  </span>
+  <span
+    className="sc-bdVaJa KZukk"
+  >
+    Critics: 
+    <i
+      className="fa fa-star"
+    />
+    <i
+      className="fa fa-star-half-o"
+    />
+    <i
+      className="fa fa-star-o"
+    />
+    <i
+      className="fa fa-star-o"
+    />
+    <i
+      className="fa fa-star-o"
+    />
+  </span>
+</h6>
+`;

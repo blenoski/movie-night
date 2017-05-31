@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`MainContent renders DisplayMoviesContainer when there are movies 1`] = `
+<div>
+  DisplayMoviesContainer
+</div>
+`;
+
+exports[`MainContent renders database button when there are no movies and not crawling 1`] = `
+<div
+  className="sc-htpNat dAyQvX"
+>
+  Where are your movies?
+  <div
+    className="sc-bxivhb cDsefN sc-bwzfXH iJwxuO"
+    onClick={undefined}
+  >
+    <i
+      className="fa fa-database"
+    />
+  </div>
+</div>
+`;
+
+exports[`MainContent renders spinner when there are no movies and we are crawling 1`] = `
+<div
+  className="sc-htpNat dAyQvX"
+>
+  Where are your movies?
+  <div
+    className="sc-bxivhb cDsefN sc-bdVaJa IsYJH"
+  >
+    <i
+      className="fa fa-spinner fa-pulse"
+    />
+  </div>
+</div>
+`;

@@ -49,6 +49,7 @@ export default class MovieDetail extends Component {
   showMovieInFinder (e) {
     e.preventDefault()
     const { movie } = this.props
+
     shell.showItemInFolder(movie.fileInfo[0].location)
   }
 

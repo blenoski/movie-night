@@ -21,7 +21,6 @@ export default class MovieThumbnail extends Component {
 
     this.openMovieInDefaultPlayer = this.openMovieInDefaultPlayer.bind(this)
     this.onShowMovieDetailsClick = this.onShowMovieDetailsClick.bind(this)
-    this.onUpdateMovieDetails = this.onUpdateMovieDetails.bind(this)
     this.renderControls = this.renderControls.bind(this)
   }
 
@@ -64,14 +63,6 @@ export default class MovieThumbnail extends Component {
     }
   }
 
-  onUpdateMovieDetails (e) {
-    e.preventDefault()
-    const { movie, handleMovieSelected, panelID } = this.props
-    if (handleMovieSelected) {
-      handleMovieSelected({ movie, action: 'mouseover', panelID })
-    }
-  }
-
   render () {
     return (
       <ImageContainer
@@ -106,7 +97,6 @@ export default class MovieThumbnail extends Component {
         <ShowMovieDetailsArrow
           down
           onClick={this.onShowMovieDetailsClick}
-          onMouseEnter={this.onUpdateMovieDetails}
         />
       </Tag>
     )

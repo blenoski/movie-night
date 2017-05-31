@@ -10,9 +10,9 @@ export default ({
   totalMovieCount
 }) => {
   // Handle first time application started and/or empty database.
-  if (totalMovieCount === 0) {
+  if (totalMovieCount <= 0) {
     return (
-      <NoMovieStyles>
+      <NoMovieStyles >
         Where are your movies?
         <AddMediaButton
           handleClick={handleAddMediaClick}

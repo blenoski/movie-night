@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PlayButton renders normal size play button 1`] = `
+<div
+  className="sc-bdVaJa jBUqAu"
+  onClick={undefined}
+>
+  <i
+    className="fa fa-play sc-bwzfXH fnOVYt"
+  />
+</div>
+`;
+
+exports[`PlayButton renders small play button when small prop passed 1`] = `
+<div
+  className="sc-bdVaJa bqeGKh"
+  onClick={undefined}
+>
+  <i
+    className="fa fa-play sc-bwzfXH fnOVYt"
+  />
+</div>
+`;
