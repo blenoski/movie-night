@@ -4,14 +4,20 @@
 // Mock the API responses.
 jest.mock('../../shared/request', () => {
   return {
-    getJSON: jest.fn(movieFile => {
-      if (movieFile.includes('reject')) {
+    getJSON: jest.fn((url, validator) => {
+      if (url.includes('reject')) {
         return Promise.reject(new Error())
       }
 
+      if (url.includes('error')) {
+        validator({ error: 'throws' })
+      } else {
+        validator({ url })
+      }
+
       let metadata = {}
-      metadata.successQuery = movieFile.slice(movieFile.indexOf('file='))
-      if (movieFile.includes('imgUrl')) {
+      metadata.successQuery = url.slice(url.indexOf('file='))
+      if (url.includes('imgUrl')) {
         metadata.imgUrl = 'http://poster.png'
         metadata.imdbID = 'tt123'
       }
@@ -44,9 +50,20 @@ describe('fetchMovieMetadata', () => {
       .resolves.toMatchSnapshot()
   })
 
-  test('rejects on omdb fetch error', () => {
+  test('rejects on fetch error', () => {
     const movieFile = 'reject'
     return expect(fetchMovieMetadata(movieFile))
       .rejects.toBeInstanceOf(Error)
+  })
+
+  test('throws on data error', () => {
+    expect.assertions(1)
+
+    const movieFile = 'error'
+    try {
+      fetchMovieMetadata(movieFile)
+    } catch (err) {
+      expect(err).toBeInstanceOf(Error)
+    }
   })
 })
