@@ -56,13 +56,16 @@ describe('Movie Details', () => {
     expect(shellMock).toHaveBeenLastCalledWith(movie.fileInfo[0].location)
   })
 
-  test('unmounts', () => {
+  test('unmounts', (done) => {
     const component = renderer.create(
       <MovieDetail
         movie={movie}
       />
     )
 
-    setTimeout(() => component.unmount(), 0)
+    setTimeout(() => {
+      component.unmount()
+      done()
+    }, 0)
   })
 })

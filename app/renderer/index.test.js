@@ -1,20 +1,18 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import { Provider } from 'react-redux'
+'use strict'
+/* globals jest, test, expect */
 
-import { App } from './controller'
-import store from './model'
+import mockRenderer from 'react-test-renderer'
 
-/* globals jest */
-jest.mock('electron')
+jest.mock('react-dom', () => {
+  return {
+    render: (component, root) => {
+      const render = mockRenderer.create(component)
+      let tree = render.toJSON()
+      expect(tree).toMatchSnapshot()
+    }
+  }
+})
 
-/* globals test  */
-test('App renders without crashing', () => {
-  const div = document.createElement('div')
-  ReactDOM.render(
-    <Provider store={store}>
-      <App />
-    </Provider>,
-    div
-  )
+test('app renders without crashing', () => {
+  require('./index')
 })
