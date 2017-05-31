@@ -6,6 +6,7 @@ const path = require('path')
 const {
   ExtendableError,
   fileExists,
+  gridPartition,
   isDevEnv,
   logEnv,
   lstat,
@@ -43,6 +44,20 @@ describe('utils', () => {
     test('returns false if file does not exist', () => {
       const badFile = `${__filename}gobblygook`
       return expect(fileExists(badFile)).resolves.toBe(false)
+    })
+  })
+
+  describe('gridPartition', () => {
+    test('splits 9 items into 3x3 grid', () => {
+      const items = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+      const expected = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+      expect(gridPartition(items, 3)).toEqual(expected)
+    })
+
+    test('splits 3 items into 2x2 grid', () => {
+      const items = [1, 2, 3]
+      const expected = [[1, 2], [3]]
+      expect(gridPartition(items, 2)).toEqual(expected)
     })
   })
 

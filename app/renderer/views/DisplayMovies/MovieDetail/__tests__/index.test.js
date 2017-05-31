@@ -54,8 +54,15 @@ describe('Movie Details', () => {
     const playButton = tree.children[1].children[0].children[0]
     playButton.props.onClick({ preventDefault: jest.fn() })
     expect(shellMock).toHaveBeenLastCalledWith(movie.fileInfo[0].location)
+  })
 
-    // unmount the component
-    component.unmount()
+  test('unmounts', () => {
+    const component = renderer.create(
+      <MovieDetail
+        movie={movie}
+      />
+    )
+
+    setTimeout(() => component.unmount(), 0)
   })
 })
