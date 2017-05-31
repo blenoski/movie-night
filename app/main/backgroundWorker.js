@@ -25,9 +25,10 @@ function createBackgroundWindow (didFinishLoadCallback) {
     backgroundWorker.webContents.openDevTools()
   }
 
-  backgroundWorker.webContents.on('did-finish-load', () => {
-    didFinishLoadCallback()
-  })
+  backgroundWorker.webContents.on(
+    'did-finish-load',
+    didFinishLoadCallback
+  )
 }
 
 // Triggers the load movie database workflow.

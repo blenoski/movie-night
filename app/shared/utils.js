@@ -4,6 +4,10 @@ const isDevEnv = () => {
   return process.env.NODE_ENV === 'development'
 }
 
+const getPlatform = () => {
+  return process.platform
+}
+
 const logEnv = (logger) => {
   logger.info('', {
     'NODE_ENV': process.env.NODE_ENV,
@@ -100,6 +104,7 @@ ExtendableError.prototype.constructor = ExtendableError
 
 module.exports = {
   isDevEnv,
+  getPlatform,
   logEnv,
   mkdir,
   writeFile,

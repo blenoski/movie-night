@@ -6,7 +6,7 @@ const {
   MOVIE_DATABASE,
   SEARCHING_DIRECTORY
 } = require('../shared/events')
-const { isDevEnv } = require('../shared/utils')
+const { getPlatform, isDevEnv } = require('../shared/utils')
 
 const backgroundWorker = require('./backgroundWorker')
 const logger = require('./mainLogger')
@@ -53,9 +53,7 @@ function createAppWindow (onClosedCallback) {
     slashes: true
   }))
 
-  appWindow.once('ready-to-show', () => {
-    appWindow.show()
-  })
+  appWindow.once('ready-to-show', handleReadyToShow)
 
   // Open the DevTools if we are in dev.
   if (isDevEnv()) {
@@ -63,7 +61,24 @@ function createAppWindow (onClosedCallback) {
   }
 
   // Emitted when the appWindow is closed.
-  appWindow.on('closed', function () {
+  appWindow.on('closed', handleClosed(onClosedCallback))
+
+  // Load the database only after the appWindow is ready.
+  // This event will also fire when the appWindow finishes reloading.
+  appWindow.webContents.on('did-finish-load', handleDidFinishLoad)
+}
+
+function handleReadyToShow () {
+  appWindow.show()
+}
+
+function handleDidFinishLoad () {
+  logger.info('Received appWindow did-finish-load event')
+  backgroundWorker.loadMovieDatabase()
+}
+
+function handleClosed (onClosedCallback) {
+  return () => {
     logger.info('Received appWindow closed event')
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
@@ -72,17 +87,10 @@ function createAppWindow (onClosedCallback) {
 
     // For non OSX platforms, we should go ahead and
     // close the app when the appWindow has been closed.
-    if (process.platform !== 'darwin') {
+    if (getPlatform() !== 'darwin') {
       onClosedCallback()
     }
-  })
-
-  // Load the database only after the appWindow is ready.
-  // This event will also fire when the appWindow finishes reloading.
-  appWindow.webContents.on('did-finish-load', () => {
-    logger.info('Received appWindow did-finish-load event')
-    backgroundWorker.loadMovieDatabase()
-  })
+  }
 }
 
 function handleSearchingDirectoryEvents (event, directory) {
@@ -122,6 +130,9 @@ function handleMovieDatabaseEvent (event, movieDB) {
 module.exports = {
   createAppWindow,
   handleCrawlCompleteEvent,
+  handleClosed,
+  handleDidFinishLoad,
   handleMovieDatabaseEvent,
+  handleReadyToShow,
   handleSearchingDirectoryEvents
 }

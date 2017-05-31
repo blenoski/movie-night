@@ -1,25 +1,75 @@
+'use strict'
+/* globals jest, describe, test, expect */
+
+const { app } = require('electron')
+
 const {
-  handleImportDirectoryEvent
+  handleActivate,
+  handleImportDirectoryEvent,
+  handleReady,
+  handleWindowAllClosed,
+  handleQuit
 } = require('../main')
 
-const {
-  SELECT_IMPORT_DIRECTORY
-} = require('../../shared/events')
+jest.mock('../appWindow', () => {
+  return {
+    createAppWindow: jest.fn()
+  }
+})
 
-/* globals describe, test */
+const appWindow = require.requireMock('../appWindow')
+
+const mockPlatform = jest.fn()
+  .mockReturnValueOnce('darwin')
+  .mockReturnValue('windows')
+
+jest.mock('../../shared/utils', () => {
+  return {
+    logEnv: jest.fn(),
+    getPlatform: jest.fn(() => mockPlatform())
+  }
+})
 
 describe('main process', () => {
-  describe('does not crash', () => {
-    test(' when events sent before app windows created', () => {
-      handleImportDirectoryEvent({sender: 'test'})
-    })
+  test('does not crash when events sent before app windows created', () => {
+    handleImportDirectoryEvent({sender: 'test'})
+  })
+})
+
+describe('handleActivate', () => {
+  test('calls appwindow.createAppWindow', () => {
+    handleActivate()
+    expect(appWindow.createAppWindow).toHaveBeenCalled()
+  })
+})
+
+describe('handleImportDirectoryEvent', () => {
+  test('does not crash', () => {
+    handleImportDirectoryEvent({sender: 'test'})
+  })
+})
+
+describe('handleReady', () => {
+  test('calls appwindow.createAppWindow', () => {
+    handleReady()
+    expect(appWindow.createAppWindow).toHaveBeenCalled()
+  })
+})
+
+describe('handleWindowAllClosed', () => {
+  test('does not call quit if platform is darwin', () => {
+    handleWindowAllClosed()
+    expect(app.quit).not.toHaveBeenCalled()
   })
 
-  describe('event handling', () => {
-    describe(SELECT_IMPORT_DIRECTORY, () => {
-      test('does not crash after app windows created', () => {
-        handleImportDirectoryEvent({sender: 'test'})
-      })
-    })
+  test('calls quit if platform is not darwin', () => {
+    handleWindowAllClosed()
+    expect(app.quit).toHaveBeenCalled()
+  })
+})
+
+describe('handleQuit', () => {
+  test('does not crash', () => {
+    handleQuit()
   })
 })

@@ -12,7 +12,8 @@ const sendMock = jest.genMockFunction()
 
 // Mock the various electron components
 const app = {
-  on: jest.genMockFunction()
+  on: jest.genMockFunction(),
+  quit: jest.genMockFunction()
 }
 
 class BrowserWindow {
@@ -20,13 +21,15 @@ class BrowserWindow {
     this.mock = jest.fn() /* globals jest */
     this.webContents = {
       on: jest.genMockFunction(),
-      send: sendMock
+      send: sendMock,
+      openDevTools: jest.genMockFunction()
     }
   }
 
   loadURL (...args) { this.mock(...args) }
   once (...args) { this.mock(...args) }
   on (...args) { this.mock(...args) }
+  show () { this.mock() }
   static fromWebContents () { return 'test' }
 }
 

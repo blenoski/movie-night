@@ -1,3 +1,10 @@
+'use strict'
+/* globals jest, describe, test, expect, beforeAll */
+
+const {
+  sendMock
+} = require('electron') // jest will automatically use mocked version
+
 const {
   createBackgroundWindow,
   handleCrawlDirectorySelectionEvent,
@@ -9,11 +16,11 @@ const {
   LOAD_MOVIE_DATABASE
 } = require('../../shared/events')
 
-const {
-  sendMock
-} = require('electron') // jest will automatically use mocked version
-
-/* globals describe, test, expect, beforeAll */
+jest.mock('../../shared/utils', () => {
+  return {
+    isDevEnv: () => true
+  }
+})
 
 // Helper functions for accessing send mock.
 const sendCount = () => sendMock.mock.calls.length

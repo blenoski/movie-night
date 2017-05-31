@@ -7,7 +7,7 @@ const {
   SEARCHING_DIRECTORY,
   SELECT_IMPORT_DIRECTORY
 } = require('../shared/events')
-const { logEnv } = require('../shared/utils')
+const { getPlatform, logEnv } = require('../shared/utils')
 
 const appWindow = require('./appWindow')
 const backgroundWorker = require('./backgroundWorker')
@@ -28,30 +28,34 @@ const ipcMain = electron.ipcMain
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used AFTER this event occurs.
-app.on('ready', () => {
+app.on('ready', handleReady)
+function handleReady () {
   appWindow.createAppWindow(app.quit)
-})
+}
 
 // Quit when all windows are closed.
-app.on('window-all-closed', function () {
+app.on('window-all-closed', handleWindowAllClosed)
+function handleWindowAllClosed () {
   logger.info('Received window-all-closed event')
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') {
+  if (getPlatform() !== 'darwin') {
     app.quit()
   }
-})
+}
 
-app.on('activate', function () {
+app.on('activate', handleActivate)
+function handleActivate () {
   logger.info('Received activate event')
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   appWindow.createAppWindow(app.quit)
-})
+}
 
-app.on('quit', function () {
+app.on('quit', handleQuit)
+function handleQuit () {
   logger.info('Quitting app')
-})
+}
 
 // Handle SELECT_IMPORT_DIRECTORY events.
 // Open a native select directory file dialog. When user
@@ -84,5 +88,9 @@ ipcMain.on(MOVIE_DATABASE, appWindow.handleMovieDatabaseEvent)
 
 // Exporting for testing purposes.
 module.exports = {
-  handleImportDirectoryEvent
+  handleActivate,
+  handleImportDirectoryEvent,
+  handleReady,
+  handleWindowAllClosed,
+  handleQuit
 }

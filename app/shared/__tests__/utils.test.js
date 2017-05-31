@@ -6,6 +6,7 @@ const path = require('path')
 const {
   ExtendableError,
   fileExists,
+  getPlatform,
   gridPartition,
   isDevEnv,
   logEnv,
@@ -44,6 +45,12 @@ describe('utils', () => {
     test('returns false if file does not exist', () => {
       const badFile = `${__filename}gobblygook`
       return expect(fileExists(badFile)).resolves.toBe(false)
+    })
+  })
+
+  describe('getPlatform', () => {
+    test('returns process.platform', () => {
+      expect(getPlatform()).toEqual(process.platform)
     })
   })
 

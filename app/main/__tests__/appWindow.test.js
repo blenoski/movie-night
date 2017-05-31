@@ -1,10 +1,13 @@
 'use strict'
-/* globals describe, test, expect, beforeAll */
+/* globals jest, describe, test, expect, beforeAll */
 
 const {
   createAppWindow,
   handleCrawlCompleteEvent,
+  handleClosed,
+  handleDidFinishLoad,
   handleMovieDatabaseEvent,
+  handleReadyToShow,
   handleSearchingDirectoryEvents
 } = require('../appWindow')
 
@@ -18,6 +21,13 @@ const {
   sendMock
 } = require('electron') // jest will automatically use mocked version
 
+const mockLoadDB = jest.fn()
+jest.mock('../backgroundWorker', () => {
+  return {
+    loadMovieDatabase: () => mockLoadDB()
+  }
+})
+
 // Helper functions for accessing send mock.
 const sendCount = () => sendMock.mock.calls.length
 const sendLast = () => sendMock.mock.calls[sendCount() - 1]
@@ -28,6 +38,19 @@ const movieDB = [
   { genre: 'comedy', movies: ['movie1', 'movie2', 'movie3'] }
 ]
 
+// Mock the platform to test platform specific behavior.
+const mockPlatform = jest.fn()
+  .mockReturnValueOnce('darwin')
+  .mockReturnValue('windows')
+
+jest.mock('../../shared/utils', () => {
+  return {
+    getPlatform: jest.fn(() => mockPlatform()),
+    isDevEnv: () => true,
+    logEnv: jest.fn()
+  }
+})
+
 describe('appWindow', () => {
   describe('does not crash', () => {
     test(' when events sent before appWindow created', () => {
@@ -35,6 +58,10 @@ describe('appWindow', () => {
       handleMovieDatabaseEvent(null, movieDB)
       handleSearchingDirectoryEvents(null, 'searchDir')
       expect(sendCount()).toBe(0)
+    })
+
+    test('when createAppWindow called twice', () => {
+      createAppWindow()
     })
   })
 
@@ -70,6 +97,34 @@ describe('appWindow', () => {
           expect(sendLast()).toEqual([event, data])
         })
       })
+    })
+  })
+
+  describe('handleClosed', () => {
+    test('does not execute callback on darwin', () => {
+      const cb = jest.fn()
+      handleClosed(cb)()
+      expect(cb).not.toHaveBeenCalled()
+    })
+
+    test('executes callback on non darwin platform', () => {
+      const cb = jest.fn()
+      handleClosed(cb)()
+      expect(cb).toHaveBeenCalled()
+    })
+  })
+
+  describe('handleDidFinishLoad', () => {
+    test('calls loadMovieDatabase', () => {
+      handleDidFinishLoad()
+      expect(mockLoadDB).toHaveBeenCalled()
+    })
+  })
+
+  describe('handleReadyToShow', () => {
+    test('', () => {
+      createAppWindow()
+      handleReadyToShow()
     })
   })
 })
