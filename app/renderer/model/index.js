@@ -25,26 +25,6 @@ import {
 import enhancedFeaturedMovieSelector from './enhancedFeaturedMovie'
 import visibleMoviesSelector from './visibleMovies'
 
-// Create the redux store.
-// This is the default export.
-// ---------------------------
-let middlewares = []
-if (isDevEnv()) {
-  middlewares.push(reduxLogger)
-}
-
-const rootReducer = combineReducers({
-  crawl,
-  dbLoaded,
-  featuredMovie,
-  movies,
-  search
-})
-
-const store = createStore(rootReducer, applyMiddleware(...middlewares))
-
-export default store // !!!! DEFAULT EXPORT !!!
-
 // Re-export all the action creators.
 // ----------------------------------
 export * from './actions'
@@ -82,4 +62,27 @@ export const getSearchQuery = (state) => {
 
 export const getVisibleMovies = (state) => {
   return visibleMoviesSelector(state)
+}
+
+// Export function for creating redux store.
+// -----------------------------------------
+export const createReduxStore = () => {
+  // Create the redux store.
+  // This is the default export.
+  // ---------------------------
+  let middlewares = []
+  if (isDevEnv()) {
+    middlewares.push(reduxLogger)
+  }
+
+  const rootReducer = combineReducers({
+    crawl,
+    dbLoaded,
+    featuredMovie,
+    movies,
+    search
+  })
+
+  const store = createStore(rootReducer, applyMiddleware(...middlewares))
+  return store
 }

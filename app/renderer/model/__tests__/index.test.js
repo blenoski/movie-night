@@ -1,7 +1,8 @@
 'use strict'
-/* globals describe, test, expect */
+/* globals jest, describe, test, expect */
 
 import {
+  createReduxStore,
   getAllMovies, // public selectors
   getCrawlActive,
   getFeaturedMovie,
@@ -12,6 +13,12 @@ import {
 } from '../index'
 
 import { SELECT_IMPORT_DIRECTORY } from '../../../shared/events'
+
+jest.mock('../../../shared/utils', () => {
+  return {
+    isDevEnv: () => true
+  }
+})
 
 // Set up some test data
 const movies = [
@@ -71,5 +78,13 @@ describe('electron action creators', () => {
   test('importMovies', () => {
     importMovies()
     expect(sendMock.mock.calls[0][0]).toEqual(SELECT_IMPORT_DIRECTORY)
+  })
+})
+
+//
+describe('store', () => {
+  test('getState', () => {
+    const store = createReduxStore()
+    expect(store.getState()).toMatchSnapshot()
   })
 })

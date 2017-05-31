@@ -123,3 +123,26 @@ Array [
   },
 ]
 `;
+
+exports[`store getState 1`] = `
+Object {
+  "crawl": Object {
+    "active": false,
+    "directory": "",
+  },
+  "dbLoaded": false,
+  "featuredMovie": Object {
+    "action": "",
+    "movie": null,
+    "panelID": -1,
+  },
+  "movies": Object {
+    "displayOrder": Array [],
+    "movieDB": Array [],
+  },
+  "search": Object {
+    "category": "",
+    "query": "",
+  },
+}
+`;

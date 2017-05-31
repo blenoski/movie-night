@@ -3,7 +3,7 @@
 
 import React from 'react'
 import { Provider } from 'react-redux'
-import store from '../../model'
+import { createReduxStore } from '../../model'
 
 import renderer from 'react-test-renderer'
 import Header from '../Header'
@@ -11,7 +11,7 @@ import Header from '../Header'
 describe('Header', () => {
   test('renders header component and styles', () => {
     const component = renderer.create(
-      <Provider store={store} >
+      <Provider store={createReduxStore()} >
         <Header />
       </Provider>
     )

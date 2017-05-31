@@ -4,14 +4,14 @@ import { Provider } from 'react-redux'
 
 import { logEnv } from '../shared/utils'
 import { App } from './controller'
-import store from './model'
+import { createReduxStore } from './model'
 import logger from './mainWindowLogger'
 
 logEnv(logger)
 
 // Render the App.
 ReactDOM.render(
-  <Provider store={store}>
+  <Provider store={createReduxStore()}>
     <App />
   </Provider>,
   document.getElementById('root')
