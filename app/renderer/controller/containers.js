@@ -25,7 +25,7 @@ import SearchBar from '../views/SearchBar'
 
 // App Container
 // -------------
-function mapStateToAppProps ({ dbLoaded }) {
+export function mapStateToAppProps ({ dbLoaded }) {
   return {
     dbLoaded
   }
@@ -35,23 +35,27 @@ export const App = connect(mapStateToAppProps)(Application)
 
 // ImportMovies Container
 // ----------------------
-export const ImportMovies = connect((state) => {
+export function mapStateToImportMoviesProps (state) {
   return {
     busy: getCrawlActive(state),
     handleClick: importMovies
   }
-})(Button)
+}
+
+export const ImportMovies = connect(
+  mapStateToImportMoviesProps
+)(Button)
 
 // SearchMovies Container
 // ----------------------
-function mapStateToSearchBarProps (state) {
+export function mapStateToSearchBarProps (state) {
   return {
     searchCategory: getSearchCategory(state),
     searchQuery: getSearchQuery(state)
   }
 }
 
-function mapDispatchToSearchBarProps (dispatch) {
+export function mapDispatchToSearchBarProps (dispatch) {
   return {
     handleQueryChange: (text) => dispatch(updateSearchQuery(text)),
     handleClear: () => {
@@ -67,7 +71,7 @@ export const SearchMovies = connect(
 
 // MovieThumbnail Container
 // -----------------------
-function mapDispatchToMovieThumbnailProps (dispatch) {
+export function mapDispatchToMovieThumbnailProps (dispatch) {
   return {
     handleMovieSelected: ({ movie, action, panelID }) => {
       if (action === 'click') {
@@ -84,7 +88,7 @@ export const MovieThumbnailContainer = connect(
 
 // DisplayMovies Container
 // -----------------------
-function mapStateToDisplayMoviesProps (state) {
+export function mapStateToDisplayMoviesProps (state) {
   return {
     featuredMovie: getFeaturedMovie(state),
     movies: getVisibleMovies(state),
@@ -93,7 +97,7 @@ function mapStateToDisplayMoviesProps (state) {
   }
 }
 
-function mapDispatchToDisplayMoviesProps (dispatch) {
+export function mapDispatchToDisplayMoviesProps (dispatch) {
   return {
     clearFeaturedMovie: () => dispatch(clearFeaturedMovie()),
     clearSearchQuery: () => dispatch(clearSearchQuery()),
@@ -108,7 +112,7 @@ export const DisplayMoviesContainer = connect(
 
 // MainContent Container
 // ---------------------
-function mapStateToMainContentProps (state) {
+export function mapStateToMainContentProps (state) {
   return {
     isCrawling: getCrawlActive(state),
     handleAddMediaClick: importMovies,

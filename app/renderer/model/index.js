@@ -86,3 +86,8 @@ export const createReduxStore = () => {
   const store = createStore(rootReducer, applyMiddleware(...middlewares))
   return store
 }
+
+// This is the actual store used in the app.
+// -----------------------------------------
+const store = createReduxStore()
+export default store

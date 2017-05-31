@@ -13,32 +13,36 @@ import store, {
 import logger from '../mainWindowLogger'
 
 // Handle SEARCHING_DIRECTORY events
-ipcRenderer.on(SEARCHING_DIRECTORY, function (event, directory) {
+ipcRenderer.on(SEARCHING_DIRECTORY, handleSearchDirectoryEvent)
+export function handleSearchDirectoryEvent (event, directory) {
   logger.debug('Received SEARCHING_DIRECTORY event', { directory })
   store.dispatch(updateCurrentCrawlDirectory(directory))
   logger.debug('Dispatched updateCurrentCrawlDirectory action', { directory })
-})
+}
 
 // Handle CRAWL_COMPLETE events
-ipcRenderer.on(CRAWL_COMPLETE, function (event, directory) {
+ipcRenderer.on(CRAWL_COMPLETE, handleCrawlCompleteEvent)
+export function handleCrawlCompleteEvent (event, directory) {
   logger.info('Received CRAWL_COMPLETE event', { directory })
   store.dispatch(updateCurrentCrawlDirectory(directory))
   logger.info('Dispatched updateCurrentCrawlDirectory action', { directory })
   store.dispatch(updateCrawlState(false))
   logger.info('Dispatched updateCrawlState(false) action')
-})
+}
 
 // Handle MOVIE_DATABASE events
-ipcRenderer.on(MOVIE_DATABASE, (event, movieDB) => {
+ipcRenderer.on(MOVIE_DATABASE, handleMovieDatabaseEvent)
+export function handleMovieDatabaseEvent (event, movieDB) {
   logger.info('Recieved MOVIE_DATABASE event', {
     count: movieDB.reduce((sum, genre) => sum + genre.movies.length, 0)
   })
   store.dispatch(updateMovieDB(movieDB))
-})
+}
 
-ipcRenderer.once(MOVIE_DATABASE, (event, movieDB) => {
+ipcRenderer.once(MOVIE_DATABASE, handleFirstMovieDatabaseEvent)
+export function handleFirstMovieDatabaseEvent (event, movieDB) {
   setTimeout(() => {
     store.dispatch(databaseLoaded())
     logger.info('Dispatched databaseLoaded action')
   }, 500)
-})
+}
