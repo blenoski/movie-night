@@ -3,7 +3,6 @@ const { posterImagePath } = require('../../config')
 const { mkdir, fileExists } = require('../shared/utils')
 const logger = require('./backgroundWorkerLogger').default
 
-
 module.exports = {
 
   downloadPosterFor: function downloadPosterFor (movie) {

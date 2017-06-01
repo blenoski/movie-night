@@ -57,6 +57,16 @@ jest.mock('../poster', () => {
   }
 })
 
+// Mock the logger
+jest.mock('../backgroundWorkerLogger', () => {
+  return {
+    default: {
+      debug () {},
+      info () {}
+    }
+  }
+})
+
 // These are events the backgroundWorker sends.
 const {
   CRAWL_COMPLETE,

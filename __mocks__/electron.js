@@ -13,7 +13,8 @@ const sendMock = jest.genMockFunction()
 // Mock the various electron components
 const app = {
   on: jest.genMockFunction(),
-  quit: jest.genMockFunction()
+  quit: jest.genMockFunction(),
+  getName: jest.genMockFunction()
 }
 
 class BrowserWindow {

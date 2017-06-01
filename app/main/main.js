@@ -96,6 +96,7 @@ function handleLogMessage (event, logMessage) {
 module.exports = {
   handleActivate,
   handleImportDirectoryEvent,
+  handleLogMessage,
   handleReady,
   handleWindowAllClosed,
   handleQuit

@@ -3,7 +3,6 @@ const fs = require('fs')
 const path = require('path')
 const logger = require('./backgroundWorkerLogger').default
 
-
 // Database supports a single NoSQL style collection.
 // Documents are required to have a uniqueField property (a.k.a. primary key)
 // Fetching documents is not optimized and generally iterates over every document.

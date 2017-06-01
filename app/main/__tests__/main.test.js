@@ -6,6 +6,7 @@ const { app } = require('electron')
 const {
   handleActivate,
   handleImportDirectoryEvent,
+  handleLogMessage,
   handleReady,
   handleWindowAllClosed,
   handleQuit
@@ -71,5 +72,16 @@ describe('handleWindowAllClosed', () => {
 describe('handleQuit', () => {
   test('does not crash', () => {
     handleQuit()
+  })
+})
+
+describe('handleLogMessage', () => {
+  test('', () => {
+    handleLogMessage(null, {
+      sender: 'sender',
+      severity: 'warn',
+      message: 'test message',
+      obj: { key: 'value' }
+    })
   })
 })
