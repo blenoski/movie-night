@@ -22,10 +22,14 @@ const MOVIE_DATABASE = 'movie-database'
 // Fired on application startup.
 const LOAD_MOVIE_DATABASE = 'load-movie-database'
 
+// All log messages are routed through main process.
+const LOG_MESSAGE = 'log-message'
+
 module.exports = {
   CRAWL_COMPLETE,
   CRAWL_DIRECTORY,
   LOAD_MOVIE_DATABASE,
+  LOG_MESSAGE,
   MOVIE_DATABASE,
   SEARCHING_DIRECTORY,
   SELECT_IMPORT_DIRECTORY

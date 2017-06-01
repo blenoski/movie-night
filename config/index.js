@@ -1,9 +1,11 @@
 const fs = require('fs')
 const path = require('path')
+const electron = require('electron')
 
 // This is where we store application data which is OS dependent behavior.
-// TODO: get this from electron API
-const appDataPath = path.resolve(__dirname, '..', 'appdata')
+const appDataPath = process.env.NODE_ENV === 'production'
+  ? (electron.app || electron.remote.app).getPath('userData')
+  : path.join(__dirname, '..', 'appdata')
 
 // We will need to make the application data directory
 // at startup if it doesn't already exist. This needs to happen

@@ -4,20 +4,20 @@
   "version": "1.0.0",
   "author": "Brian Lenoski <brian.lenoski@gmail.com>",
   "productName": "Movie Night",
-  "main": "./app/main/main.js",
+  "main": "./bundle/main.js",
   "scripts": {
     "start": "npm run build && cross-env NODE_ENV=production electron .",
-    "build": "cross-env NODE_ENV=production webpack --config webpack.config.prod.js -p --progress --profile --colors",
+    "build": "cross-env NODE_ENV=production webpack --config webpack.config.js --progress --profile --colors",
     "start:dev": "npm run build:dev && cross-env NODE_ENV=development electron .",
-    "build:dev": "cross-env NODE_ENV=development webpack --config webpack.config.dev.js --progress --profile --colors",
-    "start:devserver": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.dev.js --output-public-path bundle --port 3000",
+    "build:dev": "cross-env NODE_ENV=development webpack --config webpack.config.js --progress --profile --colors",
+    "start:devserver": "cross-env NODE_ENV=development webpack-dev-server --config webpack.config.js --output-public-path bundle --port 3000",
     "test": "standard && npm run lint:css && npm run build && npm run test:all",
     "test:all": "standard && npm run lint:css && cross-env NODE_ENV=test jest --coverage --verbose",
     "test-ci": "standard && npm run lint:css && npm run build && npm run test-coveralls",
     "test-coveralls": "cross-env NODE_ENV=test jest --coverage && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "test:watch": "cross-env NODE_ENV=test jest --watchAll",
     "pack": "build --dir",
-    "dist": "build",
+    "dist": "npm run build && build",
     "postinstall": "install-app-deps",
     "lint:css": "stylelint './app/renderer/**/*.js'"
   },
@@ -35,7 +35,7 @@
     "cross-env": "^5.0.0",
     "css-loader": "^0.28.4",
     "electron": "^1.6.10",
-    "electron-builder": "^18.1.0",
+    "electron-builder": "^18.3.0",
     "extract-text-webpack-plugin": "^2.1.0",
     "html-webpack-plugin": "^2.28.0",
     "jest": "^20.0.4",
@@ -47,11 +47,13 @@
     "stylelint-config-standard": "^16.0.0",
     "stylelint-processor-styled-components": "^0.1.0",
     "webpack": "^2.6.1",
-    "webpack-dev-server": "^2.4.5"
+    "webpack-dev-server": "^2.4.5",
+    "webpack-merge": "^4.1.0"
   },
   "dependencies": {
     "bootstrap": "4.0.0-alpha.6",
     "classnames": "^2.2.5",
+    "electron-log": "^2.2.6",
     "limiter": "^1.1.0",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
@@ -60,8 +62,7 @@
     "redux": "^3.6.0",
     "reselect": "^3.0.1",
     "styled-components": "^2.0.0",
-    "underscore": "^1.8.3",
-    "winston": "^2.3.1"
+    "underscore": "^1.8.3"
   },
   "jest": {
     "collectCoverageFrom": [
@@ -85,26 +86,12 @@
   },
   "build": {
     "appId": "org.confidentcruiser.movienight",
-    "files": [
-      "app/main.js",
-      "bundle/"
-    ],
     "mac": {
       "category": "public.app-category.tools"
     },
-    "dmg": {
-      "contents": [
-        {
-          "x": 110,
-          "y": 150
-        },
-        {
-          "x": 240,
-          "y": 150,
-          "type": "link",
-          "path": "/Applications"
-        }
-      ]
-    }
+    "files": [
+      "bundle/",
+      "vendor/"
+    ]
   }
 }

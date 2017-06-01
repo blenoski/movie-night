@@ -1,8 +1,15 @@
-import winston from 'winston'
-import { initLogger } from '../shared/logger.js'
+import { ipcRenderer } from 'electron'
+import { LOG_MESSAGE } from '../shared/events'
 
-const loggerName = 'appWindow'
-initLogger(loggerName)
+const sender = 'appWindow'
 
-const logger = winston.loggers.get(loggerName)
-export default logger
+const send = (severity, message, obj) => {
+  ipcRenderer.send(LOG_MESSAGE, { sender, severity, message, obj })
+}
+
+export default {
+  debug (message, obj) { send('debug', message, obj) },
+  info (message, obj) { send('info', message, obj) },
+  warn (message, obj) { send('warn', message, obj) },
+  error (message, obj) { send('error', message, obj) }
+}

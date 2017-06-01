@@ -1,7 +1,8 @@
 const request = require('../shared/request')
 const { posterImagePath } = require('../../config')
 const { mkdir, fileExists } = require('../shared/utils')
-const logger = require('./backgroundWorkerLogger')
+const logger = require('./backgroundWorkerLogger').default
+
 
 module.exports = {
 

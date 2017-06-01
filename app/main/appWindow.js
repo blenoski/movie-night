@@ -48,7 +48,7 @@ function createAppWindow (onClosedCallback) {
 
   // and load the index.html of the app.
   appWindow.loadURL(url.format({
-    pathname: path.join(__dirname, '..', '..', 'bundle', 'index.html'),
+    pathname: path.join(__dirname, 'appWindow.html'),
     protocol: 'file:',
     slashes: true
   }))

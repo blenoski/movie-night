@@ -10,9 +10,10 @@ const {
   MOVIE_DATABASE,
   SEARCHING_DIRECTORY
 } = require('../shared/events')
+
+const logger = require('./backgroundWorkerLogger').default
 const { logEnv } = require('../shared/utils')
 
-const logger = require('./backgroundWorkerLogger')
 const { crawlForMovies } = require('./crawlForMovies')
 const SingleCollectionDatabase = require('./database')
 const { fetchMovieMetadata } = require('./fetchMovieMetadata')

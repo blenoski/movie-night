@@ -3,6 +3,7 @@ const electron = require('electron')
 
 const {
   CRAWL_COMPLETE,
+  LOG_MESSAGE,
   MOVIE_DATABASE,
   SEARCHING_DIRECTORY,
   SELECT_IMPORT_DIRECTORY
@@ -85,6 +86,11 @@ ipcMain.on(CRAWL_COMPLETE, appWindow.handleCrawlCompleteEvent)
 // Handle MOVIE_DB events.
 // Route to appWindow
 ipcMain.on(MOVIE_DATABASE, appWindow.handleMovieDatabaseEvent)
+
+ipcMain.on(LOG_MESSAGE, handleLogMessage)
+function handleLogMessage (event, logMessage) {
+  logger.log(logMessage)
+}
 
 // Exporting for testing purposes.
 module.exports = {

@@ -128,7 +128,7 @@ const CloseButton = styled(Close)`
 
 const Poster = styled.aside`
   align-items: center;
-  background: ${props => `url(${props.imgFile}) no-repeat center`};
+  background: ${props => `url("${props.imgFile}") no-repeat center`};
   display: flex;
   flex-shrink: 0;
   height: 444px;

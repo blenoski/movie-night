@@ -1,7 +1,8 @@
 'use strict'
 const fs = require('fs')
 const path = require('path')
-const logger = require('./backgroundWorkerLogger')
+const logger = require('./backgroundWorkerLogger').default
+
 
 // Database supports a single NoSQL style collection.
 // Documents are required to have a uniqueField property (a.k.a. primary key)

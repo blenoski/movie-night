@@ -16,7 +16,7 @@ function createBackgroundWindow (didFinishLoadCallback) {
   logger.info('Creating backgroundWorker')
   backgroundWorker = new BrowserWindow({show: isDevEnv()})
   backgroundWorker.loadURL(url.format({
-    pathname: path.join(__dirname, '..', 'background', 'index.html'),
+    pathname: path.join(__dirname, 'backgroundWorker.html'),
     protocol: 'file:',
     slashes: true
   }))

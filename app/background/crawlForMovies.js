@@ -1,6 +1,7 @@
 const path = require('path')
 const { readdir, lstat } = require('../shared/utils')
-const logger = require('./backgroundWorkerLogger')
+const logger = require('./backgroundWorkerLogger').default
+
 
 // The list of recognized movie file extensions.
 // See https://en.wikipedia.org/wiki/Video_file_format
