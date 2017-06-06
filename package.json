@@ -89,6 +89,20 @@
     "mac": {
       "category": "public.app-category.tools"
     },
+    "dmg": {
+      "contents": [
+        {
+          "x": 100,
+          "y": 120
+        },
+        {
+          "x": 300,
+          "y": 120,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
     "files": [
       "bundle/",
       "vendor/"
