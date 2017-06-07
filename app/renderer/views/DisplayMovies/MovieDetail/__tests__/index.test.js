@@ -9,7 +9,8 @@ import MovieDetail from '../index'
 
 jest.mock('../../../../../shared/utils', () => {
   return {
-    fileExists: () => Promise.resolve(true)
+    fileExists: () => Promise.resolve(true),
+    filePathToUrl: (file) => file
   }
 })
 

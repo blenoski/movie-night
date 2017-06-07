@@ -6,6 +6,7 @@ const path = require('path')
 const {
   ExtendableError,
   fileExists,
+  filePathToUrl,
   getPlatform,
   gridPartition,
   isDevEnv,
@@ -45,6 +46,19 @@ describe('utils', () => {
     test('returns false if file does not exist', () => {
       const badFile = `${__filename}gobblygook`
       return expect(fileExists(badFile)).resolves.toBe(false)
+    })
+  })
+
+  describe('filePathToUrl', () => {
+    test('posix path', () => {
+      const filePath = '/Users/user/Movie Database/Top Gun.mkv'
+      expect(filePathToUrl(filePath)).toMatchSnapshot()
+    })
+
+    test('windows path', () => {
+      const filePath = 'C:\\Users\\user\\Movie Database\\Top Gun.mkv'
+      const resolve = false
+      expect(filePathToUrl(filePath, resolve)).toMatchSnapshot()
     })
   })
 
