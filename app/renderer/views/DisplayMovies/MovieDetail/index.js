@@ -2,7 +2,7 @@ import fs from 'fs'
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { shell } from 'electron'
-import { fileExists } from '../../../../shared/utils'
+import { fileExists, filePathToUrl } from '../../../../shared/utils'
 import ListMeta from './ListMeta'
 import Location from './Location'
 import Meta from './Meta'
@@ -71,7 +71,7 @@ export default class MovieDetail extends Component {
           style={{visibility: 'hidden'}}
         />
 
-        <Poster imgFile={movie.imgFile}>
+        <Poster fileUrl={filePathToUrl(movie.imgFile)}>
           {this.state.fileAvailable && <PlayMovieButton onClick={this.openMovieInDefaultPlayer} />}
         </Poster>
 
@@ -128,7 +128,7 @@ const CloseButton = styled(Close)`
 
 const Poster = styled.aside`
   align-items: center;
-  background: ${props => `url("${props.imgFile}") no-repeat center`};
+  background: ${props => `url(${props.fileUrl}) no-repeat center`};
   display: flex;
   flex-shrink: 0;
   height: 444px;

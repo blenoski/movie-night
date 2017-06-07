@@ -1,4 +1,5 @@
 const fs = require('fs')
+const path = require('path')
 
 const isDevEnv = () => {
   return process.env.NODE_ENV === 'development'
@@ -94,6 +95,25 @@ function gridPartition (items, size) {
   return grid
 }
 
+// Converts a file path to a file url.
+function filePathToUrl (filePath, resolve = true) {
+  // Resolve path
+  let pathName = resolve
+    ? path.resolve(filePath)
+    : filePath
+
+  // Normalize path separators
+  pathName = pathName.replace(/\\/g, '/')
+
+  // Windows drive letter must be prefixed with a slash
+  if (pathName[0] !== '/') {
+    pathName = '/' + pathName
+  }
+
+  return encodeURI('file://' + pathName)
+}
+
+// Base class for custom errors
 function ExtendableError (message) {
   this.name = this.constructor.name
   this.message = message || 'error'
@@ -112,5 +132,6 @@ module.exports = {
   lstat,
   fileExists,
   gridPartition,
+  filePathToUrl,
   ExtendableError
 }
