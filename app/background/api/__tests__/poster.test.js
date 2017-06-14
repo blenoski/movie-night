@@ -1,9 +1,11 @@
 'use strict'
 /* globals describe, test, expect , jest */
 
+import * as poster from '../poster'
+
 // Mock downloadFile dependency.
 // Jest will inject this moock instead of trying to download a movie poster.
-jest.mock('../../shared/request', () => {
+jest.mock('../../../shared/request', () => {
   return {
     downloadFile: jest.fn(url => url.includes('fail')
       ? Promise.reject(new Error())
@@ -14,15 +16,12 @@ jest.mock('../../shared/request', () => {
 // Mock file utility dependencies.
 // Jest will inject this mock instead of trying to perform disk operations.
 const mockFile = __filename
-jest.mock('../../shared/utils', () => {
+jest.mock('../../../shared/utils', () => {
   return {
     mkdir: jest.fn(() => Promise.resolve()),
     fileExists: jest.fn(fname => Promise.resolve(fname === mockFile))
   }
 })
-
-// This is the module we are testing
-const poster = require('../poster')
 
 describe('downloadPosterFor', () => {
   test('resolves on download success', () => {
@@ -60,5 +59,18 @@ describe('checkIfPosterHasBeenDownloadedFor', () => {
     }
     expect(poster.checkIfPosterHasBeenDownloadedFor(movie))
       .resolves.toEqual({ posterDownloaded: false, movie })
+  })
+})
+
+describe('downloadMissingPosters', () => {
+  test('handles both missing and existing posters', () => {
+    const movies = [
+      { imgFile: __filename }, // simulate existing
+      {
+        imgUrl: 'http://example.com/title', // simulate missing
+        imgFile: 'title'
+      }
+    ]
+    poster.downloadMissingPosters(movies)
   })
 })

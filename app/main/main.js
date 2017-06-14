@@ -87,6 +87,7 @@ ipcMain.on(CRAWL_COMPLETE, appWindow.handleCrawlCompleteEvent)
 // Route to appWindow
 ipcMain.on(MOVIE_DATABASE, appWindow.handleMovieDatabaseEvent)
 
+// Handle LOG_MESSAGE events.
 ipcMain.on(LOG_MESSAGE, handleLogMessage)
 function handleLogMessage (event, logMessage) {
   logger.log(logMessage)

@@ -1,6 +1,6 @@
 const path = require('path')
-const { posterImagePath } = require('../../config')
-const request = require('../shared/request')
+const { posterImagePath } = require('../../../config')
+const request = require('../../shared/request')
 const BASE_URL = 'https://us-central1-test-firebase-functions-82b96.cloudfunctions.net/getMovieMetadata'
 
 module.exports = {

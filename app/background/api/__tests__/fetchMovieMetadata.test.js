@@ -2,7 +2,7 @@
 /* globals describe, test, expect, jest */
 
 // Mock the API responses.
-jest.mock('../../shared/request', () => {
+jest.mock('../../../shared/request', () => {
   return {
     getJSON: jest.fn((url, validator) => {
       if (url.includes('reject')) {
@@ -28,7 +28,7 @@ jest.mock('../../shared/request', () => {
 
 // Mock the poster image path returned from config so snapshots
 // do not contain any host information.
-jest.mock('../../../config', () => {
+jest.mock('../../../../config', () => {
   return {
     posterImagePath: '/path/to/movie/posters'
   }

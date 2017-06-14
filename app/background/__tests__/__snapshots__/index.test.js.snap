@@ -1,17 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`handleCrawlDirectoryEvent calls movie database callback during crawl 1`] = `
-Array [
-  "Old School",
-  "Super Troopers",
-]
+exports[`handleCrawlDirectoryEvent calls crawlComplete on crawl error 1`] = `
+Object {
+  "movieFileCb": [Function],
+  "rootDirectory": "/path/to/some/directory",
+  "searchDirCb": [Function],
+}
 `;
 
-exports[`handleCrawlDirectoryEvent calls search directory callback during crawl 1`] = `
-Array [
-  "__tests__",
-  "__fixtures__",
-  "empty_movie_files_for_testing",
-  "__snapshots__",
-]
+exports[`handleCrawlDirectoryEvent calls crawlStart, crawlForMovies, and crawlComplete 1`] = `
+Object {
+  "movieFileCb": [Function],
+  "rootDirectory": "/path/to/some/directory",
+  "searchDirCb": [Function],
+}
 `;

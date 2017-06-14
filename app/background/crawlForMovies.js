@@ -12,18 +12,18 @@ const movieFileExtensions = [
 module.exports = {
   // Recursively searches the root directory for all movie files.
   // params.rootDirectory - the root directory to start crawl from
-  // params.searchDirCb - search directory callback. Called with current directory when a new search directory is first entered.
   // params.movieFileCb - movie file callback. Called with full path to movie file whenever a movie file is found.
+  // params.searchDirCb - search directory callback. Called with current directory when a new search directory is first entered.
   crawlForMovies: function crawlForMovies (params) {
-    return crawl(params.rootDirectory, params.searchDirCb, params.movieFileCb)
+    return crawl(params.rootDirectory, params.movieFileCb, params.searchDirCb)
   }
 }
 
 // The crawl is asynchronous to prevent blocking the process and also to
 // allow for parallelization. The use of promises here is needed in order to
 // signal when the crawl has actually completed.
-function crawl (directory, searchDirCb, movieFileCb) {
-  searchDirCb(directory)
+function crawl (directory, movieFileCb, searchDirCb) {
+  searchDirCb && searchDirCb(directory)
   return readdir(directory).then((items) => {
     return items.reduce((seq, item) => {
       const absPath = path.join(directory, item)
@@ -42,7 +42,7 @@ function processPath (absPath, searchDirCb, movieFileCb) {
         return movieFileCb(absPath) // FOUND MOVIE FILE
       }
     } else if (stats.isDirectory()) {
-      return crawl(absPath, searchDirCb, movieFileCb) // RECURSIVE!
+      return crawl(absPath, movieFileCb, searchDirCb) // RECURSIVE!
     } else {
       return Promise.resolve() // ignore file
     }
