@@ -22,7 +22,7 @@
     "lint:css": "stylelint './app/renderer/**/*.js'"
   },
   "engines": {
-    "node": ">=6.10.0"
+    "node": ">=8.15.0"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",
