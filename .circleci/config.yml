@@ -41,6 +41,7 @@ jobs:
       - run: yarn install
       - run: yarn build
       - run: yarn run test:all --maxWorkers 2
+      - run: yarn run dist
       - save_cache:
           key: *yarn_cache_key
           paths:
