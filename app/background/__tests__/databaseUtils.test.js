@@ -1,7 +1,7 @@
 'use strict'
 /* globals describe, test, expect */
 
-import { conflate, movieWithAnyLocationMatching } from '../databaseUtils'
+import { conflate } from '../databaseUtils'
 
 const mockImgFile = __filename
 let mockDB = [{
@@ -17,17 +17,6 @@ let mockDB = [{
   imgUrl: 'http://supertroopers.png',
   fileInfo: [{ location: 'loc2' }]
 }]
-
-describe('movieWithAnyLocationMatching', () => {
-  test('filter finds matching location', () => {
-    const filter = movieWithAnyLocationMatching('loc2')
-    const matches = mockDB.filter(document => {
-      return filter(document)
-    })
-    expect(matches.length).toBe(1)
-    expect(matches[0]).toEqual(mockDB[1])
-  })
-})
 
 describe('conflate', () => {
   test('appends to fileInfo on unique location', () => {

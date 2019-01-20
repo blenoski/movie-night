@@ -3,7 +3,7 @@ import path from 'path'
 import _ from 'underscore'
 
 import logger from '../backgroundWorkerLogger'
-import { conflate, movieWithAnyLocationMatching } from '../databaseUtils'
+import { conflate } from '../databaseUtils'
 
 import { ADD_MOVIE_FILE, MOVIE_FILE_COMPLETE, MOVIE_FILE_ERROR } from './actionTypes'
 import { sendCrawlComplete, sendMovieDatabase } from './electronActions'
@@ -40,7 +40,6 @@ function movieFileComplete (movieFile) {
 
 function movieFileError (movieFile, error) {
   return (dispatch, getState) => {
-    debugger
     dispatch({
       type: MOVIE_FILE_ERROR,
       payload: { movieFile, error }
@@ -75,7 +74,7 @@ export default (movieFile, db) => {
     }
 
     // Check if movieFile is already in the database.
-    const existingDoc = db.findOne(movieWithAnyLocationMatching(movieFile))
+    const existingDoc = db.findByID(movieFile)
     if (existingDoc) {
       // If the genre is GENRE_NOT_FOUND, this means the previous search was unsuccessful
       // and we should ahead and try search again. If the genre is anything but GENRE_NOT_FOUND,
@@ -109,7 +108,7 @@ export default (movieFile, db) => {
         return checkIfPosterHasBeenDownloadedFor(movie)
       })
       .then(({posterDownloaded, movie}) => {
-        document = db.findByID(movie.imdbID)
+        document = db.findByID(movie.location)
         if (shouldDownloadPoster(posterDownloaded, movie, document)) {
           return downloadPosterFor(movie).then(() => { return movie })
         } else {
@@ -118,18 +117,13 @@ export default (movieFile, db) => {
       })
       .catch((error) => {
         // Create a "fake" movie record with genre 'Not Found'
-        // imdbID must be unqiue so we will use filename here.
-        const movie = {
+          const movie = {
           'actors': [],
           'director': '',
-          'fileInfo': [
-            {
-              'location': movieFile,
-              'query': ''
-            }
-          ],
+          'location': movieFile,
+          'query': '',
           'genres': [GENRE_NOT_FOUND],
-          'imdbID': movieFile,
+          'imdbID': '',
           'imdbRating': '',
           'imgFile': '',
           'imgUrl': '',

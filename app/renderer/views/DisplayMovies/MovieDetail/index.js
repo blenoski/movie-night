@@ -24,6 +24,7 @@ export default class MovieDetail extends Component {
     this.close = this.close.bind(this)
     this.handleRedoSearch = this.handleRedoSearch.bind(this)
     this.handleSaveSearch = this.handleSaveSearch.bind(this)
+    this.handleMoveToTrash = this.handleMoveToTrash.bind(this)
     this.anchor = null
 
     this.state = {
@@ -40,33 +41,32 @@ export default class MovieDetail extends Component {
     this.anchor.scrollIntoViewIfNeeded() // centers anchor in viewport
 
     this.updateFileAvailable()
-    fs.watchFile(this.props.movie.fileInfo[0].location, this.updateFileAvailable)
+    fs.watchFile(this.props.movie.location, this.updateFileAvailable)
   }
 
   componentWillUnmount () {
-    fs.unwatchFile(this.props.movie.fileInfo[0].location, this.updateFileAvailable)
+    fs.unwatchFile(this.props.movie.location, this.updateFileAvailable)
   }
 
   updateFileAvailable () {
-    fileExists(this.props.movie.fileInfo[0].location)
+    fileExists(this.props.movie.location)
       .then(result => this.setState({ fileAvailable: result }))
   }
 
   openMovieInDefaultPlayer (e) {
     e.preventDefault()
     const { movie } = this.props
-    shell.openItem(movie.fileInfo[0].location)
+    shell.openItem(movie.location)
   }
 
   showMovieInFinder (e) {
     e.preventDefault()
     const { movie } = this.props
 
-    shell.showItemInFolder(movie.fileInfo[0].location)
+    shell.showItemInFolder(movie.location)
   }
 
-  close (e) {
-    e.preventDefault()
+  close () {
     const { movie, handleCloseMovieDetails } = this.props
     if (handleCloseMovieDetails) {
       handleCloseMovieDetails(movie)
@@ -83,12 +83,8 @@ export default class MovieDetail extends Component {
       .then(response => {
         const searchMovieResult = {
           ...response,
-          fileInfo: [
-            {
-              location: movie.fileInfo[0].location,
-              query: `&s=${searchTitle}&y=${searchYear}`
-            }
-          ]
+          location: movie.location,
+          query: `&s=${searchTitle}&y=${searchYear}`
         }
         this.setState({
           searching: false,
@@ -111,6 +107,20 @@ export default class MovieDetail extends Component {
 
     if (searchMovieResult) {
       onUpdateMovieMetadata(searchMovieResult);
+    }
+  }
+
+  handleMoveToTrash () {
+    const { movie, onMoveToTrash } = this.props
+    const response = window.confirm(`Warning: this will DELETE the following file from your media and move it to the trash:\n\n${movie.location}`)
+    if (response) {    
+      if (
+        shell.moveItemToTrash(movie.location) ||
+        window.confirm(`Permission denied. Cannot move file to trash\n\nDelete from database?`)
+      ) {
+        onMoveToTrash(movie)
+        this.close()
+      }
     }
   }
 
@@ -159,15 +169,16 @@ export default class MovieDetail extends Component {
           />
 
           <Location
-            location={movie.fileInfo[0].location}
+            location={movie.location}
             handleClick={this.showMovieInFinder}
             fileExists={this.state.fileAvailable}
           />
 
           <Update
+            onMoveToTrash={this.handleMoveToTrash}
             onRedoSearch={this.handleRedoSearch}
             onSaveSearch={searchMovieResult ? this.handleSaveSearch : undefined}
-            searchInfo={movie.fileInfo[0]}
+            searchQuery={movie.query}
             searching={searching}
             searchError={searchError}
           />

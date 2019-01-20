@@ -3,6 +3,7 @@ import {
   clearFeaturedMovie, // Redux action creators
   clearSearchResults,
   clearSearchQuery,
+  deleteMovie,
   updateSearchQuery,
   updateSearchCategory,
   updateFeaturedMovie,
@@ -102,6 +103,7 @@ export function mapDispatchToDisplayMoviesProps (dispatch) {
   return {
     clearFeaturedMovie: () => dispatch(clearFeaturedMovie()),
     clearSearchQuery: () => dispatch(clearSearchQuery()),
+    deleteMovieFromDb: (movie) => deleteMovie(movie),
     updateSearchCategory: (category) => dispatch(updateSearchCategory(category)),
     updateMovieMetadata: (movie) => updateMetadataFor(movie)
   }

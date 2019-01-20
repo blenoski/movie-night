@@ -1,9 +1,10 @@
 const { ipcRenderer } = require('electron')
 
-const { dbPath, dbName } = require('../../config')
+const { dbPath, dbName, dbUniqueField } = require('../../config')
 const {
   CRAWL_DIRECTORY,
   LOAD_MOVIE_DATABASE,
+  MOVE_MOVIE_TO_TRASH,
   UPDATE_MOVIE_METADATA
 } = require('../shared/events')
 
@@ -14,6 +15,7 @@ const { crawlForMovies } = require('./crawlForMovies')
 const SingleCollectionDatabase = require('./database')
 const {
   addMovie,
+  deleteMovie,
   crawlComplete,
   crawlStart,
   sendMovieDatabase,
@@ -24,7 +26,11 @@ const {
 const { downloadMissingPosters } = require('./api/poster')
 
 // Database configuration.
-const dbConfig = { uniqueField: 'imdbID', dbPath, dbName }
+const dbConfig = {
+  uniqueField: dbUniqueField,
+  dbPath,
+  dbName
+}
 
 // Record environment.
 logEnv(logger)
@@ -86,10 +92,28 @@ function handleUpdateMovieMetadataEvent (event, movie) {
   logger.info('Received UPDATE_MOVIE_METADATA event', {movie: movie.title })
 
   // Instantiate the database.
-  // The loaded database will be garbage collected upon completion of handler.
+  // The database will be garbage collected upon completion of handler.
   let db = new SingleCollectionDatabase(dbConfig)
 
   return updateMovie(movie, db)
+    .then(() => {})
+    .catch(error => {
+      logger.error(error)
+    })
+}
+
+// =======================================
+// Handle the MOVE_MOVIE_TO_TRASH events
+// =======================================
+ipcRenderer.on(MOVE_MOVIE_TO_TRASH, handleMoveMovieToTrashEvent)
+function handleMoveMovieToTrashEvent (event, movie) {
+  logger.info('Received MOVE_MOVIE_TO_TRASH event', {movie: movie.title })
+
+  // Instantiate the database.
+  // The database will be garbage collected upon completion of handler.
+  let db = new SingleCollectionDatabase(dbConfig)
+
+  return deleteMovie(movie, db)
     .then(() => {})
     .catch(error => {
       logger.error(error)

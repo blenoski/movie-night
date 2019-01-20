@@ -20,7 +20,7 @@ export default class Update extends React.Component {
   }
 
   render () {
-    const { onSaveSearch, searching, searchError } = this.props;
+    const { onMoveToTrash, onSaveSearch, searching, searchError } = this.props;
     const { saveDisabled, title, year } = this.state;
 
     const searchDisabled = this.isRedoSearchDisabled();
@@ -75,9 +75,9 @@ export default class Update extends React.Component {
         </Button>
 
         <Button
-          onClick={() => window.alert('forget')}
+          onClick={onMoveToTrash}
         >
-          Forget
+          Trash
         </Button>
       </Section>
     );
@@ -94,8 +94,8 @@ export default class Update extends React.Component {
   }
 
   getPlaceholders () {
-    const { searchInfo } = this.props;
-    const parsed = queryString.parse(searchInfo.query)
+    const { searchQuery } = this.props;
+    const parsed = queryString.parse(searchQuery)
     const titlePlaceholder = parsed.s || '';
     const yearPlaceholder = parsed.y || '';
     return { titlePlaceholder, yearPlaceholder };
@@ -108,8 +108,6 @@ export default class Update extends React.Component {
 
     const searchTitle = (title || titlePlaceholder).trim();
     const searchYear = (year || yearPlaceholder).trim();
-
-    console.log(searchTitle, searchYear)
 
     onRedoSearch(searchTitle, searchYear);
   }

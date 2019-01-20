@@ -4,6 +4,7 @@ const electron = require('electron')
 const {
   CRAWL_COMPLETE,
   LOG_MESSAGE,
+  MOVE_MOVIE_TO_TRASH,
   MOVIE_DATABASE,
   SEARCHING_DIRECTORY,
   SELECT_IMPORT_DIRECTORY,
@@ -90,8 +91,11 @@ ipcMain.on(MOVIE_DATABASE, appWindow.handleMovieDatabaseEvent)
 
 // Handle movie metadata updates.
 ipcMain.on(UPDATE_MOVIE_METADATA, backgroundWorker.updateMovieMetadata)
-function handleUpdateMovieMetadata (event) {
-  logger.info('Received UPDATE_MOVIE_METADATA event')
+
+// Handle delete movie events.
+ipcMain.on(MOVE_MOVIE_TO_TRASH, backgroundWorker.deleteMovie)
+function handleDeleteMovie(event, movie) {
+  logger.info('Received MOVE_MOVIE_TO_TRASH event', {movie: movie.title})
 }
 
 // Handle LOG_MESSAGE events.

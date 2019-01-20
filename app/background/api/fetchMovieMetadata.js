@@ -26,10 +26,12 @@ function fetchMovieDataInternal (movieFile) {
   const url = `${BASE_URL}?file=${encodeURIComponent(movieFile)}`
   return request.getJSON(url, dataValidator)
     .then((metadata) => {
-      metadata.fileInfo = [{
-        location: movieFile,
-        query: metadata.successQuery
-      }]
+      // metadata.fileInfo = [{
+      //   location: movieFile, => V1
+      //   query: metadata.successQuery => V1
+      // }]
+      metadata.location = movieFile;  // V2
+      metadata.query = metadata.successQuery;  // V2
       if (metadata.imgUrl) {
         const { ext } = path.parse(metadata.imgUrl)
         metadata.imgFile = path.join(posterImagePath, `${metadata.imdbID}${ext}`)

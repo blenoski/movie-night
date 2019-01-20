@@ -60,6 +60,22 @@ module.exports = class SingleCollectionDatabase {
     return this.collection
   }
 
+  // Deletes a document from the collection.
+  // If no matching document is found with matching uniqueField
+  // then is a no-op.
+  deleteDocument (document) {
+    const newCollection = this.collection.filter(doc => {
+      return doc[this.uniqueField] !== document[this.uniqueField];
+    })
+
+    if (newCollection.length !== this.collection.length) {
+      this.collection = newCollection;
+      this._scheduleSave()
+    }
+
+    return this.collection
+  }
+
   // Returns the first document matching the supplied function.
   // Returns undefined if no matching documents are found.
   findOne (filterFcn) {

@@ -14,6 +14,7 @@ import {
 } from './actionTypes'
 
 import addMovieFile from './addMovieFile'
+import deleteMovieFile from './deleteMovieFile';
 import updateMovieMetadata from './updateMovieMetadata';
 import { sendCrawlComplete } from './electronActions'
 
@@ -124,6 +125,7 @@ export function crawlCompleteEnhanced (directory) {
 // bound action creators
 // ----------------------
 export const addMovie = (movieFile, db) => store.dispatch(addMovieFile(movieFile, db))
+export const deleteMovie = (movieFile, db) => store.dispatch(deleteMovieFile(movieFile, db))
 export const updateMovie = (movie, db) => store.dispatch(updateMovieMetadata(movie, db))
 export const crawlStart = () => store.dispatch(crawlStartInternal())
 export const crawlComplete = (directory) => store.dispatch(crawlCompleteEnhanced(directory))

@@ -25,7 +25,12 @@ const posterImagePath = path.join(appDataPath, 'image')
 const dbPath = path.join(appDataPath, 'database')
 
 // This is the name of the database.
-const dbName = 'movieDB.json'
+// const dbName = 'movieDB.json' => V1
+const dbName = 'movieDB-v2.json' // V2
+
+// This is the primary key unique field name for the database.
+// const dbUniqueField = 'imdbID' => V1
+const dbUniqueField = 'location' // V2
 
 // This is where we will store application log files.
 const logPath = path.join(appDataPath, 'logs')
@@ -47,6 +52,7 @@ module.exports = {
   appDataPath,
   dbPath,
   dbName,
+  dbUniqueField,
   logPath,
   logName,
   posterImagePath

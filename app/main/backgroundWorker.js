@@ -4,6 +4,7 @@ const { BrowserWindow } = require('electron')
 const {
   CRAWL_DIRECTORY,
   LOAD_MOVIE_DATABASE,
+  MOVE_MOVIE_TO_TRASH,
   UPDATE_MOVIE_METADATA
 } = require('../shared/events')
 const { isDevEnv } = require('../shared/utils')
@@ -67,8 +68,20 @@ function updateMovieMetadata (event, movie) {
   logger.info('Sent UPDATE_MOVIE_METADATA event to bgWorker', { movie: movie.title })
 } 
 
+// Triggers the delete movie metadata workflow.
+function deleteMovie (event, movie) {
+  if (!backgroundWorker) {
+    logger.error('backgroundWorker object does not exist')
+    return
+  }
+
+  backgroundWorker.webContents.send(MOVE_MOVIE_TO_TRASH, movie)
+  logger.info('Sent MOVE_MOVIE_TO_TRASH event to bgWorker', { movie: movie.title })
+} 
+
 module.exports = {
   createBackgroundWindow,
+  deleteMovie,
   handleCrawlDirectorySelectionEvent,
   loadMovieDatabase,
   updateMovieMetadata
