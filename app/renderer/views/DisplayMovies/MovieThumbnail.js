@@ -78,6 +78,10 @@ export default class MovieThumbnail extends Component {
   renderImage () {
     const { imgFile, title } = this.props.movie
 
+    if (!imgFile) {
+      return <NoImage>{title}</NoImage>;
+    }
+
     return <Image
       src={imgFile}
       alt={title}
@@ -114,6 +118,14 @@ const ImageContainer = styled.div`
 const Image = styled.img`
   width: 150px;
   height: 222px;
+`
+
+const NoImage = styled.div`
+  width: 150px;
+  height: 222px;
+  border: 1px solid #999;
+  padding:   8px;
+  overflow-wrap: break-word;
 `
 
 const Hover = styled.div`

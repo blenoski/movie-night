@@ -124,6 +124,7 @@ export default class DisplayMovies extends Component {
   }
 
   renderMovieDetails (onClose) {
+    const { updateMovieMetadata } = this.props;
     const { closing, prevFeaturedMovie } = this.state
     if (closing) {
       return (
@@ -148,6 +149,7 @@ export default class DisplayMovies extends Component {
           movie={movie}
           handleCloseMovieDetails={onClose}
           center={featuredMovie.action === 'click'}
+          onUpdateMovieMetadata={updateMovieMetadata}
         />
       </FadeIn>
     )

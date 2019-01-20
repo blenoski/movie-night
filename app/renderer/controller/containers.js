@@ -12,7 +12,8 @@ import {
   getSearchCategory,
   getSearchQuery,
   getVisibleMovies,
-  importMovies // Electron action creators
+  importMovies, // Electron action creators
+  updateMetadataFor
 } from '../model'
 
 // Presentational Components
@@ -101,7 +102,8 @@ export function mapDispatchToDisplayMoviesProps (dispatch) {
   return {
     clearFeaturedMovie: () => dispatch(clearFeaturedMovie()),
     clearSearchQuery: () => dispatch(clearSearchQuery()),
-    updateSearchCategory: (category) => dispatch(updateSearchCategory(category))
+    updateSearchCategory: (category) => dispatch(updateSearchCategory(category)),
+    updateMovieMetadata: (movie) => updateMetadataFor(movie)
   }
 }
 

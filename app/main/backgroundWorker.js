@@ -3,7 +3,8 @@ const url = require('url')
 const { BrowserWindow } = require('electron')
 const {
   CRAWL_DIRECTORY,
-  LOAD_MOVIE_DATABASE
+  LOAD_MOVIE_DATABASE,
+  UPDATE_MOVIE_METADATA
 } = require('../shared/events')
 const { isDevEnv } = require('../shared/utils')
 const logger = require('./mainLogger')
@@ -55,8 +56,20 @@ function handleCrawlDirectorySelectionEvent (selection) {
   }
 }
 
+// Triggers the update/save movie metadata workflow.
+function updateMovieMetadata (event, movie) {
+  if (!backgroundWorker) {
+    logger.error('backgroundWorker object does not exist')
+    return
+  }
+
+  backgroundWorker.webContents.send(UPDATE_MOVIE_METADATA, movie)
+  logger.info('Sent UPDATE_MOVIE_METADATA event to bgWorker', { movie: movie.title })
+} 
+
 module.exports = {
   createBackgroundWindow,
   handleCrawlDirectorySelectionEvent,
-  loadMovieDatabase
+  loadMovieDatabase,
+  updateMovieMetadata
 }

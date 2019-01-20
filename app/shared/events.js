@@ -19,6 +19,9 @@ const CRAWL_COMPLETE = 'crawl-complete'
 // This event is fired whenver the movie database is updated.
 const MOVIE_DATABASE = 'movie-database'
 
+// This event is fired when the metadata for a single movie is updated.
+const UPDATE_MOVIE_METADATA = 'update-movie-metadata'
+
 // Fired on application startup.
 const LOAD_MOVIE_DATABASE = 'load-movie-database'
 
@@ -32,5 +35,6 @@ module.exports = {
   LOG_MESSAGE,
   MOVIE_DATABASE,
   SEARCHING_DIRECTORY,
-  SELECT_IMPORT_DIRECTORY
+  SELECT_IMPORT_DIRECTORY,
+  UPDATE_MOVIE_METADATA
 }

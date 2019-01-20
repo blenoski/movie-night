@@ -15,7 +15,7 @@ export default ({ actors, director, genres }) =>
   </Section>
 
 const Section = styled.section`
-  margin-top: 30px;
+  margin-top: 24px;
 `
 
 const Heading = styled.span`

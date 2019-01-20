@@ -22,7 +22,7 @@
     "lint:css": "stylelint './app/renderer/**/*.js'"
   },
   "engines": {
-    "node": ">=8.15.0"
+    "node": ">=8.14.0"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",
@@ -55,6 +55,7 @@
     "classnames": "^2.2.5",
     "electron-log": "^2.2.6",
     "limiter": "^1.1.0",
+    "query-string": "^6.2.0",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-redux": "^5.0.5",

@@ -2,7 +2,7 @@ import { ipcRenderer } from 'electron'
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 import reduxLogger from 'redux-logger'
 
-import { SELECT_IMPORT_DIRECTORY } from '../../shared/events'
+import { SELECT_IMPORT_DIRECTORY, UPDATE_MOVIE_METADATA } from '../../shared/events'
 import { isDevEnv } from '../../shared/utils'
 import appLogger from '../mainWindowLogger'
 
@@ -34,6 +34,11 @@ export * from './actions'
 export const importMovies = () => {
   ipcRenderer.send(SELECT_IMPORT_DIRECTORY)
   appLogger.info('Sent SELECT_IMPORT_DIRECTORY event')
+}
+
+export const updateMetadataFor = (movie) => {
+  ipcRenderer.send(UPDATE_MOVIE_METADATA, movie);
+  appLogger.info('Sent UPDATE_MOVIE_METADATA event', { movie: movie.title })
 }
 
 // Public selectors.

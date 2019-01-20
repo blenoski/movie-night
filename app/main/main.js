@@ -6,7 +6,8 @@ const {
   LOG_MESSAGE,
   MOVIE_DATABASE,
   SEARCHING_DIRECTORY,
-  SELECT_IMPORT_DIRECTORY
+  SELECT_IMPORT_DIRECTORY,
+  UPDATE_MOVIE_METADATA
 } = require('../shared/events')
 const { getPlatform, logEnv } = require('../shared/utils')
 
@@ -86,6 +87,12 @@ ipcMain.on(CRAWL_COMPLETE, appWindow.handleCrawlCompleteEvent)
 // Handle MOVIE_DB events.
 // Route to appWindow
 ipcMain.on(MOVIE_DATABASE, appWindow.handleMovieDatabaseEvent)
+
+// Handle movie metadata updates.
+ipcMain.on(UPDATE_MOVIE_METADATA, backgroundWorker.updateMovieMetadata)
+function handleUpdateMovieMetadata (event) {
+  logger.info('Received UPDATE_MOVIE_METADATA event')
+}
 
 // Handle LOG_MESSAGE events.
 ipcMain.on(LOG_MESSAGE, handleLogMessage)

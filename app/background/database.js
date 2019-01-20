@@ -85,8 +85,12 @@ module.exports = class SingleCollectionDatabase {
   }
 
   // Returns the collection as an array of documents.
-  getCollection () {
-    return this.collection
+  getCollection (includeHidden = false) {
+    if (includeHidden) {
+      return this.collection
+    }
+
+    return this.collection.filter(doc => !doc.hidden)
   }
 
   // Schedules a save (write to file) 3 seconds in the future.

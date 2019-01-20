@@ -3,7 +3,8 @@ const { ipcRenderer } = require('electron')
 const { dbPath, dbName } = require('../../config')
 const {
   CRAWL_DIRECTORY,
-  LOAD_MOVIE_DATABASE
+  LOAD_MOVIE_DATABASE,
+  UPDATE_MOVIE_METADATA
 } = require('../shared/events')
 
 const logger = require('./backgroundWorkerLogger').default
@@ -16,7 +17,8 @@ const {
   crawlComplete,
   crawlStart,
   sendMovieDatabase,
-  sendSearchDirectory
+  sendSearchDirectory,
+  updateMovie
 } = require('./state')
 
 const { downloadMissingPosters } = require('./api/poster')
@@ -73,6 +75,24 @@ function handleCrawlDirectoryEvent (event, rootDirectory) {
     .catch((err) => {
       logger.error(err)
       crawlComplete(rootDirectory)
+    })
+}
+
+// =======================================
+// Handle the UPDATE_MOVIE_METADATA events
+// =======================================
+ipcRenderer.on(UPDATE_MOVIE_METADATA, handleUpdateMovieMetadataEvent)
+function handleUpdateMovieMetadataEvent (event, movie) {
+  logger.info('Received UPDATE_MOVIE_METADATA event', {movie: movie.title })
+
+  // Instantiate the database.
+  // The loaded database will be garbage collected upon completion of handler.
+  let db = new SingleCollectionDatabase(dbConfig)
+
+  return updateMovie(movie, db)
+    .then(() => {})
+    .catch(error => {
+      logger.error(error)
     })
 }
 

@@ -21,7 +21,7 @@ export function conflate (document, movie) {
     return { documentChanged: true, finalDocument: movie }
   }
 
-  // Currently only checking for new locations
+  // Check for location changes.
   const duplicateLocation = document.fileInfo.find((info) => {
     return info.location === movie.fileInfo[0].location
   })
@@ -29,9 +29,16 @@ export function conflate (document, movie) {
     let finalDoc = JSON.parse(JSON.stringify(document))
     finalDoc.fileInfo.push(movie.fileInfo[0])
     return { documentChanged: true, finalDocument: finalDoc }
-  } else {
-    return { documentChanged: false, finalDocument: document }
   }
+
+  // Check for title changes.
+  if (document.title !== movie.title) {
+    let finalDoc = JSON.parse(JSON.stringify(document))
+    finalDoc.title = movie.title;
+    return { documentChanged: true, finalDocument: finalDoc }
+  }
+  
+  return { documentChanged: false, finalDocument: document }
 }
 
 // Partitions movies by primary Genre and sorts the

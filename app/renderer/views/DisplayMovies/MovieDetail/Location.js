@@ -27,7 +27,7 @@ const renderNotClickable = (location) =>
 
 const Section = styled.section`
   display: flex;
-  margin-top: 30px;
+  margin-top: 20px;
   word-break: break-all;
 `
 

@@ -2,14 +2,18 @@ import fs from 'fs'
 import React, { Component } from 'react'
 import styled from 'styled-components'
 import { shell } from 'electron'
+
 import { fileExists, filePathToUrl } from '../../../../shared/utils'
+import { fetchMovieMetadata } from '../../../../background/api/fetchMovieMetadata';
+import { Close } from '../../../icons'
+
 import ListMeta from './ListMeta'
 import Location from './Location'
 import Meta from './Meta'
 import PlayMovieButton from './PlayMovieButton'
 import Ratings from './Ratings'
 import Title from './Title'
-import { Close } from '../../../icons'
+import Update from './Update';
 
 export default class MovieDetail extends Component {
   constructor (props) {
@@ -18,8 +22,16 @@ export default class MovieDetail extends Component {
     this.showMovieInFinder = this.showMovieInFinder.bind(this)
     this.updateFileAvailable = this.updateFileAvailable.bind(this)
     this.close = this.close.bind(this)
+    this.handleRedoSearch = this.handleRedoSearch.bind(this)
+    this.handleSaveSearch = this.handleSaveSearch.bind(this)
     this.anchor = null
-    this.state = { fileAvailable: true }
+
+    this.state = {
+      fileAvailable: true,
+      searching: false,
+      searchError: '',
+      searchMovieResult: null
+    }
   }
 
   componentDidMount () {
@@ -61,8 +73,56 @@ export default class MovieDetail extends Component {
     }
   }
 
+  handleRedoSearch (searchTitle, searchYear) {
+    const { movie } = this.props;
+    this.setState({ searching: true });
+
+    const movieFile = searchTitle + (searchYear ? ` [${searchYear}]` : '');
+
+    fetchMovieMetadata(movieFile)
+      .then(response => {
+        const searchMovieResult = {
+          ...response,
+          fileInfo: [
+            {
+              location: movie.fileInfo[0].location,
+              query: `&s=${searchTitle}&y=${searchYear}`
+            }
+          ]
+        }
+        this.setState({
+          searching: false,
+          searchMovieResult,
+          searchError: ''
+        })
+      })
+      .catch(error => {
+        this.setState({
+          searching: false,
+          searchMovieResult: null,
+          searchError: `Search Error: No result`
+        })
+      })
+  }
+
+  handleSaveSearch () {
+    const { onUpdateMovieMetadata } = this.props;
+    const { searchMovieResult } = this.state;
+
+    if (searchMovieResult) {
+      onUpdateMovieMetadata(searchMovieResult);
+    }
+  }
+
   render () {
-    const { movie } = this.props
+    const { movie: dbMovie } = this.props
+    const { searching, searchError, searchMovieResult } = this.state;
+
+    const movie = searchMovieResult || dbMovie;
+
+    const posterUrl = searchMovieResult
+      ? searchMovieResult.imgUrl
+      : (movie.imgFile ? filePathToUrl(movie.imgFile) : '')
 
     return (
       <FlexboxDiv >
@@ -71,7 +131,7 @@ export default class MovieDetail extends Component {
           style={{visibility: 'hidden'}}
         />
 
-        <Poster fileUrl={filePathToUrl(movie.imgFile)}>
+        <Poster fileUrl={posterUrl}>
           {this.state.fileAvailable && <PlayMovieButton onClick={this.openMovieInDefaultPlayer} />}
         </Poster>
 
@@ -103,6 +163,14 @@ export default class MovieDetail extends Component {
             handleClick={this.showMovieInFinder}
             fileExists={this.state.fileAvailable}
           />
+
+          <Update
+            onRedoSearch={this.handleRedoSearch}
+            onSaveSearch={searchMovieResult ? this.handleSaveSearch : undefined}
+            searchInfo={movie.fileInfo[0]}
+            searching={searching}
+            searchError={searchError}
+          />
         </MovieDetailsContainer>
 
       </FlexboxDiv>
@@ -112,7 +180,7 @@ export default class MovieDetail extends Component {
 
 const FlexboxDiv = styled.div`
   display: flex;
-  margin-top: 30px;
+  margin-top: 20px;
 `
 const Div = styled.div`
   display: flex;
@@ -135,6 +203,10 @@ const Poster = styled.aside`
   justify-content: center;
   margin-right: 20px;
   width: 300px;
+
+  ${props => !props.fileUrl && `
+    border: 1px solid #999;
+  `}
 `
 
 const MovieDetailsContainer = styled.article`
@@ -147,6 +219,6 @@ const MovieDetailsContainer = styled.article`
 `
 
 const VerticalScrollSection = styled.section`
-  margin-top: 30px;
+  margin-top: 20px;
   overflow-y: auto;
 `

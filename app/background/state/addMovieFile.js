@@ -17,9 +17,6 @@ const throttledSendMovieDatabase = _.debounce(
   debounceDuration
 )
 
-// Files with the following names will be skipped. E.g. sample.avi
-const blacklist = ['sample', 'test footage']
-
 // Action creators used internally by this module.
 // Zero or 2 of these actions will be dispatched whenever the primary addMovie
 // workflow is initiated.
@@ -43,6 +40,7 @@ function movieFileComplete (movieFile) {
 
 function movieFileError (movieFile, error) {
   return (dispatch, getState) => {
+    debugger
     dispatch({
       type: MOVIE_FILE_ERROR,
       payload: { movieFile, error }
@@ -57,6 +55,12 @@ function checkFinishedCrawling ({crawling, inProgress}) {
     sendCrawlComplete()
   }
 }
+
+// Files with the following names will be skipped. E.g. sample.avi
+const blacklist = ['sample', 'test footage']
+
+// When a movie search fails, we assign this genre to identify.
+const GENRE_NOT_FOUND = 'Not Found';
 
 // ------------------------------------------------------------
 // Primary addMovie workflow and default export of this module.
@@ -73,11 +77,25 @@ export default (movieFile, db) => {
     // Check if movieFile is already in the database.
     const existingDoc = db.findOne(movieWithAnyLocationMatching(movieFile))
     if (existingDoc) {
-      logger.info(`Database has existing record for ${movieFile}`, {
-        title: existingDoc.title,
-        imdbID: existingDoc.imdbID
-      })
-      return
+      // If the genre is GENRE_NOT_FOUND, this means the previous search was unsuccessful
+      // and we should ahead and try search again. If the genre is anything but GENRE_NOT_FOUND,
+      // then the previous search was successful and there is no reason to redo search.
+      const genre = (
+        existingDoc.genres &&
+        existingDoc.genres.length > 0 &&
+        existingDoc.genres[0]
+      );
+
+      const genreNotFound = genre === GENRE_NOT_FOUND;
+      const genreFound = !genreNotFound;
+      if (genreFound) {
+        logger.info(`Database has existing record for ${movieFile}`, {
+          title: existingDoc.title,
+          imdbID: existingDoc.imdbID
+        })
+
+        return
+      }
     }
 
     // Add the movie to progress state.
@@ -98,6 +116,34 @@ export default (movieFile, db) => {
           return movie
         }
       })
+      .catch((error) => {
+        // Create a "fake" movie record with genre 'Not Found'
+        // imdbID must be unqiue so we will use filename here.
+        const movie = {
+          'actors': [],
+          'director': '',
+          'fileInfo': [
+            {
+              'location': movieFile,
+              'query': ''
+            }
+          ],
+          'genres': [GENRE_NOT_FOUND],
+          'imdbID': movieFile,
+          'imdbRating': '',
+          'imgFile': '',
+          'imgUrl': '',
+          'metascore': '',
+          'plot': '',
+          'rated': '',
+          'runtime': '',
+          'successQuery': '',
+          'title': path.basename(movieFile),
+          'year': ''
+        }
+
+        return movie;
+      })
       .then((movie) => {
         let {documentChanged, finalDocument} = conflate(document, movie)
         if (documentChanged) {
@@ -108,7 +154,7 @@ export default (movieFile, db) => {
         logger.debug(`Completed processing ${movieFile}`)
       })
       .catch((error) => {
-        logger.warn(`${movieFile} not added to database:`, { type: error.name, message: error.message })
+        logger.error(`${movieFile} not added to database:`, { type: error.name, message: error.message })
         dispatch(movieFileError(movieFile, error))
       })
   }
