@@ -10,7 +10,8 @@ export default (movie, db) => {
   return (dispatch) => {
     return Promise.resolve(movie)
       .then((movie) => {
-        db.deleteDocument(movie)
+        const forceSave = true
+        db.deleteDocument(movie, forceSave)
         sendMovieDatabase(db.getCollection())
         logger.info(`Completed delete ${movie.title}`)
       })

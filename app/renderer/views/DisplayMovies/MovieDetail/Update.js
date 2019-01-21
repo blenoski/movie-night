@@ -14,9 +14,10 @@ export default class Update extends React.Component {
       year: ''
     }
 
-    this.isRedoSearchDisabled = this.isRedoSearchDisabled.bind(this);
-    this.getPlaceholders = this.getPlaceholders.bind(this);
-    this.handleRedoSearch = this.handleRedoSearch.bind(this);
+    this.isRedoSearchDisabled = this.isRedoSearchDisabled.bind(this)
+    this.getPlaceholders = this.getPlaceholders.bind(this)
+    this.handleRedoSearch = this.handleRedoSearch.bind(this)
+    this.handleKeyPress = this.handleKeyPress.bind(this)
   }
 
   render () {
@@ -28,10 +29,11 @@ export default class Update extends React.Component {
 
     return (
       <Section>
-        <QueryContainer>
+        <QueryContainer onKeyPress={this.handleKeyPress}>
           <QueryItem mb='8px'>
             <Heading>Search Title:</Heading>
             <SearchQuery
+              disabled={searching}
               value={title}
               onChange={e => this.setState({ title: e.target.value })}
               placeholder={titlePlaceholder}
@@ -42,6 +44,7 @@ export default class Update extends React.Component {
           <QueryItem>
             <Heading>Search Year:</Heading>
             <SearchQuery
+              disabled={searching}
               value={year}
               onChange={e => this.setState({ year: e.target.value })}
               placeholder={yearPlaceholder}
@@ -110,6 +113,12 @@ export default class Update extends React.Component {
     const searchYear = (year || yearPlaceholder).trim();
 
     onRedoSearch(searchTitle, searchYear);
+  }
+
+  handleKeyPress (event) {
+    if (event.key === 'Enter' && !this.isRedoSearchDisabled()) {
+      this.handleRedoSearch()
+    }
   }
 }
 

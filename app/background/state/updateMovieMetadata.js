@@ -19,7 +19,8 @@ export default (movie, db) => {
         }
       })
       .then((movie) => {
-        db.addOrUpdate(movie)
+        const forceSave = true
+        db.addOrUpdate(movie, forceSave)
         sendMovieDatabase(db.getCollection())
         logger.info(`Completed saving metadata for ${movie.title}`)
       })

@@ -75,16 +75,16 @@ export default class MovieDetail extends Component {
 
   handleRedoSearch (searchTitle, searchYear) {
     const { movie } = this.props;
-    this.setState({ searching: true });
-
     const movieFile = searchTitle + (searchYear ? ` [${searchYear}]` : '');
 
+    this.setState({ searching: true, searchError: '' });
     fetchMovieMetadata(movieFile)
       .then(response => {
         const searchMovieResult = {
           ...response,
           location: movie.location,
-          query: `&s=${searchTitle}&y=${searchYear}`
+          query: `&s=${searchTitle}&y=${searchYear}`,
+          fileSize: movie.fileSize
         }
         this.setState({
           searching: false,
@@ -96,7 +96,7 @@ export default class MovieDetail extends Component {
         this.setState({
           searching: false,
           searchMovieResult: null,
-          searchError: `Search Error: No result`
+          searchError: `Search Error: Sorry no result :-(`
         })
       })
   }
@@ -107,6 +107,7 @@ export default class MovieDetail extends Component {
 
     if (searchMovieResult) {
       onUpdateMovieMetadata(searchMovieResult);
+      this.close()
     }
   }
 
@@ -169,6 +170,7 @@ export default class MovieDetail extends Component {
           />
 
           <Location
+            fileSize={movie.fileSize}
             location={movie.location}
             handleClick={this.showMovieInFinder}
             fileExists={this.state.fileAvailable}

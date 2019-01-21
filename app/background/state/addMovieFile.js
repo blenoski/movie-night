@@ -2,6 +2,7 @@
 import path from 'path'
 import _ from 'underscore'
 
+import { computeFileSizeInGB } from '../../shared/utils'
 import logger from '../backgroundWorkerLogger'
 import { conflate } from '../databaseUtils'
 
@@ -120,6 +121,7 @@ export default (movieFile, db) => {
           const movie = {
           'actors': [],
           'director': '',
+          'fileSize': '',
           'location': movieFile,
           'query': '',
           'genres': [GENRE_NOT_FOUND],
@@ -137,6 +139,13 @@ export default (movieFile, db) => {
         }
 
         return movie;
+      })
+      .then(movie => {
+        return computeFileSizeInGB(movieFile)
+          .then(fileSizeGB => {
+            movie.fileSize = fileSizeGB;
+            return movie;
+          })
       })
       .then((movie) => {
         let {documentChanged, finalDocument} = conflate(document, movie)

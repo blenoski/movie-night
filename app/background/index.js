@@ -35,6 +35,12 @@ const dbConfig = {
 // Record environment.
 logEnv(logger)
 
+// ============================================================
+// Keep a global reference to the database.
+// The database is initialized in the LOAD_MOVIE_DATABASE event
+// ============================================================
+let db = null
+
 // =====================================
 // Handle the LOAD_MOVIE_DATABASE events
 // =====================================
@@ -42,9 +48,7 @@ ipcRenderer.on(LOAD_MOVIE_DATABASE, handleLoadMovieDatabaseEvent)
 function handleLoadMovieDatabaseEvent (event) {
   logger.info('Received LOAD_MOVIE_DATABASE event')
 
-  // Instantiate the database.
-  // The loaded database will be garbage collected upon completion of handler.
-  let db = new SingleCollectionDatabase(dbConfig)
+  db = new SingleCollectionDatabase(dbConfig)
   logger.info('Database config:', db.config())
 
   // Send the movie database
@@ -61,11 +65,6 @@ function handleLoadMovieDatabaseEvent (event) {
 ipcRenderer.on(CRAWL_DIRECTORY, handleCrawlDirectoryEvent)
 function handleCrawlDirectoryEvent (event, rootDirectory) {
   logger.info('Received CRAWL_DIRECTORY event', { rootDirectory })
-
-  // Instantiate the database.
-  // The loaded database will be garbage collected upon completion of handler.
-  let db = new SingleCollectionDatabase(dbConfig)
-  logger.info('Database config:', db.config())
 
   // Bind movieFileCb to the addMovie action creator.
   const movieFileCb = (movieFile) => {
@@ -91,10 +90,6 @@ ipcRenderer.on(UPDATE_MOVIE_METADATA, handleUpdateMovieMetadataEvent)
 function handleUpdateMovieMetadataEvent (event, movie) {
   logger.info('Received UPDATE_MOVIE_METADATA event', {movie: movie.title })
 
-  // Instantiate the database.
-  // The database will be garbage collected upon completion of handler.
-  let db = new SingleCollectionDatabase(dbConfig)
-
   return updateMovie(movie, db)
     .then(() => {})
     .catch(error => {
@@ -108,10 +103,6 @@ function handleUpdateMovieMetadataEvent (event, movie) {
 ipcRenderer.on(MOVE_MOVIE_TO_TRASH, handleMoveMovieToTrashEvent)
 function handleMoveMovieToTrashEvent (event, movie) {
   logger.info('Received MOVE_MOVIE_TO_TRASH event', {movie: movie.title })
-
-  // Instantiate the database.
-  // The database will be garbage collected upon completion of handler.
-  let db = new SingleCollectionDatabase(dbConfig)
 
   return deleteMovie(movie, db)
     .then(() => {})

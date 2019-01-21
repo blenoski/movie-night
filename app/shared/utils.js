@@ -53,10 +53,10 @@ function readdir (directory) {
   })
 }
 
-// Promise wrapper for fs.lstat
-function lstat (absPath) {
+// Promise wrapper for fs.stat
+function stat (absPath) {
   return new Promise((resolve, reject) => {
-    fs.lstat(absPath, (err, stats) => {
+    fs.stat(absPath, (err, stats) => {
       if (err) {
         reject(new Error(err))
       }
@@ -65,10 +65,26 @@ function lstat (absPath) {
   })
 }
 
+// Computes file size in GB and returns as a string.
+// Returns empty string if file cannot be stat'ed.
+function computeFileSizeInGB (fname) {
+  return new Promise((resolve, reject) => {
+    return stat(fname)
+      .then((stats) => {
+        const bytes = stats['size'] || 0;
+        if (bytes === 0) { resolve('') }
+        resolve((bytes / 1073741824).toFixed(2) + " GB")
+      })
+      .catch(() => {
+        resolve('')
+      })
+  })
+}
+
 // Determine whether or not provided file exists.
 function fileExists (fname) {
   return new Promise((resolve, reject) => {
-    return lstat(fname)
+    return stat(fname)
       .then((stats) => {
         resolve(stats.isFile())
       })
@@ -123,13 +139,14 @@ ExtendableError.prototype = Object.create(Error.prototype)
 ExtendableError.prototype.constructor = ExtendableError
 
 module.exports = {
+  computeFileSizeInGB,
   isDevEnv,
   getPlatform,
   logEnv,
   mkdir,
   writeFile,
   readdir,
-  lstat,
+  stat,
   fileExists,
   gridPartition,
   filePathToUrl,

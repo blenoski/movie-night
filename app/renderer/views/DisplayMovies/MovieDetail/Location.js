@@ -2,27 +2,27 @@ import React from 'react'
 import styled from 'styled-components'
 import { Ban, FileIcon } from '../../../icons'
 
-export default ({ location, handleClick, fileExists }) => {
+export default ({ fileSize, location, handleClick, fileExists }) => {
   if (fileExists) {
-    return renderClickable(handleClick, location)
+    return renderClickable(handleClick, location, fileSize)
   } else {
-    return renderNotClickable(location)
+    return renderNotClickable(location, fileSize)
   }
 }
 
-const renderClickable = (handleClick, location) =>
+const renderClickable = (handleClick, location, fileSize) =>
   <ClickableSection onClick={handleClick}>
     <ClickableFileIcon video large />
-    <h6>{location}</h6>
+    <h6>{`${location}${fileSize ? ` (${fileSize})` : ''}`}</h6>
   </ClickableSection>
 
-const renderNotClickable = (location) =>
+const renderNotClickable = (location, fileSize) =>
   <Section>
     <IconStack>
       <RelativelyPositionedFileIcon video large />
       <DangerOverlay size3x />
     </IconStack>
-    <h6>{location}</h6>
+    <h6>{`${location}${fileSize ? ` (${fileSize})` : ''}`}</h6>
   </Section>
 
 const Section = styled.section`
