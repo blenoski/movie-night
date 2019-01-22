@@ -3,6 +3,8 @@ const electron = require('electron')
 
 const {
   CRAWL_COMPLETE,
+  CRAWL_DIRECTORY,
+  DELETE_MOVIE_DATABASE,
   LOG_MESSAGE,
   MOVE_MOVIE_TO_TRASH,
   MOVIE_DATABASE,
@@ -74,7 +76,16 @@ function handleImportDirectoryEvent (event) {
     message: hint,
     buttonLabel: 'Add Media',
     properties: ['openDirectory']
-  }, backgroundWorker.handleCrawlDirectorySelectionEvent)
+  }, handleCrawlDirectorySelectionEvent)
+}
+function handleCrawlDirectorySelectionEvent (selection) {
+  if (selection && selection[0]) {
+    const directory = selection[0]
+    backgroundWorker.handleCrawlDirectorySelectionEvent(directory)
+    appWindow.handleCrawlStartEvent(directory)
+  } else {
+    logger.info('User canceled directory file dialog')
+  }
 }
 
 // Handle SEARCHING_DIRECTORY events.
@@ -94,9 +105,9 @@ ipcMain.on(UPDATE_MOVIE_METADATA, backgroundWorker.updateMovieMetadata)
 
 // Handle delete movie events.
 ipcMain.on(MOVE_MOVIE_TO_TRASH, backgroundWorker.deleteMovie)
-function handleDeleteMovie(event, movie) {
-  logger.info('Received MOVE_MOVIE_TO_TRASH event', {movie: movie.title})
-}
+
+// Handle delete movie database events.
+ipcMain.on(DELETE_MOVIE_DATABASE, backgroundWorker.deleteMovieDatabase)
 
 // Handle LOG_MESSAGE events.
 ipcMain.on(LOG_MESSAGE, handleLogMessage)

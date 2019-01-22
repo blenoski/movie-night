@@ -16,11 +16,14 @@ export const sendCrawlComplete = (rootDirectory) => {
 }
 
 // Sends the database to the main process.
-export function sendMovieDatabase (movieDB) {
+const defaultImportStats = { moviesFound: 0, inProgress: [] }
+export function sendMovieDatabase (movieDB, importStats = defaultImportStats) {
   const sortedDB = paritionMovieDatabaseByGenre(movieDB)
-  ipcRenderer.send(MOVIE_DATABASE, sortedDB)
+  ipcRenderer.send(MOVIE_DATABASE, { movieDB: sortedDB, importStats })
   logger.info('Sent MOVIE_DATABASE event', {
-    count: sortedDB.reduce((sum, genre) => sum + genre.movies.length, 0)
+    count: sortedDB.reduce((sum, genre) => sum + genre.movies.length, 0),
+    moviesFound: importStats.moviesFound,
+    inProgressCnt: importStats.inProgress.length
   })
 }
 

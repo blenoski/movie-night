@@ -25,6 +25,27 @@ export function updateCurrentCrawlDirectory (directory) {
   }
 }
 
+export function updateCrawlStats ({ moviesFound, inProgress }) {
+  return {
+    type: ACTIONS.SET_CRAWL_STATS,
+    payload: { moviesFound, inProgress }
+  }
+}
+
+export function showCrawlStats () {
+  return {
+    type: ACTIONS.SHOW_CRAWL_STATS,
+    payload: true
+  }
+}
+
+export function hideCrawlStats () {
+  return {
+    type: ACTIONS.SHOW_CRAWL_STATS,
+    payload: false
+  }
+}
+
 // Movie database actions
 // -----------------------
 export function updateMovieDB (movieDB) {

@@ -9,6 +9,8 @@ import * as InSearch from './search'
 // risk of accidental ripple effects if/when the state's shape is modified.
 //
 export const crawlActiveSelector = (state) => InCrawl.active(state.crawl)
+export const crawlStatsSelector = (state) => InCrawl.crawlStats(state.crawl)
+export const showCrawlStatsSelector = (state) => InCrawl.showCrawlStatsOverlay(state.crawl)
 export const displayOrderSelector = (state) => InMovies.displayOrder(state.movies)
 export const featuredMovieSelector = (state) => state.featuredMovie
 export const movieDBSelector = (state) => InMovies.movieDB(state.movies)

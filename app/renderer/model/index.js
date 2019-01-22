@@ -16,6 +16,8 @@ import search from './search'
 // Top level state selectors.
 import {
   crawlActiveSelector,
+  crawlStatsSelector,
+  showCrawlStatsSelector,
   movieDBSelector,
   searchCategorySelector,
   searchQuerySelector
@@ -31,10 +33,10 @@ export * from './actions'
 
 // Electron action creators.
 // -------------------------
-export const importMovies = () => {
-  ipcRenderer.send(SELECT_IMPORT_DIRECTORY)
-  appLogger.info('Sent SELECT_IMPORT_DIRECTORY event')
-}
+// export const importMovies = () => {
+//   ipcRenderer.send(SELECT_IMPORT_DIRECTORY)
+//   appLogger.info('Sent SELECT_IMPORT_DIRECTORY event')
+// }
 
 export const updateMetadataFor = (movie) => {
   ipcRenderer.send(UPDATE_MOVIE_METADATA, movie);
@@ -56,6 +58,14 @@ export const getAllMovies = (state) => {
 
 export const getCrawlActive = (state) => {
   return crawlActiveSelector(state)
+}
+
+export const getCrawlStats = (state) => {
+  return crawlStatsSelector(state)
+}
+
+export const getShowCrawlStats = (state) => {
+  return showCrawlStatsSelector(state)
 }
 
 export const getFeaturedMovie = (state) => {

@@ -14,7 +14,14 @@ import { checkIfPosterHasBeenDownloadedFor, downloadPosterFor } from '../api/pos
 // Batch sending of movie database updates so we do not overwhelm the UI process.
 const debounceDuration = 250
 const throttledSendMovieDatabase = _.debounce(
-  (db) => sendMovieDatabase(db.getCollection()),
+  (db, getState) => {
+    const { completeCnt, inProgress } = getState()
+    const importStats = {
+      moviesFound: completeCnt + inProgress.length,
+      inProgress
+    }
+    sendMovieDatabase(db.getCollection(), importStats)
+  },
   debounceDuration
 )
 
@@ -50,9 +57,9 @@ function movieFileError (movieFile, error) {
   }
 }
 
-function checkFinishedCrawling ({crawling, inProgress}) {
+function checkFinishedCrawling ({crawlDirectory, crawling, inProgress}) {
   if (!crawling && inProgress.length === 0) {
-    sendCrawlComplete()
+    sendCrawlComplete(crawlDirectory)
   }
 }
 
@@ -66,7 +73,7 @@ const GENRE_NOT_FOUND = 'Not Found';
 // Primary addMovie workflow and default export of this module.
 // ------------------------------------------------------------
 export default (movieFile, db) => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     // Ignore any titles on blacklist.
     const { name } = path.parse(movieFile)
     if (blacklist.includes(name.toLowerCase())) {
@@ -94,6 +101,7 @@ export default (movieFile, db) => {
           imdbID: existingDoc.imdbID
         })
 
+        dispatch(movieFileComplete(movieFile))
         return
       }
     }
@@ -151,7 +159,7 @@ export default (movieFile, db) => {
         let {documentChanged, finalDocument} = conflate(document, movie)
         if (documentChanged) {
           db.addOrUpdate(finalDocument)
-          throttledSendMovieDatabase(db) // SUCCESS!!!
+          throttledSendMovieDatabase(db, getState) // SUCCESS!!!
         }
         dispatch(movieFileComplete(movieFile))
         logger.debug(`Completed processing ${movieFile}`)

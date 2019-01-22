@@ -3,6 +3,7 @@ const { ipcRenderer } = require('electron')
 const { dbPath, dbName, dbUniqueField } = require('../../config')
 const {
   CRAWL_DIRECTORY,
+  DELETE_MOVIE_DATABASE,
   LOAD_MOVIE_DATABASE,
   MOVE_MOVIE_TO_TRASH,
   UPDATE_MOVIE_METADATA
@@ -15,9 +16,10 @@ const { crawlForMovies } = require('./crawlForMovies')
 const SingleCollectionDatabase = require('./database')
 const {
   addMovie,
-  deleteMovie,
   crawlComplete,
   crawlStart,
+  deleteAllMovies,
+  deleteMovie,
   sendMovieDatabase,
   sendSearchDirectory,
   updateMovie
@@ -72,9 +74,11 @@ function handleCrawlDirectoryEvent (event, rootDirectory) {
   }
 
   // Bind searchDirCb to sendSearchDirectory electron action
+  // V2: do not send search directory updates back to UI thread
+  // instead we will send progress updates whenever we send updated DB
   const searchDirCb = sendSearchDirectory
 
-  crawlStart()
+  crawlStart(rootDirectory)
   return crawlForMovies({rootDirectory, movieFileCb, searchDirCb})
     .then(() => crawlComplete(rootDirectory))
     .catch((err) => {
@@ -105,6 +109,19 @@ function handleMoveMovieToTrashEvent (event, movie) {
   logger.info('Received MOVE_MOVIE_TO_TRASH event', {movie: movie.title })
 
   return deleteMovie(movie, db)
+    .then(() => {})
+    .catch(error => {
+      logger.error(error)
+    })
+}
+
+// =======================================
+// Handle the DELETE_MOVIE_DATABASE events
+// =======================================
+ipcRenderer.on(DELETE_MOVIE_DATABASE, handleDeleteMovieDatabaseEvent)
+function handleDeleteMovieDatabaseEvent (event) {
+  logger.info('Received DELETE_MOVIE_DATABASE event')
+  return deleteAllMovies(db)
     .then(() => {})
     .catch(error => {
       logger.error(error)

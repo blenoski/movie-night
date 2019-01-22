@@ -15,8 +15,9 @@ export default ({
       <NoMovieStyles >
         Where are your movies?
         <AddMediaButton
-          handleClick={handleAddMediaClick}
+          onClick={handleAddMediaClick}
           busy={isCrawling}
+          haveMovies={totalMovieCount > 0}
         />
       </NoMovieStyles>
     )

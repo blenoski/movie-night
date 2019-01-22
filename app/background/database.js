@@ -105,6 +105,15 @@ module.exports = class SingleCollectionDatabase {
     return this.collection
   }
 
+  // Resets the database back to 0 documents.
+  // WARNING: all documents will be lost
+  reset () {
+    this.collection = []
+    const forceSave = true
+    this._scheduleSave(forceSave)
+    return this.collection
+  }
+
   // Schedules a save (write to file) 3 seconds in the future.
   // Tokens are used to batch multiple updates into a single save.
   // Warning: if process is ended within 3 seconds of a database update, then

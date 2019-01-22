@@ -3,6 +3,7 @@ const url = require('url')
 const electron = require('electron')
 const {
   CRAWL_COMPLETE,
+  CRAWL_START,
   MOVIE_DATABASE,
   SEARCHING_DIRECTORY
 } = require('../shared/events')
@@ -103,6 +104,16 @@ function handleSearchingDirectoryEvents (event, directory) {
   }
 }
 
+// Triggers the import media workflow.
+function handleCrawlStartEvent (directory) {
+  if (appWindow) {
+    appWindow.webContents.send(CRAWL_START, directory)
+    logger.info('Sent CRAWL_START event to appWindow', { directory })
+  } else {
+    logger.error('appWindow object does not exist')
+  }
+}
+
 function handleCrawlCompleteEvent (event, directory) {
   logger.info('Received CRAWL_COMPLETE event', { directory })
   if (appWindow) {
@@ -113,14 +124,21 @@ function handleCrawlCompleteEvent (event, directory) {
   }
 }
 
-function handleMovieDatabaseEvent (event, movieDB) {
+function handleMovieDatabaseEvent (event, data) {
+  const { movieDB, importStats: { moviesFound, inProgress } } = data
+  const count = movieDB.reduce((sum, genre) => sum + genre.movies.length, 0)
   logger.info('Received MOVIE_DATABASE event', {
-    count: movieDB.reduce((sum, genre) => sum + genre.movies.length, 0)
+    count,
+    moviesFound,
+    inProgressCnt: inProgress.length
   })
+
   if (appWindow) {
-    appWindow.webContents.send(MOVIE_DATABASE, movieDB)
+    appWindow.webContents.send(MOVIE_DATABASE, data)
     logger.info('Sent MOVIE_DATABASE event to appWindow', {
-      count: movieDB.reduce((sum, genre) => sum + genre.movies.length, 0)
+      count,
+      moviesFound,
+      inProgressCnt: inProgress.length
     })
   } else {
     logger.error('appWindow object does not exist')
@@ -130,6 +148,7 @@ function handleMovieDatabaseEvent (event, movieDB) {
 module.exports = {
   createAppWindow,
   handleCrawlCompleteEvent,
+  handleCrawlStartEvent,
   handleClosed,
   handleDidFinishLoad,
   handleMovieDatabaseEvent,

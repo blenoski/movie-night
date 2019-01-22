@@ -5,7 +5,7 @@ import { shell } from 'electron'
 
 import { fileExists, filePathToUrl } from '../../../../shared/utils'
 import { fetchMovieMetadata } from '../../../../background/api/fetchMovieMetadata';
-import { Close } from '../../../icons'
+import { Close, Edit, Trash } from '../../../icons'
 
 import ListMeta from './ListMeta'
 import Location from './Location'
@@ -29,6 +29,7 @@ export default class MovieDetail extends Component {
 
     this.state = {
       fileAvailable: true,
+      editOpen: false,
       searching: false,
       searchError: '',
       searchMovieResult: null
@@ -107,7 +108,7 @@ export default class MovieDetail extends Component {
 
     if (searchMovieResult) {
       onUpdateMovieMetadata(searchMovieResult);
-      this.close()
+      this.setState({ editOpen: false })
     }
   }
 
@@ -127,7 +128,7 @@ export default class MovieDetail extends Component {
 
   render () {
     const { movie: dbMovie } = this.props
-    const { searching, searchError, searchMovieResult } = this.state;
+    const { editOpen, searching, searchError, searchMovieResult } = this.state;
 
     const movie = searchMovieResult || dbMovie;
 
@@ -148,10 +149,12 @@ export default class MovieDetail extends Component {
 
         <MovieDetailsContainer>
           <header>
-            <Div>
-              <Title title={movie.title} />
+            <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', width: '100%', marginBottom: '8px'}}>
+              <EditButton editing={editOpen} onClick={() => this.setState({ editOpen: !editOpen })} />
+              <TrashButton onClick={this.handleMoveToTrash} />
               <CloseButton onClick={this.close} />
-            </Div>
+            </div>
+            <Title title={movie.title} />
             <Meta year={movie.year} rated={movie.rated} runtime={movie.runtime} />
             <Ratings
               audience={Number(movie.imdbRating) / 10.0}
@@ -159,15 +162,21 @@ export default class MovieDetail extends Component {
             />
           </header>
 
+          <Spacer small={editOpen} />
+
           <VerticalScrollSection>
             {movie.plot}
           </VerticalScrollSection>
+
+          <Spacer small={editOpen} />
 
           <ListMeta
             actors={movie.actors}
             director={movie.director}
             genres={movie.genres}
           />
+
+          <Spacer small={editOpen} />
 
           <Location
             fileSize={movie.fileSize}
@@ -176,14 +185,15 @@ export default class MovieDetail extends Component {
             fileExists={this.state.fileAvailable}
           />
 
-          <Update
-            onMoveToTrash={this.handleMoveToTrash}
-            onRedoSearch={this.handleRedoSearch}
-            onSaveSearch={searchMovieResult ? this.handleSaveSearch : undefined}
-            searchQuery={movie.query}
-            searching={searching}
-            searchError={searchError}
-          />
+          {editOpen &&            
+            <Update
+              onRedoSearch={this.handleRedoSearch}
+              onSaveSearch={searchMovieResult ? this.handleSaveSearch : undefined}
+              searchQuery={movie.query}
+              searching={searching}
+              searchError={searchError}
+            />
+          }
         </MovieDetailsContainer>
 
       </FlexboxDiv>
@@ -195,16 +205,33 @@ const FlexboxDiv = styled.div`
   display: flex;
   margin-top: 20px;
 `
-const Div = styled.div`
-  display: flex;
-  justify-content: space-between;
-`
+
+const EditButton = styled(Edit)`
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  font-size: 30px;
+  padding: 5px 0 0;
+  margin-left: 24px;
+
+  ${props => props.editing && `
+    color: red;
+  `}
+`;
+
+const TrashButton = styled(Trash)`
+  color: rgba(255, 255, 255, 0.9);
+  cursor: pointer;
+  font-size: 30px;
+  padding: 5px 0 0;
+  margin-left: 24px;
+`;
 
 const CloseButton = styled(Close)`
   color: rgba(255, 255, 255, 0.9);
   cursor: pointer;
   font-size: 30px;
   padding: 5px 0 0;
+  margin-left: 24px;
 `
 
 const Poster = styled.aside`
@@ -232,6 +259,9 @@ const MovieDetailsContainer = styled.article`
 `
 
 const VerticalScrollSection = styled.section`
-  margin-top: 20px;
   overflow-y: auto;
+`
+
+const Spacer = styled.div`
+  margin-top: ${props => props.small ? '10px' : '30px'}
 `

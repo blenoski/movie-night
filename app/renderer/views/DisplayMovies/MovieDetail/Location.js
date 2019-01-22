@@ -27,7 +27,6 @@ const renderNotClickable = (location, fileSize) =>
 
 const Section = styled.section`
   display: flex;
-  margin-top: 20px;
   word-break: break-all;
 `
 

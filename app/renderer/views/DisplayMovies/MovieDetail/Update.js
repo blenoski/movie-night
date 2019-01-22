@@ -21,7 +21,7 @@ export default class Update extends React.Component {
   }
 
   render () {
-    const { onMoveToTrash, onSaveSearch, searching, searchError } = this.props;
+    const { onSaveSearch, searching, searchError } = this.props;
     const { saveDisabled, title, year } = this.state;
 
     const searchDisabled = this.isRedoSearchDisabled();
@@ -76,12 +76,6 @@ export default class Update extends React.Component {
         >
           Save
         </Button>
-
-        <Button
-          onClick={onMoveToTrash}
-        >
-          Trash
-        </Button>
       </Section>
     );
   }
@@ -125,7 +119,7 @@ export default class Update extends React.Component {
 const Section = styled.div`
   display: flex;
   flex-direction: row;
-  margin-top: 20px;
+  margin-top: 10px;
 `
 
 const QueryContainer = styled.div`

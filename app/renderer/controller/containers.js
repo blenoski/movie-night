@@ -4,22 +4,28 @@ import {
   clearSearchResults,
   clearSearchQuery,
   deleteMovie,
+  hideCrawlStats,
+  showCrawlStats,
   updateSearchQuery,
   updateSearchCategory,
   updateFeaturedMovie,
   getAllMovies, // State selectors
   getCrawlActive,
+  getCrawlStats,
   getFeaturedMovie,
   getSearchCategory,
   getSearchQuery,
+  getShowCrawlStats,
   getVisibleMovies,
-  importMovies, // Electron action creators
-  updateMetadataFor
+  updateMetadataFor // Electron action creator
 } from '../model'
+
+import { deleteDatabase, importMovies } from './mapEventsToDispatch'
 
 // Presentational Components
 import Application from '../views/App'
 import Button from '../views/Button'
+import CrawlStats from '../views/CrawlStats'
 import DisplayMovies from '../views/DisplayMovies'
 import MainContentArea from '../views/MainContent'
 import MovieThumbnail from '../views/DisplayMovies/MovieThumbnail'
@@ -27,25 +33,62 @@ import SearchBar from '../views/SearchBar'
 
 // App Container
 // -------------
-export function mapStateToAppProps ({ dbLoaded }) {
+export function mapStateToAppProps (state) {
   return {
-    dbLoaded
+    dbLoaded: state.dbLoaded,
+    showCrawlStatsOverlay: getShowCrawlStats(state)
   }
 }
 
 export const App = connect(mapStateToAppProps)(Application)
 
-// ImportMovies Container
-// ----------------------
-export function mapStateToImportMoviesProps (state) {
+// CrawlStats Container
+// --------------------
+export function mapStateToCrawlStatsProps (state) {
   return {
-    busy: getCrawlActive(state),
-    handleClick: importMovies
+    crawlStats: getCrawlStats(state)
   }
 }
 
+export function mapDispatchToCrawlStatsProps (dispatch) {
+  return {
+    onClose: () => dispatch(hideCrawlStats()),
+    onImport: importMovies,
+    onDelete: deleteDatabase
+  }
+}
+
+export const ImportStats = connect(mapStateToCrawlStatsProps, mapDispatchToCrawlStatsProps)(CrawlStats)
+
+// ImportMovies Container
+// ----------------------
+export function mapStateToImportMoviesProps (state) {
+  const crawlStats = getCrawlStats(state)
+  const movies = getVisibleMovies(state)
+  const haveMovies = Object.keys(movies).length > 0
+
+  return {
+    busy: getCrawlActive(state),
+    haveMovies
+  }
+}
+
+export function mapDispatchToImportMoviesProps (dispatch) {
+  return {
+    onClick: (busy, haveMovies) => {
+      if (!busy && !haveMovies) {
+        importMovies()
+      } else {
+        dispatch(showCrawlStats())
+      }
+    }
+  }
+}
+
+
 export const ImportMovies = connect(
-  mapStateToImportMoviesProps
+  mapStateToImportMoviesProps,
+  mapDispatchToImportMoviesProps
 )(Button)
 
 // SearchMovies Container

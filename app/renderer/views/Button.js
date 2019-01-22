@@ -1,15 +1,25 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Database, Spinner } from '../icons'
+import { Database, ImportIcon, Spinner } from '../icons'
 
-export default ({ busy, className, handleClick }) => {
+export default ({ busy, className, onClick, haveMovies }) => {
   if (busy) {
-    return <Button className={className}><Spinner pulse /></Button>
+    return (
+      <Button
+        className={className}
+        onClick={() => onClick(busy, haveMovies)}
+      >
+        <Spinner pulse />
+      </Button>
+    )
   }
 
   return (
-    <HoverButton className={className} onClick={handleClick}>
-      <Database />
+    <HoverButton
+      className={className}
+      onClick={() => onClick(busy, haveMovies)}
+    >
+      <ImportIcon />
     </HoverButton>
   )
 }
