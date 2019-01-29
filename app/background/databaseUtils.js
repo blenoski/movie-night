@@ -19,10 +19,10 @@ export function conflate (document, movie) {
   // Check for title changes.
   if (document.title !== movie.title) {
     let finalDoc = JSON.parse(JSON.stringify(document))
-    finalDoc.title = movie.title;
+    finalDoc.title = movie.title
     return { documentChanged: true, finalDocument: finalDoc }
   }
-  
+
   return { documentChanged: false, finalDocument: document }
 }
 

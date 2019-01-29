@@ -4,7 +4,6 @@ import { ImportStats, MainContent } from '../controller'
 import Header from './Header'
 import Splash from './Splash'
 
-
 export default ({ dbLoaded, showCrawlStatsOverlay }) => {
   if (!dbLoaded) {
     return <Splash />

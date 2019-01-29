@@ -64,7 +64,7 @@ function updateMovieMetadata (event, movie) {
 
   backgroundWorker.webContents.send(UPDATE_MOVIE_METADATA, movie)
   logger.info('Sent UPDATE_MOVIE_METADATA event to bgWorker', { movie: movie.title })
-} 
+}
 
 // Triggers the delete movie metadata workflow.
 function deleteMovie (event, movie) {
@@ -86,8 +86,7 @@ function deleteMovieDatabase (event) {
 
   backgroundWorker.webContents.send(DELETE_MOVIE_DATABASE)
   logger.info('Sent DELETE_MOVIE_DATABASE event to bgWorker')
-} 
-
+}
 
 module.exports = {
   createBackgroundWindow,

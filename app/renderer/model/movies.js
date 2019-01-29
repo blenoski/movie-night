@@ -25,7 +25,7 @@ export default (state = initialState, action) => {
       const displayOrder = [
         ...rankCategoriesForDisplay(state.movieDB).filter(genre => genre !== 'Not Found'),
         'Not Found'
-      ];
+      ]
 
       return { ...state, displayOrder }
     }
@@ -51,9 +51,9 @@ function computeNextDisplayOrder (displayOrder, movieDB) {
     ...displayOrder.filter(genre => genre !== 'Not Found'),
     ...rankCategoriesForDisplay(newCategories),
     'Not Found'
-  ];
+  ]
 
-  return nextDisplayOrder;
+  return nextDisplayOrder
 }
 
 // Returns array of categories sorted from most movies to least movies.

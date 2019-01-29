@@ -1,15 +1,14 @@
 import React from 'react'
 import styled from 'styled-components'
-import queryString from 'query-string';
+import queryString from 'query-string'
 
 import { Spinner } from '../../../icons'
 
 export default class Update extends React.Component {
   constructor (props) {
-    super(props);
+    super(props)
 
-    this.state = { 
-      saveDisabled: true,
+    this.state = {
       title: '',
       year: ''
     }
@@ -21,17 +20,17 @@ export default class Update extends React.Component {
   }
 
   render () {
-    const { onSaveSearch, searching, searchError } = this.props;
-    const { saveDisabled, title, year } = this.state;
+    const { onSaveSearch, searching, searchError } = this.props
+    const { title, year } = this.state
 
-    const searchDisabled = this.isRedoSearchDisabled();
-    const { titlePlaceholder, yearPlaceholder } = this.getPlaceholders();
+    const searchDisabled = this.isRedoSearchDisabled()
+    const { titlePlaceholder, yearPlaceholder } = this.getPlaceholders()
 
     return (
       <Section>
         <QueryContainer onKeyPress={this.handleKeyPress}>
           <QueryItem mb='8px'>
-            <Heading>Search Title:</Heading>
+            <Heading>Search Title or IMDB ID:</Heading>
             <SearchQuery
               disabled={searching}
               value={title}
@@ -77,36 +76,37 @@ export default class Update extends React.Component {
           Save
         </Button>
       </Section>
-    );
+    )
   }
 
   isRedoSearchDisabled () {
-    const { searching } = this.props;
-    const { title, year } = this.state;
+    const { searching } = this.props
+    const { title, year } = this.state
 
     return searching || (
       title.trim().length === 0 &&
       year.trim().length === 0
-    );
+    )
   }
 
   getPlaceholders () {
-    const { searchQuery } = this.props;
+    const { searchQuery } = this.props
     const parsed = queryString.parse(searchQuery)
-    const titlePlaceholder = parsed.s || '';
-    const yearPlaceholder = parsed.y || '';
-    return { titlePlaceholder, yearPlaceholder };
+    const titlePlaceholder = parsed.s || ''
+    const yearPlaceholder = parsed.y || ''
+    return { titlePlaceholder, yearPlaceholder }
   }
 
   handleRedoSearch () {
-    const { onRedoSearch } = this.props;
-    const { title, year } = this.state;
-    const { titlePlaceholder, yearPlaceholder } = this.getPlaceholders();
+    const { onRedoSearch } = this.props
+    const { title, year } = this.state
+    const { titlePlaceholder, yearPlaceholder } = this.getPlaceholders()
 
-    const searchTitle = (title || titlePlaceholder).trim();
-    const searchYear = (year || yearPlaceholder).trim();
+    const searchTitle = (title || titlePlaceholder).trim()
+    const searchYear = (year || yearPlaceholder).trim()
+    const imbdbID = searchTitle.startsWith('tt') ? searchTitle : null
 
-    onRedoSearch(searchTitle, searchYear);
+    onRedoSearch(searchTitle, searchYear, imbdbID)
   }
 
   handleKeyPress (event) {
@@ -144,7 +144,7 @@ const SearchQuery = styled.input`
   background-color: #E3E1DB;
   padding: 0 8px;
   width: ${props => props.width} !important;
-`;
+`
 
 const Button = styled.button`
   background-color: rgba(0, 0, 0, 0);

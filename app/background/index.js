@@ -92,7 +92,7 @@ function handleCrawlDirectoryEvent (event, rootDirectory) {
 // =======================================
 ipcRenderer.on(UPDATE_MOVIE_METADATA, handleUpdateMovieMetadataEvent)
 function handleUpdateMovieMetadataEvent (event, movie) {
-  logger.info('Received UPDATE_MOVIE_METADATA event', {movie: movie.title })
+  logger.info('Received UPDATE_MOVIE_METADATA event', { movie: movie.title })
 
   return updateMovie(movie, db)
     .then(() => {})
@@ -106,7 +106,7 @@ function handleUpdateMovieMetadataEvent (event, movie) {
 // =======================================
 ipcRenderer.on(MOVE_MOVIE_TO_TRASH, handleMoveMovieToTrashEvent)
 function handleMoveMovieToTrashEvent (event, movie) {
-  logger.info('Received MOVE_MOVIE_TO_TRASH event', {movie: movie.title })
+  logger.info('Received MOVE_MOVIE_TO_TRASH event', { movie: movie.title })
 
   return deleteMovie(movie, db)
     .then(() => {})

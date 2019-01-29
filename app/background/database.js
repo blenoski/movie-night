@@ -65,11 +65,11 @@ module.exports = class SingleCollectionDatabase {
   // then is a no-op.
   deleteDocument (document, forceSave = true) {
     const newCollection = this.collection.filter(doc => {
-      return doc[this.uniqueField] !== document[this.uniqueField];
+      return doc[this.uniqueField] !== document[this.uniqueField]
     })
 
     if (newCollection.length !== this.collection.length) {
-      this.collection = newCollection;
+      this.collection = newCollection
       this._scheduleSave(forceSave)
     }
 

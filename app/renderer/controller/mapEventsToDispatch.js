@@ -66,7 +66,7 @@ export function handleMovieDatabaseEvent (event, data) {
     moviesFound,
     inProgressCnt: inProgress.length
   })
-  
+
   store.dispatch(updateMovieDB(movieDB))
 
   if (moviesFound > 0) {

@@ -63,7 +63,6 @@ export const ImportStats = connect(mapStateToCrawlStatsProps, mapDispatchToCrawl
 // ImportMovies Container
 // ----------------------
 export function mapStateToImportMoviesProps (state) {
-  const crawlStats = getCrawlStats(state)
   const movies = getVisibleMovies(state)
   const haveMovies = Object.keys(movies).length > 0
 
@@ -84,7 +83,6 @@ export function mapDispatchToImportMoviesProps (dispatch) {
     }
   }
 }
-
 
 export const ImportMovies = connect(
   mapStateToImportMoviesProps,

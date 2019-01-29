@@ -124,7 +124,7 @@ export default class DisplayMovies extends Component {
   }
 
   renderMovieDetails (onClose) {
-    const { deleteMovieFromDb, updateMovieMetadata } = this.props;
+    const { deleteMovieFromDb, updateMovieMetadata } = this.props
     const { closing, prevFeaturedMovie } = this.state
     if (closing) {
       return (

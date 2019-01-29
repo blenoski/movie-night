@@ -2,14 +2,13 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { Close, ImportIcon, Trash, Spinner } from '../icons'
-import Logo from './Logo';
-
+import Logo from './Logo'
 
 export default ({ crawlStats, onClose, onDelete, onImport }) => {
   const title = crawlStats.active ? 'IMPORTING' : 'LAST IMPORT'
   const complete = crawlStats.moviesFound - crawlStats.inProgress.length
   const inProgressFileCnt = Math.min(crawlStats.inProgress.length, 5)
-  let inProgressFiles = [];
+  let inProgressFiles = []
   for (let i = 0; i < inProgressFileCnt; i++) {
     const index = getRandomInt(0, crawlStats.inProgress.length)
     inProgressFiles.push(crawlStats.inProgress[index])
@@ -90,10 +89,10 @@ export default ({ crawlStats, onClose, onDelete, onImport }) => {
   )
 }
 
-function getRandomInt(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+function getRandomInt (min, max) {
+  min = Math.ceil(min)
+  max = Math.floor(max)
+  return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
 const Overlay = styled.div`
@@ -150,7 +149,7 @@ const ImportButton = styled(ImportIcon)`
 const TrashButton = styled(Trash)`
   color: rgba(255, 255, 255, 0.9);
   font-size: 30px;
-`;
+`
 
 const CloseButton = styled(Close)`
   position: absolute;

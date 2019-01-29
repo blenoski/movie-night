@@ -78,7 +78,7 @@ export default class MovieThumbnail extends Component {
     const { imgFile, title } = this.props.movie
 
     if (!imgFile) {
-      return <NoImage>{title}</NoImage>;
+      return <NoImage>{title}</NoImage>
     }
 
     return <Image

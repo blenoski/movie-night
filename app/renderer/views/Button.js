@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Database, ImportIcon, Spinner } from '../icons'
+import { ImportIcon, Spinner } from '../icons'
 
 export default ({ busy, className, onClick, haveMovies }) => {
   if (busy) {

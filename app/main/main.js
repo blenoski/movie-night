@@ -3,7 +3,6 @@ const electron = require('electron')
 
 const {
   CRAWL_COMPLETE,
-  CRAWL_DIRECTORY,
   DELETE_MOVIE_DATABASE,
   LOG_MESSAGE,
   MOVE_MOVIE_TO_TRASH,

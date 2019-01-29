@@ -14,9 +14,9 @@ import {
 } from './actionTypes'
 
 import addMovieFile from './addMovieFile'
-import deleteMovieFile from './deleteMovieFile';
+import deleteMovieFile from './deleteMovieFile'
 import deleteMovieDatabase from './deleteMovieDatabase'
-import updateMovieMetadata from './updateMovieMetadata';
+import updateMovieMetadata from './updateMovieMetadata'
 import { sendCrawlComplete } from './electronActions'
 
 // Re-export the electron actions
@@ -52,8 +52,8 @@ const progress = (state = initialState, action) => {
     case CRAWL_START: {
       return {
         ...initialState,
-        crawling: true, 
-        crawlDirectory: action.payload,
+        crawling: true,
+        crawlDirectory: action.payload
       }
     }
 

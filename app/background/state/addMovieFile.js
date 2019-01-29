@@ -67,7 +67,7 @@ function checkFinishedCrawling ({crawlDirectory, crawling, inProgress}) {
 const blacklist = ['sample', 'test footage']
 
 // When a movie search fails, we assign this genre to identify.
-const GENRE_NOT_FOUND = 'Not Found';
+const GENRE_NOT_FOUND = 'Not Found'
 
 // ------------------------------------------------------------
 // Primary addMovie workflow and default export of this module.
@@ -91,10 +91,10 @@ export default (movieFile, db) => {
         existingDoc.genres &&
         existingDoc.genres.length > 0 &&
         existingDoc.genres[0]
-      );
+      )
 
-      const genreNotFound = genre === GENRE_NOT_FOUND;
-      const genreFound = !genreNotFound;
+      const genreNotFound = genre === GENRE_NOT_FOUND
+      const genreFound = !genreNotFound
       if (genreFound) {
         logger.info(`Database has existing record for ${movieFile}`, {
           title: existingDoc.title,
@@ -124,9 +124,9 @@ export default (movieFile, db) => {
           return movie
         }
       })
-      .catch((error) => {
+      .catch(() => {
         // Create a "fake" movie record with genre 'Not Found'
-          const movie = {
+        const movie = {
           'actors': [],
           'director': '',
           'fileSize': '',
@@ -146,13 +146,13 @@ export default (movieFile, db) => {
           'year': ''
         }
 
-        return movie;
+        return movie
       })
       .then(movie => {
         return computeFileSizeInGB(movieFile)
           .then(fileSizeGB => {
-            movie.fileSize = fileSizeGB;
-            return movie;
+            movie.fileSize = fileSizeGB
+            return movie
           })
       })
       .then((movie) => {

@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { shell } from 'electron'
 
 import { fileExists, filePathToUrl } from '../../../../shared/utils'
-import { fetchMovieMetadata } from '../../../../background/api/fetchMovieMetadata';
+import { fetchMovieMetadata, fetchMovieMetadataByID } from '../../../../background/api/fetchMovieMetadata'
 import { Close, Edit, Trash } from '../../../icons'
 
 import ListMeta from './ListMeta'
@@ -13,7 +13,7 @@ import Meta from './Meta'
 import PlayMovieButton from './PlayMovieButton'
 import Ratings from './Ratings'
 import Title from './Title'
-import Update from './Update';
+import Update from './Update'
 
 export default class MovieDetail extends Component {
   constructor (props) {
@@ -25,6 +25,7 @@ export default class MovieDetail extends Component {
     this.handleRedoSearch = this.handleRedoSearch.bind(this)
     this.handleSaveSearch = this.handleSaveSearch.bind(this)
     this.handleMoveToTrash = this.handleMoveToTrash.bind(this)
+    this.handleToggleEdit = this.handleToggleEdit.bind(this)
     this.anchor = null
 
     this.state = {
@@ -74,12 +75,14 @@ export default class MovieDetail extends Component {
     }
   }
 
-  handleRedoSearch (searchTitle, searchYear) {
-    const { movie } = this.props;
-    const movieFile = searchTitle + (searchYear ? ` [${searchYear}]` : '');
+  handleRedoSearch (searchTitle, searchYear, imdbID) {
+    const { movie } = this.props
+    const searchQuery = imdbID || (searchTitle + (searchYear ? ` [${searchYear}]` : ''))
 
-    this.setState({ searching: true, searchError: '' });
-    fetchMovieMetadata(movieFile)
+    this.setState({ searching: true, searchError: '' })
+
+    const apiCall = imdbID ? fetchMovieMetadataByID : fetchMovieMetadata
+    apiCall(searchQuery)
       .then(response => {
         const searchMovieResult = {
           ...response,
@@ -94,6 +97,8 @@ export default class MovieDetail extends Component {
         })
       })
       .catch(error => {
+        console.error(error)
+
         this.setState({
           searching: false,
           searchMovieResult: null,
@@ -103,11 +108,11 @@ export default class MovieDetail extends Component {
   }
 
   handleSaveSearch () {
-    const { onUpdateMovieMetadata } = this.props;
-    const { searchMovieResult } = this.state;
+    const { onUpdateMovieMetadata } = this.props
+    const { searchMovieResult } = this.state
 
     if (searchMovieResult) {
-      onUpdateMovieMetadata(searchMovieResult);
+      onUpdateMovieMetadata(searchMovieResult)
       this.setState({ editOpen: false })
     }
   }
@@ -115,7 +120,7 @@ export default class MovieDetail extends Component {
   handleMoveToTrash () {
     const { movie, onMoveToTrash } = this.props
     const response = window.confirm(`Warning: this will DELETE the following file from your media and move it to the trash:\n\n${movie.location}`)
-    if (response) {    
+    if (response) {
       if (
         shell.moveItemToTrash(movie.location) ||
         window.confirm(`Permission denied. Cannot move file to trash\n\nDelete from database?`)
@@ -126,11 +131,23 @@ export default class MovieDetail extends Component {
     }
   }
 
+  handleToggleEdit () {
+    const { editOpen, searchMovieResult } = this.state
+
+    if (editOpen && searchMovieResult) {
+      const discard = window.confirm('Discard All Edits?')
+      if (!discard) { return }
+      this.setState({ searchMovieResult: null })
+    }
+
+    this.setState({ editOpen: !editOpen })
+  }
+
   render () {
     const { movie: dbMovie } = this.props
-    const { editOpen, searching, searchError, searchMovieResult } = this.state;
+    const { editOpen, searching, searchError, searchMovieResult } = this.state
 
-    const movie = searchMovieResult || dbMovie;
+    const movie = searchMovieResult || dbMovie
 
     const posterUrl = searchMovieResult
       ? searchMovieResult.imgUrl
@@ -150,7 +167,7 @@ export default class MovieDetail extends Component {
         <MovieDetailsContainer>
           <header>
             <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', width: '100%', marginBottom: '8px'}}>
-              <EditButton editing={editOpen} onClick={() => this.setState({ editOpen: !editOpen })} />
+              <EditButton editing={editOpen} onClick={this.handleToggleEdit} />
               <TrashButton onClick={this.handleMoveToTrash} />
               <CloseButton onClick={this.close} />
             </div>
@@ -185,7 +202,7 @@ export default class MovieDetail extends Component {
             fileExists={this.state.fileAvailable}
           />
 
-          {editOpen &&            
+          {editOpen &&
             <Update
               onRedoSearch={this.handleRedoSearch}
               onSaveSearch={searchMovieResult ? this.handleSaveSearch : undefined}
@@ -216,7 +233,7 @@ const EditButton = styled(Edit)`
   ${props => props.editing && `
     color: red;
   `}
-`;
+`
 
 const TrashButton = styled(Trash)`
   color: rgba(255, 255, 255, 0.9);
@@ -224,7 +241,7 @@ const TrashButton = styled(Trash)`
   font-size: 30px;
   padding: 5px 0 0;
   margin-left: 24px;
-`;
+`
 
 const CloseButton = styled(Close)`
   color: rgba(255, 255, 255, 0.9);

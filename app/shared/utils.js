@@ -71,9 +71,9 @@ function computeFileSizeInGB (fname) {
   return new Promise((resolve, reject) => {
     return stat(fname)
       .then((stats) => {
-        const bytes = stats['size'] || 0;
+        const bytes = stats['size'] || 0
         if (bytes === 0) { resolve('') }
-        resolve((bytes / 1073741824).toFixed(2) + " GB")
+        resolve((bytes / 1073741824).toFixed(2) + ' GB')
       })
       .catch(() => {
         resolve('')
