@@ -60,7 +60,7 @@ describe('handleMovieDatabaseEvent', () => {
     store.dispatch.mockClear()
 
     const movieDB = [{genre: 'action', movies: [1, 2, 3]}]
-    handleMovieDatabaseEvent(null, movieDB)
+    handleMovieDatabaseEvent(null, {movieDB})
 
     expect(store.dispatch).toHaveBeenLastCalledWith('updateMovieDB')
     expect(store.updateMovieDB).toHaveBeenLastCalledWith(movieDB)

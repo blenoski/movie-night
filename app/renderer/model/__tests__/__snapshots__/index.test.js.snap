@@ -129,6 +129,9 @@ Object {
   "crawl": Object {
     "active": false,
     "directory": "",
+    "inProgress": Array [],
+    "moviesFound": 0,
+    "showCrawlStatsOverlay": false,
   },
   "dbLoaded": false,
   "featuredMovie": Object {

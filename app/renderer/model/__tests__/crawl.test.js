@@ -17,7 +17,10 @@ describe('crawl reducer', () => {
 
     expect(crawl(state, action)).toEqual({
       active: false,
-      directory: ''
+      directory: '',
+      inProgress: [],
+      moviesFound: 0,
+      showCrawlStatsOverlay: false
     })
   })
 
@@ -39,7 +42,7 @@ describe('crawl reducer', () => {
     }
 
     expect(crawl(state, action)).toEqual({
-      active: true,
+      active: false,
       directory: action.payload
     })
 

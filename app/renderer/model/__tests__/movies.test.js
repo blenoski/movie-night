@@ -61,7 +61,7 @@ describe('movies reducer', () => {
     // We are expecting that the new category gets added
     // to database and is ranked last in the display order.
     expect(movies(state, action)).toEqual({
-      displayOrder: [...testData.displayOrder, 'documentary'],
+      displayOrder: [...testData.displayOrder, 'documentary', 'Not Found'],
       movieDB: newDB
     })
   })
@@ -78,7 +78,7 @@ describe('movies reducer', () => {
     searchActions.forEach(type => {
       const action = { type }
       expect(movies(state, action)).toEqual({
-        displayOrder: ['action', 'drama', 'comedy', 'thriller'],
+        displayOrder: ['action', 'drama', 'comedy', 'thriller', 'Not Found'],
         movieDB: testData.movieDB
       })
     })

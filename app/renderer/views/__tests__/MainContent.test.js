@@ -25,7 +25,7 @@ describe('MainContent', () => {
     expect(tree).toMatchSnapshot()
 
     const AddMediaButton = tree.children[1].children[0]
-    expect(AddMediaButton.props.className).toContain('fa-database')
+    expect(AddMediaButton.props.className).toContain('fa-download')
   })
 
   test('renders spinner when there are no movies and we are crawling', () => {

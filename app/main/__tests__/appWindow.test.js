@@ -55,7 +55,7 @@ describe('appWindow', () => {
   describe('does not crash', () => {
     test(' when events sent before appWindow created', () => {
       handleCrawlCompleteEvent(null, 'crawlDirectory')
-      handleMovieDatabaseEvent(null, movieDB)
+      handleMovieDatabaseEvent(null, {movieDB, importStats: { moviesFound: 0, inProgress: 0 }})
       handleSearchingDirectoryEvents(null, 'searchDir')
       expect(sendCount()).toBe(0)
     })
@@ -80,7 +80,7 @@ describe('appWindow', () => {
 
     const testData = {
       [CRAWL_COMPLETE]: 'crawlDir',
-      [MOVIE_DATABASE]: movieDB,
+      [MOVIE_DATABASE]: {movieDB, importStats: { moviesFound: 0, inProgress: 0 }},
       [SEARCHING_DIRECTORY]: 'searchDir'
     }
 
@@ -92,7 +92,7 @@ describe('appWindow', () => {
         })
 
         test('handles empty input', () => {
-          const data = event === MOVIE_DATABASE ? [] : ''
+          const data = event === MOVIE_DATABASE ? {movieDB: [], importStats: { moviesFound: 0, inProgress: 0 }} : ''
           eventHandlers[event](null, data)
           expect(sendLast()).toEqual([event, data])
         })

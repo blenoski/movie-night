@@ -50,8 +50,12 @@ function handleCrawlDirectorySelectionEvent (directory) {
   if (!backgroundWorker) {
     logger.error('backgroundWorker object does not exist')
   } else {
-    backgroundWorker.webContents.send(CRAWL_DIRECTORY, directory)
-    logger.info('Sent CRAWL_DIRECTORY event to bgWorker', { directory })
+    if (directory && typeof directory === 'string') {
+      backgroundWorker.webContents.send(CRAWL_DIRECTORY, directory)
+      logger.info('Sent CRAWL_DIRECTORY event to bgWorker', { directory })
+    } else {
+      logger.info('empty directory CRAWL_DIRECTORY')
+    }
   }
 }
 

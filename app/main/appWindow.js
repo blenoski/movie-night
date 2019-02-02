@@ -125,7 +125,9 @@ function handleCrawlCompleteEvent (event, directory) {
 }
 
 function handleMovieDatabaseEvent (event, data) {
-  const { movieDB, importStats: { moviesFound, inProgress } } = data
+  const { movieDB, importStats } = data
+  const moviesFound = (importStats && importStats.moviesFound) || 0
+  const inProgress = (importStats && importStats.inProgress) || []
   const count = movieDB.reduce((sum, genre) => sum + genre.movies.length, 0)
   logger.info('Received MOVIE_DATABASE event', {
     count,

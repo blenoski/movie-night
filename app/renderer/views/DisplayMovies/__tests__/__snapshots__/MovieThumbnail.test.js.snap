@@ -26,7 +26,7 @@ exports[`MovieThumbnail renders 2`] = `
     src="/path/to/poster"
   />
   <div
-    className="sc-EHOje cXyJHF"
+    className="sc-bZQynM ixKulh"
     onAnimationEnd={[Function]}
   >
     <div
@@ -39,7 +39,7 @@ exports[`MovieThumbnail renders 2`] = `
       />
     </div>
     <i
-      className="fa fa-angle-down sc-gzVnrw fqyBav"
+      className="fa fa-angle-down sc-htoDjs mwGmO"
       onClick={[Function]}
     />
   </div>
@@ -58,7 +58,7 @@ exports[`MovieThumbnail renders 3`] = `
     src="/path/to/poster"
   />
   <div
-    className="sc-EHOje cXyJHF"
+    className="sc-bZQynM ixKulh"
     onAnimationEnd={[Function]}
   >
     <div
@@ -71,7 +71,7 @@ exports[`MovieThumbnail renders 3`] = `
       />
     </div>
     <i
-      className="fa fa-angle-down sc-gzVnrw fqyBav"
+      className="fa fa-angle-down sc-htoDjs mwGmO"
       onClick={[Function]}
     />
   </div>
@@ -90,7 +90,7 @@ exports[`MovieThumbnail renders 4`] = `
     src="/path/to/poster"
   />
   <div
-    className="sc-bZQynM bEXPgh"
+    className="sc-gzVnrw bkbqMW"
     onAnimationEnd={[Function]}
   >
     <div
@@ -103,7 +103,7 @@ exports[`MovieThumbnail renders 4`] = `
       />
     </div>
     <i
-      className="fa fa-angle-down sc-gzVnrw fqyBav"
+      className="fa fa-angle-down sc-htoDjs mwGmO"
       onClick={[Function]}
     />
   </div>
@@ -136,7 +136,7 @@ exports[`MovieThumbnail renders 6`] = `
     src="/path/to/poster"
   />
   <div
-    className="sc-EHOje cXyJHF"
+    className="sc-bZQynM ixKulh"
     onAnimationEnd={[Function]}
   >
     <div
@@ -149,7 +149,7 @@ exports[`MovieThumbnail renders 6`] = `
       />
     </div>
     <i
-      className="fa fa-angle-down sc-gzVnrw fqyBav"
+      className="fa fa-angle-down sc-htoDjs mwGmO"
       onClick={[Function]}
     />
   </div>

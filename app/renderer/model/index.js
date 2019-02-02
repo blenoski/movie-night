@@ -33,11 +33,6 @@ export * from './actions'
 
 // Electron action creators.
 // -------------------------
-// export const importMovies = () => {
-//   ipcRenderer.send(SELECT_IMPORT_DIRECTORY)
-//   appLogger.info('Sent SELECT_IMPORT_DIRECTORY event')
-// }
-
 export const updateMetadataFor = (movie) => {
   ipcRenderer.send(UPDATE_MOVIE_METADATA, movie)
   appLogger.info('Sent UPDATE_MOVIE_METADATA event', { movie: movie.title })

@@ -59,7 +59,9 @@ export function handleCrawlCompleteEvent (event, directory) {
 // Handle MOVIE_DATABASE events
 ipcRenderer.on(MOVIE_DATABASE, handleMovieDatabaseEvent)
 export function handleMovieDatabaseEvent (event, data) {
-  const { movieDB, importStats: { moviesFound, inProgress } } = data
+  const { movieDB, importStats } = data
+  const moviesFound = (importStats && importStats.moviesFound) || 0
+  const inProgress = (importStats && importStats.inProgress) || []
 
   logger.info('Recieved MOVIE_DATABASE event', {
     count: movieDB.reduce((sum, genre) => sum + genre.movies.length, 0),

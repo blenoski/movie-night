@@ -47,6 +47,8 @@ describe('font awesome icons', () => {
 
       let expected = key.toLowerCase()
       if (expected === 'fileicon') { expected = 'fa-file' }
+      if (expected === 'edit') { expected = 'fa-pencil' }
+      if (expected === 'importicon') { expected = 'fa-download' }
 
       let tree = component.toJSON()
       expect(tree).toMatchSnapshot()

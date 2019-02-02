@@ -12,11 +12,11 @@ exports[`MainContent renders database button when there are no movies and not cr
 >
   Where are your movies?
   <div
-    className="sc-bxivhb cDsefN sc-bwzfXH iJwxuO"
-    onClick={undefined}
+    className="sc-bxivhb cDsefN sc-bwzfXH gStPc sc-bdVaJa hpCjNj"
+    onClick={[Function]}
   >
     <i
-      className="fa fa-database"
+      className="fa fa-download"
     />
   </div>
 </div>
@@ -28,7 +28,8 @@ exports[`MainContent renders spinner when there are no movies and we are crawlin
 >
   Where are your movies?
   <div
-    className="sc-bxivhb cDsefN sc-bdVaJa IsYJH"
+    className="sc-bxivhb cDsefN sc-bdVaJa hpCjNj"
+    onClick={[Function]}
   >
     <i
       className="fa fa-spinner fa-pulse"

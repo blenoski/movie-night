@@ -1,9 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
 
-export default ({ title }) =>
-  <Title>{title}</Title>
+export default ({ title }) => {
+  return <TitleReadOnly>{title}</TitleReadOnly>
+}
 
-const Title = styled.h1`
+const TitleReadOnly = styled.h1`
   color: rgba(255, 255, 255, 1);
 `

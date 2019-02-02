@@ -152,36 +152,54 @@ exports[`font awesome icons icons 7`] = `
 
 exports[`font awesome icons icons 8`] = `
 <i
-  className="fa fa-file"
+  className="fa fa-pencil"
 />
 `;
 
 exports[`font awesome icons icons 9`] = `
 <i
-  className="fa fa-info"
+  className="fa fa-file"
 />
 `;
 
 exports[`font awesome icons icons 10`] = `
 <i
-  className="fa fa-play"
+  className="fa fa-download"
 />
 `;
 
 exports[`font awesome icons icons 11`] = `
 <i
-  className="fa fa-search"
+  className="fa fa-info"
 />
 `;
 
 exports[`font awesome icons icons 12`] = `
 <i
-  className="fa fa-spinner"
+  className="fa fa-play"
 />
 `;
 
 exports[`font awesome icons icons 13`] = `
 <i
+  className="fa fa-search"
+/>
+`;
+
+exports[`font awesome icons icons 14`] = `
+<i
+  className="fa fa-spinner"
+/>
+`;
+
+exports[`font awesome icons icons 15`] = `
+<i
   className="fa fa-star"
+/>
+`;
+
+exports[`font awesome icons icons 16`] = `
+<i
+  className="fa fa-trash"
 />
 `;

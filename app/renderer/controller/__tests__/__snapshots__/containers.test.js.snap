@@ -3,6 +3,7 @@
 exports[`App mapStateToAppProps 1`] = `
 Object {
   "dbLoaded": false,
+  "showCrawlStatsOverlay": false,
 }
 `;
 
@@ -10,6 +11,8 @@ exports[`DisplayMoviesContainer mapDispatchToDisplayMoviesProps 1`] = `
 Object {
   "clearFeaturedMovie": [Function],
   "clearSearchQuery": [Function],
+  "deleteMovieFromDb": [Function],
+  "updateMovieMetadata": [Function],
   "updateSearchCategory": [Function],
 }
 `;
@@ -49,7 +52,7 @@ Object {
 exports[`ImportMovies mapStateToImportMoviesProps 1`] = `
 Object {
   "busy": false,
-  "handleClick": [Function],
+  "haveMovies": false,
 }
 `;
 

@@ -2,7 +2,7 @@
 
 exports[`Header renders header component and styles 1`] = `
 <header
-  className="sc-fMiknA fOtoJO"
+  className="sc-tilXH iachub"
 >
   <div
     className="sc-bdVaJa jJjJOT"
@@ -22,13 +22,13 @@ exports[`Header renders header component and styles 1`] = `
     </span>
   </div>
   <div
-    className="sc-dVhcbM khZBWk"
+    className="sc-hEsumM imgWrU"
   >
     <div
-      className="sc-hzDkRC hzpPlX"
+      className="sc-gGBfsJ buqeUO"
     >
       <i
-        className="fa fa-search sc-jhAzac ipKjHA fa-lg"
+        className="fa fa-search sc-jnlKLf gzLle fa-lg"
       />
       <input
         className="form-control input"
@@ -39,11 +39,11 @@ exports[`Header renders header component and styles 1`] = `
       />
     </div>
     <div
-      className="sc-bZQynM eLUDuq"
+      className="sc-bZQynM jCHsoD sc-EHOje fefBnX"
       onClick={[Function]}
     >
       <i
-        className="fa fa-database"
+        className="fa fa-download"
       />
     </div>
   </div>

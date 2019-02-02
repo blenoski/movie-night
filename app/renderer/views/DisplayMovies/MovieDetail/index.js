@@ -18,6 +18,7 @@ import Update from './Update'
 export default class MovieDetail extends Component {
   constructor (props) {
     super(props)
+
     this.openMovieInDefaultPlayer = this.openMovieInDefaultPlayer.bind(this)
     this.showMovieInFinder = this.showMovieInFinder.bind(this)
     this.updateFileAvailable = this.updateFileAvailable.bind(this)
@@ -33,7 +34,12 @@ export default class MovieDetail extends Component {
       editOpen: false,
       searching: false,
       searchError: '',
-      searchMovieResult: null
+      searchMovieResult: null,
+
+      // Shadow incoming movie prop.
+      // This is so after making edits we can save
+      // results local to component w/o impacting redux state.
+      movie: props.movie
     }
   }
 
@@ -43,40 +49,41 @@ export default class MovieDetail extends Component {
     this.anchor.scrollIntoViewIfNeeded() // centers anchor in viewport
 
     this.updateFileAvailable()
-    fs.watchFile(this.props.movie.location, this.updateFileAvailable)
+    fs.watchFile(this.state.movie.location, this.updateFileAvailable)
   }
 
   componentWillUnmount () {
-    fs.unwatchFile(this.props.movie.location, this.updateFileAvailable)
+    fs.unwatchFile(this.state.movie.location, this.updateFileAvailable)
   }
 
   updateFileAvailable () {
-    fileExists(this.props.movie.location)
+    fileExists(this.state.movie.location)
       .then(result => this.setState({ fileAvailable: result }))
   }
 
   openMovieInDefaultPlayer (e) {
     e.preventDefault()
-    const { movie } = this.props
+    const { movie } = this.state
     shell.openItem(movie.location)
   }
 
   showMovieInFinder (e) {
     e.preventDefault()
-    const { movie } = this.props
+    const { movie } = this.state
 
     shell.showItemInFolder(movie.location)
   }
 
   close () {
-    const { movie, handleCloseMovieDetails } = this.props
+    const { handleCloseMovieDetails } = this.props
+    const { movie } = this.state
     if (handleCloseMovieDetails) {
       handleCloseMovieDetails(movie)
     }
   }
 
   handleRedoSearch (searchTitle, searchYear, imdbID) {
-    const { movie } = this.props
+    const { movie } = this.state
     const searchQuery = imdbID || (searchTitle + (searchYear ? ` [${searchYear}]` : ''))
 
     this.setState({ searching: true, searchError: '' })
@@ -113,17 +120,22 @@ export default class MovieDetail extends Component {
 
     if (searchMovieResult) {
       onUpdateMovieMetadata(searchMovieResult)
-      this.setState({ editOpen: false })
+      this.setState({
+        editOpen: false,
+        movie: searchMovieResult,
+        searchMovieResult: null
+      })
     }
   }
 
   handleMoveToTrash () {
-    const { movie, onMoveToTrash } = this.props
-    const response = window.confirm(`Warning: this will DELETE the following file from your media and move it to the trash:\n\n${movie.location}`)
+    const { onMoveToTrash } = this.props
+    const { movie } = this.state
+    const response = window.confirm(`Warning: this will DELETE the following file from your hard drive and move it to the trash:\n\n${movie.location}`)
     if (response) {
       if (
         shell.moveItemToTrash(movie.location) ||
-        window.confirm(`Permission denied. Cannot move file to trash\n\nDelete from database?`)
+        window.confirm(`Permission denied. Cannot move file to trash\n\nDelete it from your Movie Night database?`)
       ) {
         onMoveToTrash(movie)
         this.close()
@@ -144,7 +156,7 @@ export default class MovieDetail extends Component {
   }
 
   render () {
-    const { movie: dbMovie } = this.props
+    const { movie: dbMovie } = this.state
     const { editOpen, searching, searchError, searchMovieResult } = this.state
 
     const movie = searchMovieResult || dbMovie
@@ -152,6 +164,8 @@ export default class MovieDetail extends Component {
     const posterUrl = searchMovieResult
       ? searchMovieResult.imgUrl
       : (movie.imgFile ? filePathToUrl(movie.imgFile) : '')
+
+    const Edit = editOpen ? EditButtonRed : EditButton
 
     return (
       <FlexboxDiv >
@@ -167,11 +181,11 @@ export default class MovieDetail extends Component {
         <MovieDetailsContainer>
           <header>
             <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', width: '100%', marginBottom: '8px'}}>
-              <EditButton editing={editOpen} onClick={this.handleToggleEdit} />
+              <Edit onClick={this.handleToggleEdit} />
               <TrashButton onClick={this.handleMoveToTrash} />
               <CloseButton onClick={this.close} />
             </div>
-            <Title title={movie.title} />
+            <Title title={movie.title} editing={editOpen} />
             <Meta year={movie.year} rated={movie.rated} runtime={movie.runtime} />
             <Ratings
               audience={Number(movie.imdbRating) / 10.0}
@@ -229,10 +243,10 @@ const EditButton = styled(Edit)`
   font-size: 30px;
   padding: 5px 0 0;
   margin-left: 24px;
+`
 
-  ${props => props.editing && `
-    color: red;
-  `}
+const EditButtonRed = styled(EditButton)`
+  color: red;
 `
 
 const TrashButton = styled(Trash)`

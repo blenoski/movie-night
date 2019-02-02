@@ -2,29 +2,30 @@
 
 exports[`Button passes through className 1`] = `
 <div
-  className="cn-test sc-bwzfXH iJwxuO"
-  onClick={undefined}
+  className="cn-test sc-bwzfXH gStPc sc-bdVaJa hpCjNj"
+  onClick={[Function]}
 >
   <i
-    className="fa fa-database"
+    className="fa fa-download"
   />
 </div>
 `;
 
 exports[`Button renders with database icon for not busy state 1`] = `
 <div
-  className="sc-bwzfXH iJwxuO"
-  onClick={undefined}
+  className="sc-bwzfXH gStPc sc-bdVaJa hpCjNj"
+  onClick={[Function]}
 >
   <i
-    className="fa fa-database"
+    className="fa fa-download"
   />
 </div>
 `;
 
 exports[`Button renders with spinner icon for busy state 1`] = `
 <div
-  className="sc-bdVaJa IsYJH"
+  className="sc-bdVaJa hpCjNj"
+  onClick={[Function]}
 >
   <i
     className="fa fa-spinner fa-pulse"
