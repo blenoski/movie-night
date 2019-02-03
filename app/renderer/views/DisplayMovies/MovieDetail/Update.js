@@ -141,12 +141,13 @@ const Heading = styled.span`
 `
 
 const SearchQuery = styled.input`
-  background-color: #E3E1DB;
+  background-color: #e3e1db;
   padding: 0 8px;
   width: ${props => props.width} !important;
 `
 
 const Button = styled.button`
+  /* stylelint-disable declaration-block-no-duplicate-properties */
   background-color: rgba(0, 0, 0, 0);
   border: 1px solid rgba(2, 117, 216, 1);
   border-radius: 5px;
@@ -156,14 +157,12 @@ const Button = styled.button`
   padding: 8px;
   position: relative;
   transition: all 0.3s ease-in;
-
   ${props => !props.disabled && `
     &:hover {
       background-color: rgba(2, 117, 216, 1);
-      color: rgba(255, 255, 255, 0.9)
+      color: rgba(255, 255, 255, 0.9);
     }
   `}
-
   ${props => props.disabled && `
     cursor: not-allowed;
     opacity: ${props.searching ? '1.0' : '0.5'};
@@ -177,7 +176,6 @@ const SpinnerContainer = styled.div`
   left: 0;
   right: 0;
   z-index: 1;
-
   display: flex;
   align-items: center;
   justify-content: center;

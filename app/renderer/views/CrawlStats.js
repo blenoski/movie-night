@@ -102,10 +102,8 @@ const Overlay = styled.div`
   width: 700px;
   z-index: 2;
   transform: translate(-50%, -50%);
-
   display: flex;
   flex-direction: column;
-  
   border: 1px solid #999;
   background-color: rgba(0, 0, 0, 0.7);
   box-sizing: border-box;
@@ -117,7 +115,6 @@ const NavContainer = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-
   position: relative;
   width: 100%;
   margin-bottom: 16px;
@@ -129,7 +126,6 @@ const NavButton = styled.div`
   font-size: 1.5rem;
   margin: 0 16px;
   ${props => props.ml && `margin-left: ${props.ml};`}
-
   transition: all 0.3s ease-in;
   &:hover {
     opacity: 0.5;
@@ -155,7 +151,6 @@ const CloseButton = styled(Close)`
   position: absolute;
   top: 0;
   right: 0;
-
   color: rgba(255, 255, 255, 0.9);
   cursor: pointer;
   font-size: 30px;
@@ -166,7 +161,6 @@ const ContentContainer = styled.div`
   flex-direction: row;
   align-items: flex-start;
   justify-content: flex-start;
-
   max-width: 100%;
   box-sizing: border-box;
 `
@@ -175,7 +169,6 @@ const KeyContainer = styled.div`
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-
   margin-right: 16px;
   box-sizing: border-box;
 `
@@ -188,8 +181,7 @@ const KeyText = styled.div`
 const ValueContainer = styled.div`
   display: flex;
   flex-direction: column;
-  flex-grow: 1; 
-
+  flex-grow: 1;
   box-sizing: border-box;
   overflow: hidden;
 `

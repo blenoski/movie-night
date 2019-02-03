@@ -274,7 +274,6 @@ const Poster = styled.aside`
   justify-content: center;
   margin-right: 20px;
   width: 300px;
-
   ${props => !props.fileUrl && `
     border: 1px solid #999;
   `}
@@ -294,5 +293,5 @@ const VerticalScrollSection = styled.section`
 `
 
 const Spacer = styled.div`
-  margin-top: ${props => props.small ? '10px' : '30px'}
+  margin-top: ${props => props.small ? '10px' : '30px'};
 `

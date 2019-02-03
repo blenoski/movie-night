@@ -123,7 +123,7 @@ const NoImage = styled.div`
   width: 150px;
   height: 222px;
   border: 1px solid #999;
-  padding:   8px;
+  padding: 8px;
   overflow-wrap: break-word;
 `
 
