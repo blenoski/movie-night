@@ -1,5 +1,5 @@
 const path = require('path')
-const { readdir, lstat } = require('../shared/utils')
+const { readdir, stat } = require('../shared/utils')
 const logger = require('./backgroundWorkerLogger').default
 
 // The list of recognized movie file extensions.
@@ -35,7 +35,7 @@ function crawl (directory, movieFileCb, searchDirCb) {
 }
 
 function processPath (absPath, searchDirCb, movieFileCb) {
-  return lstat(absPath).then((stats) => {
+  return stat(absPath).then((stats) => {
     if (stats.isFile()) {
       const ext = path.extname(absPath)
       if (movieFileExtensions.indexOf(ext) > -1) {

@@ -109,6 +109,8 @@ exports[`DisplayMovies renders featured movie from search result 1`] = `
         "imgFile": "/path/to/img",
       }
     }
+    onMoveToTrash={undefined}
+    onUpdateMovieMetadata={undefined}
   >
     MovieDetailMock
   </div>

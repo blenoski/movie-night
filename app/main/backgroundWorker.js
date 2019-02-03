@@ -3,7 +3,10 @@ const url = require('url')
 const { BrowserWindow } = require('electron')
 const {
   CRAWL_DIRECTORY,
-  LOAD_MOVIE_DATABASE
+  DELETE_MOVIE_DATABASE,
+  LOAD_MOVIE_DATABASE,
+  MOVE_MOVIE_TO_TRASH,
+  UPDATE_MOVIE_METADATA
 } = require('../shared/events')
 const { isDevEnv } = require('../shared/utils')
 const logger = require('./mainLogger')
@@ -43,20 +46,57 @@ function loadMovieDatabase () {
 }
 
 // Triggers the import media workflow.
-function handleCrawlDirectorySelectionEvent (selection) {
+function handleCrawlDirectorySelectionEvent (directory) {
   if (!backgroundWorker) {
     logger.error('backgroundWorker object does not exist')
-  } else if (selection && selection[0]) {
-    const directory = selection[0]
-    backgroundWorker.webContents.send(CRAWL_DIRECTORY, directory)
-    logger.info('Sent CRAWL_DIRECTORY event to bgWorker', { directory })
   } else {
-    logger.info('User canceled directory file dialog')
+    if (directory && typeof directory === 'string') {
+      backgroundWorker.webContents.send(CRAWL_DIRECTORY, directory)
+      logger.info('Sent CRAWL_DIRECTORY event to bgWorker', { directory })
+    } else {
+      logger.info('empty directory CRAWL_DIRECTORY')
+    }
   }
+}
+
+// Triggers the update/save movie metadata workflow.
+function updateMovieMetadata (event, movie) {
+  if (!backgroundWorker) {
+    logger.error('backgroundWorker object does not exist')
+    return
+  }
+
+  backgroundWorker.webContents.send(UPDATE_MOVIE_METADATA, movie)
+  logger.info('Sent UPDATE_MOVIE_METADATA event to bgWorker', { movie: movie.title })
+}
+
+// Triggers the delete movie metadata workflow.
+function deleteMovie (event, movie) {
+  if (!backgroundWorker) {
+    logger.error('backgroundWorker object does not exist')
+    return
+  }
+
+  backgroundWorker.webContents.send(MOVE_MOVIE_TO_TRASH, movie)
+  logger.info('Sent MOVE_MOVIE_TO_TRASH event to bgWorker', { movie: movie.title })
+}
+
+// Triggers the delete movie database workflow.
+function deleteMovieDatabase (event) {
+  if (!backgroundWorker) {
+    logger.error('backgroundWorker object does not exist')
+    return
+  }
+
+  backgroundWorker.webContents.send(DELETE_MOVIE_DATABASE)
+  logger.info('Sent DELETE_MOVIE_DATABASE event to bgWorker')
 }
 
 module.exports = {
   createBackgroundWindow,
+  deleteMovie,
+  deleteMovieDatabase,
   handleCrawlDirectorySelectionEvent,
-  loadMovieDatabase
+  loadMovieDatabase,
+  updateMovieMetadata
 }

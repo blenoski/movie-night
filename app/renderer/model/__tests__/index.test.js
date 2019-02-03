@@ -8,11 +8,8 @@ import {
   getFeaturedMovie,
   getSearchCategory,
   getSearchQuery,
-  getVisibleMovies,
-  importMovies // electron action creator
+  getVisibleMovies
 } from '../index'
-
-import { SELECT_IMPORT_DIRECTORY } from '../../../shared/events'
 
 jest.mock('../../../shared/utils', () => {
   return {
@@ -66,18 +63,6 @@ describe('public selectors', () => {
   })
   test('getVisibleMovies', () => {
     expect(getVisibleMovies(state)).toMatchSnapshot()
-  })
-})
-
-// Electron action creators
-const {
-  sendMock
-} = require('electron') // jest will automatically use mocked version
-
-describe('electron action creators', () => {
-  test('importMovies', () => {
-    importMovies()
-    expect(sendMock.mock.calls[0][0]).toEqual(SELECT_IMPORT_DIRECTORY)
   })
 })
 

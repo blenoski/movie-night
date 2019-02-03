@@ -15,7 +15,7 @@ describe('Button', () => {
     expect(tree).toMatchSnapshot()
     expect(tree.type).toBe('div')
     expect(tree.children[0].type).toBe('i')
-    expect(tree.children[0].props.className).toEqual('fa fa-database')
+    expect(tree.children[0].props.className).toEqual('fa fa-download')
   })
 
   test('renders with spinner icon for busy state', () => {
@@ -35,7 +35,7 @@ describe('Button', () => {
     })
 
     const component = renderer.create(
-      <Button handleClick={handleClick} />
+      <Button onClick={handleClick} />
     )
     let tree = component.toJSON()
     tree.props.onClick()

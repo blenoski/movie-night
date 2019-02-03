@@ -9,6 +9,12 @@ module.exports = {
   // Returns a promise with metadata on success.
   fetchMovieMetadata: function fetchMovieMetadata (movieFile) {
     return fetchMovieDataInternal(movieFile)
+  },
+  // External API.
+  // Pass in the imdbID of the movie
+  // Returns a promise with the metadata on success.
+  fetchMovieMetadataByID: function fetchMovieMetadataByID (imdbID) {
+    return fetchMovieMetadataByIdInternal(imdbID)
   }
 }
 
@@ -26,10 +32,26 @@ function fetchMovieDataInternal (movieFile) {
   const url = `${BASE_URL}?file=${encodeURIComponent(movieFile)}`
   return request.getJSON(url, dataValidator)
     .then((metadata) => {
-      metadata.fileInfo = [{
-        location: movieFile,
-        query: metadata.successQuery
-      }]
+      // metadata.fileInfo = [{
+      //   location: movieFile, => V1
+      //   query: metadata.successQuery => V1
+      // }]
+      metadata.location = movieFile  // V2
+      metadata.query = metadata.successQuery  // V2
+      if (metadata.imgUrl) {
+        const { ext } = path.parse(metadata.imgUrl)
+        metadata.imgFile = path.join(posterImagePath, `${metadata.imdbID}${ext}`)
+      } else {
+        metadata.imgFile = ''
+      }
+      return metadata
+    })
+}
+
+function fetchMovieMetadataByIdInternal (imdbID) {
+  const url = `${BASE_URL}?imdbID=${encodeURIComponent(imdbID)}`
+  return request.getJSON(url, dataValidator)
+    .then((metadata) => {
       if (metadata.imgUrl) {
         const { ext } = path.parse(metadata.imgUrl)
         metadata.imgFile = path.join(posterImagePath, `${metadata.imdbID}${ext}`)

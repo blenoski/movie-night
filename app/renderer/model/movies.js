@@ -22,7 +22,12 @@ export default (state = initialState, action) => {
     case CLEAR_SEARCH_QUERY:
     case UPDATE_SEARCH_CATEGORY:
     case UPDATE_SEARCH_QUERY: {
-      return { ...state, displayOrder: rankCategoriesForDisplay(state.movieDB) }
+      const displayOrder = [
+        ...rankCategoriesForDisplay(state.movieDB).filter(genre => genre !== 'Not Found'),
+        'Not Found'
+      ]
+
+      return { ...state, displayOrder }
     }
 
     default:
@@ -39,10 +44,16 @@ function computeNextDisplayOrder (displayOrder, movieDB) {
   // As database updates come in, append new categories
   // to existing display order so we do not get reordering.
   const newCategories = movieDB.filter(category => {
-    return displayOrder.indexOf(category.genre) < 0
+    return displayOrder.indexOf(category.genre) < 0 && category.genre !== 'Not Found'
   })
 
-  return [...displayOrder, ...rankCategoriesForDisplay(newCategories)]
+  const nextDisplayOrder = [
+    ...displayOrder.filter(genre => genre !== 'Not Found'),
+    ...rankCategoriesForDisplay(newCategories),
+    'Not Found'
+  ]
+
+  return nextDisplayOrder
 }
 
 // Returns array of categories sorted from most movies to least movies.

@@ -14,9 +14,12 @@ Object {
     "subscribe": [Function],
     Symbol(observable): [Function],
   },
+  "deleteAllMovies": [Function],
+  "deleteMovie": [Function],
   "sendCrawlComplete": [Function],
   "sendMovieDatabase": [Function],
   "sendSearchDirectory": [Function],
+  "updateMovie": [Function],
 }
 `;
 
@@ -33,6 +36,7 @@ Object {
 exports[`store initial state 1`] = `
 Object {
   "completeCnt": 0,
+  "crawlDirectory": "",
   "crawling": false,
   "error": Array [],
   "inProgress": Array [],

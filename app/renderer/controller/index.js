@@ -3,6 +3,7 @@ import {
   App,
   DisplayMoviesContainer,
   ImportMovies,
+  ImportStats,
   SearchMovies,
   MainContent,
   MovieThumbnailContainer
@@ -16,6 +17,7 @@ export {
   App,
   DisplayMoviesContainer,
   ImportMovies,
+  ImportStats,
   MainContent,
   MovieThumbnailContainer,
   SearchMovies

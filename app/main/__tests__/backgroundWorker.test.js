@@ -42,7 +42,7 @@ describe('main process', () => {
 
     describe(CRAWL_DIRECTORY, () => {
       test('calls send with selection', () => {
-        handleCrawlDirectorySelectionEvent(['crawlDir'])
+        handleCrawlDirectorySelectionEvent('crawlDir')
         expect(sendLast()).toEqual([CRAWL_DIRECTORY, 'crawlDir'])
       })
 

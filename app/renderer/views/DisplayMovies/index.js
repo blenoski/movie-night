@@ -124,11 +124,12 @@ export default class DisplayMovies extends Component {
   }
 
   renderMovieDetails (onClose) {
+    const { deleteMovieFromDb, updateMovieMetadata } = this.props
     const { closing, prevFeaturedMovie } = this.state
     if (closing) {
       return (
         <FadeOut
-          key={`out-${prevFeaturedMovie.imdbID}`}
+          key={`out-${prevFeaturedMovie.location}`}
           onAnimationEnd={this.fadeOutAnimationEnded}
         >
           <MovieDetail movie={prevFeaturedMovie.movie} />
@@ -143,11 +144,13 @@ export default class DisplayMovies extends Component {
     }
 
     return (
-      <FadeIn key={movie.imdbID}>
+      <FadeIn key={movie.location}>
         <MovieDetail
           movie={movie}
           handleCloseMovieDetails={onClose}
           center={featuredMovie.action === 'click'}
+          onMoveToTrash={deleteMovieFromDb}
+          onUpdateMovieMetadata={updateMovieMetadata}
         />
       </FadeIn>
     )
@@ -169,7 +172,7 @@ export default class DisplayMovies extends Component {
     const next = nextProps.featuredMovie
     if (next.movie) {
       if (next.action === 'search' ||
-          next.movie.imdbID === curr.movie.imdbID ||
+          next.movie.location === curr.movie.location ||
           (next.panelID >= 0 && next.panelID !== curr.panelID)) {
         return false
       }

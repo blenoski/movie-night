@@ -12,7 +12,7 @@ export function downloadPosterFor (movie) {
       return movie
     })
     .catch((err) => {
-      logger.error(`Downloading image failed for ${movie.title}`, err)
+      logger.error(`Downloading image failed for ${movie.title}`, { name: err.name, message: err.message })
       return movie
     })
 }

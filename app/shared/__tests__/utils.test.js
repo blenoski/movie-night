@@ -11,7 +11,7 @@ const {
   gridPartition,
   isDevEnv,
   logEnv,
-  lstat,
+  stat,
   mkdir,
   readdir,
   writeFile
@@ -112,13 +112,13 @@ describe('utils', () => {
     })
   })
 
-  describe('lstat', () => {
+  describe('stat', () => {
     test('resolves with stats object if file exists', () => {
-      return expect(lstat(__filename)).resolves.toBeInstanceOf(fs.Stats)
+      return expect(stat(__filename)).resolves.toBeInstanceOf(fs.Stats)
     })
 
     test('rejects when file does not exist', () => {
-      return expect(lstat('/badfile')).rejects.toBeDefined()
+      return expect(stat('/badfile')).rejects.toBeDefined()
     })
   })
 

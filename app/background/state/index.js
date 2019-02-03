@@ -14,6 +14,9 @@ import {
 } from './actionTypes'
 
 import addMovieFile from './addMovieFile'
+import deleteMovieFile from './deleteMovieFile'
+import deleteMovieDatabase from './deleteMovieDatabase'
+import updateMovieMetadata from './updateMovieMetadata'
 import { sendCrawlComplete } from './electronActions'
 
 // Re-export the electron actions
@@ -25,6 +28,7 @@ export * from './electronActions'
 const initialState = {
   completeCnt: 0,
   crawling: false,
+  crawlDirectory: '',
   error: [],
   inProgress: []
 }
@@ -47,8 +51,9 @@ const progress = (state = initialState, action) => {
 
     case CRAWL_START: {
       return {
-        ...state,
-        crawling: true
+        ...initialState,
+        crawling: true,
+        crawlDirectory: action.payload
       }
     }
 
@@ -97,9 +102,10 @@ export default store
 
 // action creators
 // ----------------
-function crawlStartInternal () {
+function crawlStartInternal (rootDirectory) {
   return {
-    type: CRAWL_START
+    type: CRAWL_START,
+    payload: rootDirectory
   }
 }
 
@@ -123,5 +129,8 @@ export function crawlCompleteEnhanced (directory) {
 // bound action creators
 // ----------------------
 export const addMovie = (movieFile, db) => store.dispatch(addMovieFile(movieFile, db))
-export const crawlStart = () => store.dispatch(crawlStartInternal())
+export const deleteMovie = (movieFile, db) => store.dispatch(deleteMovieFile(movieFile, db))
+export const deleteAllMovies = (db) => store.dispatch(deleteMovieDatabase(db))
+export const updateMovie = (movie, db) => store.dispatch(updateMovieMetadata(movie, db))
+export const crawlStart = (rootDirectory) => store.dispatch(crawlStartInternal(rootDirectory))
 export const crawlComplete = (directory) => store.dispatch(crawlCompleteEnhanced(directory))

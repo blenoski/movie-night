@@ -57,9 +57,9 @@ export default class MovieGallery extends Component {
 
     const thumbnails = movies.map((movie) => {
       return (
-        <FadeIn key={movie.imdbID}>
+        <FadeIn key={movie.location}>
           <MovieThumbnailContainer
-            key={movie.imdbID}
+            // key={movie.location}
             movie={movie}
             panelID={id}
           />

@@ -27,7 +27,7 @@ export default class MovieThumbnail extends Component {
   mouseEnter (e) {
     e.preventDefault()
     this.setState({ controls: 'fadingIn' })
-    fileExists(this.props.movie.fileInfo[0].location)
+    fileExists(this.props.movie.location)
       .then(result => this.setState({ fileAvailable: result }))
   }
 
@@ -51,8 +51,7 @@ export default class MovieThumbnail extends Component {
 
   openMovieInDefaultPlayer (e) {
     e.preventDefault()
-    const { location } = this.props.movie.fileInfo[0]
-    shell.openItem(location)
+    shell.openItem(this.props.movie.location)
   }
 
   onShowMovieDetailsClick (e) {
@@ -77,6 +76,10 @@ export default class MovieThumbnail extends Component {
 
   renderImage () {
     const { imgFile, title } = this.props.movie
+
+    if (!imgFile) {
+      return <NoImage>{title}</NoImage>
+    }
 
     return <Image
       src={imgFile}
@@ -114,6 +117,14 @@ const ImageContainer = styled.div`
 const Image = styled.img`
   width: 150px;
   height: 222px;
+`
+
+const NoImage = styled.div`
+  width: 150px;
+  height: 222px;
+  border: 1px solid #999;
+  padding: 8px;
+  overflow-wrap: break-word;
 `
 
 const Hover = styled.div`

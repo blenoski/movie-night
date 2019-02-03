@@ -19,9 +19,7 @@ const movie = {
   actors: ['Luke Wilson', 'Will Ferrell'],
   director: 'Todd Phillips',
   imgFile: '/path/to/poster',
-  fileInfo: [
-    { location: '/path/to/movie' }
-  ],
+  location: '/path/to/movie',
   genres: ['action', 'comedy'],
   title: 'Old School'
 }
@@ -56,7 +54,7 @@ describe('MovieThumbnail', () => {
     // Make sure click on play button calls Electron's shell API
     const playButton = controls.children[0].children[0]
     playButton.props.onClick({ preventDefault: jest.fn() })
-    expect(shellMock).toHaveBeenLastCalledWith(movie.fileInfo[0].location)
+    expect(shellMock).toHaveBeenLastCalledWith(movie.location)
 
     // Make sure click on details arrow calls the handleSelection callback
     const detailsArrow = controls.children[1]

@@ -1,11 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
-import { MainContent } from '../controller'
+import { ImportStats, MainContent } from '../controller'
 import Header from './Header'
 import Splash from './Splash'
 
-export default (props) => {
-  if (!props.dbLoaded) {
+export default ({ dbLoaded, showCrawlStatsOverlay }) => {
+  if (!dbLoaded) {
     return <Splash />
   }
 
@@ -13,6 +13,7 @@ export default (props) => {
     <Application>
       <Header />
       <MainContent />
+      {showCrawlStatsOverlay && <ImportStats />}
     </Application>
   )
 }

@@ -64,11 +64,25 @@ export const Close = ({ className, ...props }) => {
   return <Icon className={cn('fa-close', className)} {...props} />
 }
 
+export const Edit = ({ className, ...props }) => {
+  return <Icon className={cn('fa-pencil', className)} {...props} />
+}
+
 export const FileIcon = ({ className, video, ...props }) => {
   return <Icon
     className={cn(
       video && 'fa-file-video-o',
       !video && 'fa-file', // default
+      className
+    )}
+    {...props}
+  />
+}
+
+export const ImportIcon = ({ className, ...props }) => {
+  return <Icon
+    className={cn(
+      'fa-download',
       className
     )}
     {...props}
@@ -108,4 +122,8 @@ export const Star = ({ className, half, outline, ...props }) => {
     )}
     {...props}
   />
+}
+
+export const Trash = ({ className, ...props }) => {
+  return <Icon className={cn('fa-trash', className)} {...props} />
 }

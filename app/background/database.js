@@ -46,7 +46,7 @@ module.exports = class SingleCollectionDatabase {
 
   // Add a document to the collection.
   // Overwrites if document with matching uniqueField already exists.
-  addOrUpdate (document) {
+  addOrUpdate (document, forceSave = false) {
     let documentIndex = this.collection.findIndex((doc) => {
       return doc[this.uniqueField] === document[this.uniqueField]
     })
@@ -56,7 +56,23 @@ module.exports = class SingleCollectionDatabase {
       this.collection.push(document) // add new document
     }
 
-    this._scheduleSave()
+    this._scheduleSave(forceSave)
+    return this.collection
+  }
+
+  // Deletes a document from the collection.
+  // If no matching document is found with matching uniqueField
+  // then is a no-op.
+  deleteDocument (document, forceSave = true) {
+    const newCollection = this.collection.filter(doc => {
+      return doc[this.uniqueField] !== document[this.uniqueField]
+    })
+
+    if (newCollection.length !== this.collection.length) {
+      this.collection = newCollection
+      this._scheduleSave(forceSave)
+    }
+
     return this.collection
   }
 
@@ -89,13 +105,22 @@ module.exports = class SingleCollectionDatabase {
     return this.collection
   }
 
+  // Resets the database back to 0 documents.
+  // WARNING: all documents will be lost
+  reset () {
+    this.collection = []
+    const forceSave = true
+    this._scheduleSave(forceSave)
+    return this.collection
+  }
+
   // Schedules a save (write to file) 3 seconds in the future.
   // Tokens are used to batch multiple updates into a single save.
   // Warning: if process is ended within 3 seconds of a database update, then
   // that update will be lost.
-  _scheduleSave () {
+  _scheduleSave (forceSave) {
     this._persist.tokens += 1
-    setTimeout(persistDatabaseToFile, this.saveTimoutMilliseconds, this)
+    setTimeout(persistDatabaseToFile, this.saveTimoutMilliseconds, this, forceSave)
   }
 }
 
@@ -103,13 +128,13 @@ module.exports = class SingleCollectionDatabase {
 // Internal
 // =========
 // Saves the database to a file
-function persistDatabaseToFile (db) {
+function persistDatabaseToFile (db, forceSave) {
   // Take a persist token
   db._persist.tokens -= 1
 
   // Early exit if there are outstanding persist tokens.
   // This is how we end up batching multiple updates into a single save.
-  if (db._persist.tokens > 0) {
+  if (db._persist.tokens > 0 && !forceSave) {
     return
   }
 

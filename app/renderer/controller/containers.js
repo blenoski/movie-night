@@ -3,21 +3,29 @@ import {
   clearFeaturedMovie, // Redux action creators
   clearSearchResults,
   clearSearchQuery,
+  deleteMovie,
+  hideCrawlStats,
+  showCrawlStats,
   updateSearchQuery,
   updateSearchCategory,
   updateFeaturedMovie,
   getAllMovies, // State selectors
   getCrawlActive,
+  getCrawlStats,
   getFeaturedMovie,
   getSearchCategory,
   getSearchQuery,
+  getShowCrawlStats,
   getVisibleMovies,
-  importMovies // Electron action creators
+  updateMetadataFor // Electron action creator
 } from '../model'
+
+import { deleteDatabase, importMovies } from './mapEventsToDispatch'
 
 // Presentational Components
 import Application from '../views/App'
 import Button from '../views/Button'
+import CrawlStats from '../views/CrawlStats'
 import DisplayMovies from '../views/DisplayMovies'
 import MainContentArea from '../views/MainContent'
 import MovieThumbnail from '../views/DisplayMovies/MovieThumbnail'
@@ -25,25 +33,60 @@ import SearchBar from '../views/SearchBar'
 
 // App Container
 // -------------
-export function mapStateToAppProps ({ dbLoaded }) {
+export function mapStateToAppProps (state) {
   return {
-    dbLoaded
+    dbLoaded: state.dbLoaded,
+    showCrawlStatsOverlay: getShowCrawlStats(state)
   }
 }
 
 export const App = connect(mapStateToAppProps)(Application)
 
+// CrawlStats Container
+// --------------------
+export function mapStateToCrawlStatsProps (state) {
+  return {
+    crawlStats: getCrawlStats(state)
+  }
+}
+
+export function mapDispatchToCrawlStatsProps (dispatch) {
+  return {
+    onClose: () => dispatch(hideCrawlStats()),
+    onImport: importMovies,
+    onDelete: deleteDatabase
+  }
+}
+
+export const ImportStats = connect(mapStateToCrawlStatsProps, mapDispatchToCrawlStatsProps)(CrawlStats)
+
 // ImportMovies Container
 // ----------------------
 export function mapStateToImportMoviesProps (state) {
+  const movies = getVisibleMovies(state)
+  const haveMovies = Object.keys(movies).length > 0
+
   return {
     busy: getCrawlActive(state),
-    handleClick: importMovies
+    haveMovies
+  }
+}
+
+export function mapDispatchToImportMoviesProps (dispatch) {
+  return {
+    onClick: (busy, haveMovies) => {
+      if (!busy && !haveMovies) {
+        importMovies()
+      } else {
+        dispatch(showCrawlStats())
+      }
+    }
   }
 }
 
 export const ImportMovies = connect(
-  mapStateToImportMoviesProps
+  mapStateToImportMoviesProps,
+  mapDispatchToImportMoviesProps
 )(Button)
 
 // SearchMovies Container
@@ -101,7 +144,9 @@ export function mapDispatchToDisplayMoviesProps (dispatch) {
   return {
     clearFeaturedMovie: () => dispatch(clearFeaturedMovie()),
     clearSearchQuery: () => dispatch(clearSearchQuery()),
-    updateSearchCategory: (category) => dispatch(updateSearchCategory(category))
+    deleteMovieFromDb: (movie) => deleteMovie(movie),
+    updateSearchCategory: (category) => dispatch(updateSearchCategory(category)),
+    updateMovieMetadata: (movie) => updateMetadataFor(movie)
   }
 }
 

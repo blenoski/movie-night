@@ -2,6 +2,8 @@ const path = require('path')
 const webpack = require('webpack')
 const webpackMerge = require('webpack-merge')
 
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+
 const basePath = path.resolve(__dirname, '..')
 
 // Base configuration.
@@ -64,7 +66,7 @@ function getPlugins () {
         }
       }),
       // Optimize
-      new webpack.optimize.UglifyJsPlugin()
+      new UglifyJsPlugin()
     )
   }
   return plugins

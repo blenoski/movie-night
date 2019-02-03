@@ -33,7 +33,10 @@ describe('sendMovieDatabase', () => {
   test('sends MOVIE_DATABASE event when called', () => {
     const movieDB = []
     sendMovieDatabase(movieDB)
-    expect(sendMock).toHaveBeenLastCalledWith(MOVIE_DATABASE, movieDB)
+    expect(sendMock).toHaveBeenLastCalledWith(
+      MOVIE_DATABASE,
+      {movieDB, importStats: {inProgress: [], moviesFound: 0}}
+    )
   })
 
   test('sends normalized MOVIE_DATABASE event when called', () => {
@@ -53,7 +56,10 @@ describe('sendMovieDatabase', () => {
 
     sendMovieDatabase(movieDB)
 
-    const expected = paritionMovieDatabaseByGenre(movieDB)
+    const expected = {
+      importStats: {inProgress: [], moviesFound: 0},
+      movieDB: paritionMovieDatabaseByGenre(movieDB)
+    }
     expect(sendMock).toHaveBeenLastCalledWith(MOVIE_DATABASE, expected)
   })
 })

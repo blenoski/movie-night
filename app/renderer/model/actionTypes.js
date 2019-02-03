@@ -3,6 +3,8 @@
 // Crawl actions
 export const CRAWL_DIRECTORY = 'crawl-directory'
 export const IS_CRAWLING = 'is-crawling'
+export const SHOW_CRAWL_STATS = 'show-crawl-state'
+export const SET_CRAWL_STATS = 'set-crawl-stats'
 
 // Database loaded actions
 export const DATABASE_LOADED = 'database-loaded'
