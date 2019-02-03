@@ -2,7 +2,7 @@
 
 exports[`Header renders header component and styles 1`] = `
 <header
-  className="sc-tilXH iachub"
+  className="sc-fYxtnH gqlVNm"
 >
   <div
     className="sc-bdVaJa jJjJOT"
@@ -22,13 +22,13 @@ exports[`Header renders header component and styles 1`] = `
     </span>
   </div>
   <div
-    className="sc-hEsumM imgWrU"
+    className="sc-tilXH gKhWkj"
   >
     <div
-      className="sc-gGBfsJ buqeUO"
+      className="sc-bbmXgH iLmHWB"
     >
       <i
-        className="fa fa-search sc-jnlKLf gzLle fa-lg"
+        className="fa fa-search sc-gGBfsJ buRvNI fa-lg"
       />
       <input
         className="form-control input"
