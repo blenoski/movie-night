@@ -97,6 +97,7 @@ export default class MovieDetail extends Component {
           query: `&s=${searchTitle}&y=${searchYear}`,
           fileSize: movie.fileSize
         }
+
         this.setState({
           searching: false,
           searchMovieResult,
@@ -156,6 +157,7 @@ export default class MovieDetail extends Component {
   }
 
   render () {
+    const { allowEdit } = this.props
     const { movie: dbMovie } = this.state
     const { editOpen, searching, searchError, searchMovieResult } = this.state
 
@@ -181,7 +183,7 @@ export default class MovieDetail extends Component {
         <MovieDetailsContainer>
           <header>
             <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'flex-end', width: '100%', marginBottom: '8px'}}>
-              <Edit onClick={this.handleToggleEdit} />
+              {allowEdit && <Edit onClick={this.handleToggleEdit} />}
               <TrashButton onClick={this.handleMoveToTrash} />
               <CloseButton onClick={this.close} />
             </div>
