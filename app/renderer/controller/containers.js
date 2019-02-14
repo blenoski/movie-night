@@ -133,6 +133,7 @@ export const MovieThumbnailContainer = connect(
 // -----------------------
 export function mapStateToDisplayMoviesProps (state) {
   return {
+    isCrawling: getCrawlActive(state),
     featuredMovie: getFeaturedMovie(state),
     movies: getVisibleMovies(state),
     searchCategory: getSearchCategory(state),

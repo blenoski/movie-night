@@ -124,7 +124,7 @@ export default class DisplayMovies extends Component {
   }
 
   renderMovieDetails (onClose) {
-    const { deleteMovieFromDb, updateMovieMetadata } = this.props
+    const { deleteMovieFromDb, isCrawling, updateMovieMetadata } = this.props
     const { closing, prevFeaturedMovie } = this.state
     if (closing) {
       return (
@@ -146,6 +146,7 @@ export default class DisplayMovies extends Component {
     return (
       <FadeIn key={movie.location}>
         <MovieDetail
+          allowEdit={!isCrawling}
           movie={movie}
           handleCloseMovieDetails={onClose}
           center={featuredMovie.action === 'click'}
